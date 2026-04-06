@@ -8,9 +8,7 @@ import {
   subscribeGuestChallenges,
   uploadPhoto,
   togglePhotoLike,
-  setChallengeDone,
-  getCurrentAuthUid,
-  deletePhoto
+  setChallengeDone
 } from "./firebase.js";
 
 const APP_DATA = window.WEDDING_APP_DATA;
@@ -99,9 +97,6 @@ const HOME_DASHBOARD_COPY = {
     uploadError: "No se pudo subir la foto. Inténtalo de nuevo.",
     uploadLoading: "Subiendo...",
     uploadPrompt: "Añade un pie de foto (opcional)",
-    deletePhotoLabel: "Eliminar",
-    deletePhotoConfirm: "¿Quieres eliminar esta foto?",
-    deleteError: "No se pudo eliminar la foto. Inténtalo de nuevo.",
     challengeSaved: "Guardado",
     challengeError: "No se pudo guardar el reto.",
     authError: "No se pudo autenticar."
@@ -155,9 +150,6 @@ const HOME_DASHBOARD_COPY = {
     uploadError: "Impossibile caricare la foto.",
     uploadLoading: "Caricamento...",
     uploadPrompt: "Aggiungi una didascalia (opzionale)",
-    deletePhotoLabel: "Elimina",
-    deletePhotoConfirm: "Vuoi eliminare questa foto?",
-    deleteError: "Impossibile eliminare la foto.",
     challengeSaved: "Salvato",
     challengeError: "Impossibile salvare la sfida.",
     authError: "Impossibile autenticarsi."
@@ -336,12 +328,7 @@ function renderPhotos() {
         <img src="${photo.downloadURL}" alt="${photo.caption || "photo"}" class="photo-img" loading="lazy" />
         <div class="photo-meta">
           <span>${photo.caption || "—"}</span>
-          <div class="photo-actions">
-            <button type="button" data-photo-like="${photo.id}">♡ ${photo.likesCount || 0}</button>
-            ${photo.authorUid && photo.authorUid === getCurrentAuthUid()
-    ? `<button type="button" class="photo-delete-btn" data-photo-delete="${photo.id}">${locale.labels.deletePhoto}</button>`
-    : ""}
-          </div>
+          <button type="button" data-photo-like="${photo.id}">♡ ${photo.likesCount || 0}</button>
         </div>
       </article>
     `).join("");
@@ -519,18 +506,6 @@ function bindUIEvents() {
   });
 
   document.getElementById("photo-grid").addEventListener("click", async (event) => {
-    const deleteBtn = event.target.closest("[data-photo-delete]");
-    if (deleteBtn && firebaseOnline) {
-      const shouldDelete = window.confirm(getHomeCopy().deletePhotoConfirm);
-      if (!shouldDelete) return;
-      try {
-        await deletePhoto(deleteBtn.dataset.photoDelete);
-      } catch {
-        alert(getHomeCopy().deleteError);
-      }
-      return;
-    }
-
     const btn = event.target.closest("[data-photo-like]");
     if (!btn || !currentGuestId || !firebaseOnline) return;
     await togglePhotoLike(btn.dataset.photoLike, currentGuestId);

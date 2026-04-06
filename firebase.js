@@ -14,8 +14,7 @@ import {
   limit,
   increment,
   runTransaction,
-  getDoc,
-  deleteDoc
+  getDoc
 } from "https://www.gstatic.com/firebasejs/10.12.5/firebase-firestore.js";
 import {
   getStorage,
@@ -262,24 +261,6 @@ async function setChallengeDone({ guestId, challengeId, done, points }) {
   }
 }
 
-function getCurrentAuthUid() {
-  return authUser?.uid || auth?.currentUser?.uid || null;
-}
-
-async function deletePhoto(photoId) {
-  const user = await ensureAuth();
-  if (!db || !user || !photoId) throw new Error("auth_required");
-
-  const photoRef = eventDoc("photos", photoId);
-  const photoSnap = await getDoc(photoRef);
-  if (!photoSnap.exists()) throw new Error("photo_not_found");
-
-  const photo = photoSnap.data();
-  if (photo.authorUid !== user.uid) throw new Error("forbidden");
-
-  await deleteDoc(photoRef);
-}
-
 export {
   isFirebaseConfigured,
   ensureAuth,
@@ -290,7 +271,5 @@ export {
   subscribeGuestChallenges,
   uploadPhoto,
   togglePhotoLike,
-  setChallengeDone,
-  getCurrentAuthUid,
-  deletePhoto
+  setChallengeDone
 };
