@@ -43,18 +43,28 @@ service cloud.firestore {
           && request.resource.data.storagePath is string
           && request.resource.data.likesCount == 0;
         allow update: if isAuth()
-          && request.resource.data.diff(resource.data).changedKeys().hasOnly(['likesCount'])
+          && request.resource.data.diff(resource.data).changedKeys().hasOnly(['likesCount', 'likedByGuestIds'])
           && request.resource.data.likesCount is int
-          && request.resource.data.likesCount >= resource.data.likesCount;
+          && request.resource.data.likesCount >= 0
+          && request.resource.data.likesCount <= resource.data.likesCount + 1
+          && request.resource.data.likesCount >= resource.data.likesCount - 1
+          && (
+            !request.resource.data.keys().hasAny(['likedByGuestIds'])
+            || request.resource.data.likedByGuestIds is list
+          );
         allow delete: if isAuth() && resource.data.authorUid == request.auth.uid;
 
-        match /likes/{guestId} {
+        match /likes/{likeId} {
           allow read: if true;
           allow create: if isAuth()
-            && guestId == request.resource.data.guestId
             && request.resource.data.uid == request.auth.uid
-            && request.resource.data.guestId is string;
-          allow update, delete: if false;
+            && request.resource.data.guestId is string
+            && (
+              likeId == request.auth.uid
+              || likeId == request.resource.data.guestId
+            );
+          allow update: if false;
+          allow delete: if isAuth() && resource.data.uid == request.auth.uid;
         }
       }
 
