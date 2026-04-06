@@ -1,0 +1,81 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    function isAuth() {
+      return request.auth != null;
+    }
+
+    function inEvent(eventId) {
+      return eventId is string && eventId.size() > 0;
+    }
+
+    match /events/{eventId} {
+      allow read: if inEvent(eventId);
+
+      match /config/{docId} {
+        allow read: if true;
+        allow write: if isAuth() && docId == 'main';
+      }
+
+      match /guests/{guestId} {
+        allow read: if true;
+        allow create, update: if isAuth()
+          && request.resource.data.id == guestId
+          && request.resource.data.updatedByUid == request.auth.uid;
+        allow delete: if false;
+      }
+
+      match /activity/{activityId} {
+        allow read: if true;
+        allow create: if isAuth()
+          && request.resource.data.type in ['upload_photo', 'react_photo', 'complete_challenge']
+          && request.resource.data.guestId is string
+          && request.resource.data.createdByUid == request.auth.uid;
+        allow update, delete: if false;
+      }
+
+      match /photos/{photoId} {
+        allow read: if true;
+        allow create: if isAuth()
+          && request.resource.data.authorUid == request.auth.uid
+          && request.resource.data.authorGuestId is string
+          && request.resource.data.downloadURL is string
+          && request.resource.data.storagePath is string
+          && request.resource.data.likesCount == 0;
+        allow update: if isAuth()
+          && request.resource.data.diff(resource.data).changedKeys().hasOnly(['likesCount'])
+          && request.resource.data.likesCount is int
+          && request.resource.data.likesCount >= resource.data.likesCount;
+        allow delete: if false;
+
+        match /likes/{uid} {
+          allow read: if true;
+          allow create: if isAuth()
+            && uid == request.auth.uid
+            && request.resource.data.uid == request.auth.uid
+            && request.resource.data.guestId is string;
+          allow update, delete: if false;
+        }
+      }
+
+      match /challenges/{guestId} {
+        allow read: if true;
+        allow create, update: if isAuth()
+          && request.resource.data.guestId == guestId
+          && request.resource.data.updatedByUid == request.auth.uid
+          && request.resource.data.completed is map;
+        allow delete: if false;
+      }
+
+      match /ranking/{guestId} {
+        allow read: if true;
+        allow create, update: if isAuth()
+          && request.resource.data.guestId == guestId
+          && request.resource.data.points is int
+          && request.resource.data.points >= 0
+          && request.resource.data.updatedByUid == request.auth.uid;
+        allow delete: if false;
+      }
+    }
+  }
+}
