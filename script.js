@@ -72,13 +72,10 @@ const HOME_DASHBOARD_COPY = {
     nextStepTargetPost: "photos",
     nowLabel: "Lo urgente ahora",
     nowDefault: "Todo en orden. Revisa la guía para el siguiente momento importante.",
-    quickLabel: "Accesos rápidos",
-    quickActions: [
-      { text: "Guía", target: "guide" },
-      { text: "Diccionario", target: "dictionary" },
-      { text: "Retos", target: "game" },
-      { text: "Fotos", target: "photos" }
-    ],
+    mapLabel: "Cómo llegar",
+    mapTitle: "Consulta el mapa del sitio",
+    mapText: "Revisa la ubicación y las indicaciones prácticas antes de salir.",
+    mapAction: "Abrir sección mapa",
     personalLabel: "Tu panel personal",
     personalNoGuest: "Selecciona un perfil para personalizar recomendaciones.",
     personalWithGuest: "Hola, {name}. Recomendación: completa un reto y sube una foto del momento.",
@@ -98,7 +95,7 @@ const HOME_DASHBOARD_COPY = {
       live: "Ya estáis dentro del fin de semana de boda.",
       post: "El fin de semana terminó, pero siguen los recuerdos."
     },
-    nextCeremony: "Próximo momento: ceremonia el sábado a las 20:00.",
+    nextCeremony: "Próximo momento: ceremonia el sábado 5.",
     photosLoading: "Cargando fotos...",
     photosEmpty: "Todavía no hay fotos.",
     photosFallback: "Firebase no disponible: se muestran fotos demo.",
@@ -129,13 +126,10 @@ const HOME_DASHBOARD_COPY = {
     nextStepTargetPost: "photos",
     nowLabel: "Priorità adesso",
     nowDefault: "Tutto sotto controllo. Apri la guida per il prossimo momento importante.",
-    quickLabel: "Accessi rapidi",
-    quickActions: [
-      { text: "Guida", target: "guide" },
-      { text: "Dizionario", target: "dictionary" },
-      { text: "Sfide", target: "game" },
-      { text: "Foto", target: "photos" }
-    ],
+    mapLabel: "Come arrivare",
+    mapTitle: "Controlla la mappa del luogo",
+    mapText: "Verifica posizione e indicazioni pratiche prima di partire.",
+    mapAction: "Apri sezione mappa",
     personalLabel: "Il tuo pannello personale",
     personalNoGuest: "Seleziona un profilo per ricevere consigli personalizzati.",
     personalWithGuest: "Ciao, {name}. Consiglio: completa una sfida e carica una foto del momento.",
@@ -155,7 +149,7 @@ const HOME_DASHBOARD_COPY = {
       live: "Siete già nel weekend di matrimonio.",
       post: "Il weekend è finito, ma i ricordi continuano."
     },
-    nextCeremony: "Prossimo momento: cerimonia sabato alle 20:00.",
+    nextCeremony: "Prossimo momento: cerimonia sabato 5.",
     photosLoading: "Caricamento foto...",
     photosEmpty: "Non ci sono ancora foto.",
     photosFallback: "Firebase non disponibile: mostro foto demo.",
@@ -229,12 +223,13 @@ function renderActivityFeed() {
   const feedItems = firebaseOnline && realtimeActivity.length
     ? realtimeActivity
     : HOME_ACTIVITY_FEED.map((item) => ({ ...item, createdAt: new Date(Date.now() - item.minutesAgo * 60000) }));
+  const latestItems = feedItems.slice(0, 10);
 
-  if (!feedItems.length) {
+  if (!latestItems.length) {
     return `<li class="activity-item"><span class="activity-item__text">${copy.activityEmpty}</span></li>`;
   }
 
-  return feedItems.map((item) => {
+  return latestItems.map((item) => {
     const guest = findGuestById(item.guestId);
     const name = guest ? guest.name : item.guestId;
     const template = copy.activityTemplates[item.type] || "{name}";
@@ -265,9 +260,11 @@ function renderHomeDashboard() {
 
     <article class="card home-card"><p class="card-label">${copy.nowLabel}</p><p class="card-text">${urgentText}</p></article>
 
-    <article class="card home-card"><p class="card-label">${copy.quickLabel}</p><div class="home-quick-grid">
-      ${copy.quickActions.map((action) => `<button class="secondary-btn home-action-btn" type="button" data-target-view="${action.target}">${action.text}</button>`).join("")}
-    </div></article>
+    <article class="card home-card"><p class="card-label">${copy.mapLabel}</p>
+      <h3 class="card-title">${copy.mapTitle}</h3>
+      <p class="card-text">${copy.mapText}</p>
+      <button class="secondary-btn home-action-btn" type="button" data-target-view="map">${copy.mapAction}</button>
+    </article>
 
     <article class="card home-card"><p class="card-label">${copy.personalLabel}</p><p class="card-text">${personalText}</p>
       <button class="secondary-btn home-action-btn" type="button" data-target-view="game">${copy.personalAction}</button>
@@ -277,6 +274,13 @@ function renderHomeDashboard() {
       ${firebaseOnline ? "" : `<p class=\"card-text home-activity-hint\">${copy.activityFallback}</p>`}
     </article>
   `;
+}
+
+function updateWelcomeLabel() {
+  const labels = getLocale().labels;
+  const guest = findGuestById(currentGuestId);
+  const welcome = guest?.sex === "f" ? (labels.welcomeFemale || labels.welcome) : labels.welcome;
+  document.getElementById("txt-welcome").textContent = welcome;
 }
 
 function renderTimeline() {
@@ -381,6 +385,7 @@ async function setGuest(guestId) {
   localStorage.setItem("wedding_guest", guestId);
   const guest = findGuestById(guestId);
   selectedGuestName.textContent = guest ? guest.name : "Invitado";
+  updateWelcomeLabel();
   showScreen(screenApp);
   renderHomeDashboard();
 
@@ -429,7 +434,7 @@ function applyTranslations() {
   document.getElementById("txt-access").textContent = labels.access;
   document.getElementById("txt-who-title").textContent = labels.whoAreYouTitle;
   document.getElementById("txt-who-subtitle").textContent = labels.whoAreYouText;
-  document.getElementById("txt-welcome").textContent = labels.welcome;
+  updateWelcomeLabel();
   document.getElementById("txt-hello-prefix").textContent = labels.hello;
   changeProfile.textContent = labels.changeProfile;
   document.getElementById("txt-countdown-label").textContent = labels.countdownLabel;
@@ -447,12 +452,17 @@ function applyTranslations() {
   document.getElementById("txt-progress-text").textContent = labels.progressText;
   document.getElementById("txt-ranking-label").textContent = labels.rankingLabel;
   document.getElementById("txt-photos-title").textContent = labels.photosTitle;
+  document.getElementById("txt-map-title").textContent = labels.mapTitle;
+  document.getElementById("txt-map-text").textContent = labels.mapText;
+  document.getElementById("txt-map-card-label").textContent = labels.mapHowToArrive;
+  document.getElementById("txt-map-placeholder").textContent = labels.mapPlaceholder;
   uploadPhotoBtn.textContent = labels.uploadPhoto;
   document.getElementById("nav-home").textContent = labels.navHome;
   document.getElementById("nav-guide").textContent = labels.navGuide;
   document.getElementById("nav-dictionary").textContent = labels.navDictionary;
   document.getElementById("nav-game").textContent = labels.navGame;
   document.getElementById("nav-photos").textContent = labels.navPhotos;
+  document.getElementById("nav-map").textContent = labels.navMap;
 }
 
 function highlightSelectedLanguage() {
@@ -531,6 +541,7 @@ function bindUIEvents() {
   changeProfile.addEventListener("click", () => {
     localStorage.removeItem("wedding_guest");
     currentGuestId = null;
+    updateWelcomeLabel();
     showScreen(screenGuest);
   });
   navButtons.forEach((button) => button.addEventListener("click", () => activateView(button.dataset.view)));
@@ -601,6 +612,7 @@ function restoreSession() {
   if (savedGuestId && findGuestById(savedGuestId)) {
     currentGuestId = savedGuestId;
     selectedGuestName.textContent = findGuestById(savedGuestId).name;
+    updateWelcomeLabel();
     renderHomeDashboard();
     showScreen(screenApp);
     return;
