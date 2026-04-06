@@ -280,7 +280,11 @@ async function deletePhoto(photoId) {
 
   if (photoData.storagePath) {
     const storageRef = ref(storage, photoData.storagePath);
-    await deleteObject(storageRef);
+    try {
+      await deleteObject(storageRef);
+    } catch (error) {
+      if (error?.code !== "storage/object-not-found") throw error;
+    }
   }
 
   await deleteDoc(photoRef);
