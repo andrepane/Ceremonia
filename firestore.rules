@@ -46,7 +46,7 @@ service cloud.firestore {
           && request.resource.data.diff(resource.data).changedKeys().hasOnly(['likesCount'])
           && request.resource.data.likesCount is int
           && request.resource.data.likesCount >= resource.data.likesCount;
-        allow delete: if isAuth() && resource.data.authorUid == request.auth.uid;
+        allow delete: if false;
 
         match /likes/{uid} {
           allow read: if true;
