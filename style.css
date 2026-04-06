@@ -274,21 +274,75 @@ input {
 }
 
 .guest-grid {
+  perspective: 1200px;
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
   gap: 14px;
 }
 
 .guest-card {
-  background: var(--surface);
-  border: 1px solid var(--line);
+  min-height: 196px;
+  padding: 0;
+  position: relative;
+  border: 1px solid rgba(255, 255, 255, 0.45);
   border-radius: var(--radius-lg);
-  padding: 16px 12px;
+  box-shadow: 0 18px 34px rgba(59, 37, 24, 0.14);
+  transform-style: preserve-3d;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.guest-card:focus-visible {
+  outline: 2px solid rgba(127, 95, 77, 0.5);
+  outline-offset: 4px;
+}
+
+.guest-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 22px 36px rgba(59, 37, 24, 0.18);
+}
+
+.guest-card__inner {
+  position: relative;
+  width: 100%;
+  min-height: 196px;
+  border-radius: inherit;
+  transform-style: preserve-3d;
+  transition: transform 0.65s cubic-bezier(0.24, 0.82, 0.27, 1);
+}
+
+.guest-card--flipped .guest-card__inner {
+  transform: rotateY(180deg);
+}
+
+.guest-card__face {
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  padding: 18px 12px;
   display: flex;
   flex-direction: column;
   align-items: center;
+  justify-content: center;
   gap: 10px;
-  box-shadow: var(--shadow);
+  background:
+    linear-gradient(145deg, rgba(255, 255, 255, 0.72), rgba(244, 235, 228, 0.62));
+  backdrop-filter: blur(16px);
+  border: 1px solid rgba(255, 255, 255, 0.4);
+  backface-visibility: hidden;
+}
+
+.guest-card__face::after {
+  content: "";
+  position: absolute;
+  inset: 8px;
+  border-radius: calc(var(--radius-lg) - 8px);
+  border: 1px solid rgba(255, 255, 255, 0.32);
+  pointer-events: none;
+}
+
+.guest-card__face--back {
+  transform: rotateY(180deg);
+  gap: 14px;
 }
 
 .guest-avatar {
@@ -306,11 +360,19 @@ input {
 
 .guest-name {
   font-weight: 700;
+  text-align: center;
 }
 
 .guest-role {
-  font-size: 0.88rem;
+  font-size: 0.95rem;
   color: var(--muted);
+  text-align: center;
+  font-weight: 600;
+}
+
+.guest-enter-btn {
+  min-height: 44px;
+  min-width: 120px;
 }
 
 .app-header {
