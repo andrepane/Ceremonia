@@ -5,7 +5,6 @@ import {
   collection,
   doc,
   setDoc,
-  updateDoc,
   addDoc,
   deleteDoc,
   serverTimestamp,
@@ -191,9 +190,10 @@ async function uploadPhoto({ file, guestId, caption }) {
 async function togglePhotoLike(photoId, guestId) {
   const user = await ensureAuth();
   if (!db || !user) throw new Error("auth_required");
+  if (!guestId) throw new Error("guest_required");
 
   const photoRef = eventDoc("photos", photoId);
-  const likeRef = doc(db, "events", eventId, "photos", photoId, "likes", user.uid);
+  const likeRef = doc(db, "events", eventId, "photos", photoId, "likes", guestId);
 
   const changed = await runTransaction(db, async (tx) => {
     const [photoSnap, likeSnap] = await Promise.all([tx.get(photoRef), tx.get(likeRef)]);

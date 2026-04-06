@@ -41,6 +41,11 @@ let realtimeRanking = [];
 let realtimeChallenges = {};
 let firebaseOnline = false;
 let authUid = null;
+let unsubscribeActivity = () => {};
+let unsubscribePhotos = () => {};
+let unsubscribeRanking = () => {};
+let unsubscribeGuestChallenges = () => {};
+const pendingPhotoLikes = new Set();
 
 const challengeCatalog = [
   { id: "language_5min", points: 1 },
@@ -103,6 +108,7 @@ const HOME_DASHBOARD_COPY = {
     deletePhoto: "Eliminar",
     deletePhotoConfirm: "¿Seguro que quieres eliminar esta foto?",
     deleteError: "No se pudo eliminar la foto.",
+    likeError: "No se pudo registrar el like.",
     challengeSaved: "Guardado",
     challengeError: "No se pudo guardar el reto.",
     authError: "No se pudo autenticar."
@@ -159,6 +165,7 @@ const HOME_DASHBOARD_COPY = {
     deletePhoto: "Elimina",
     deletePhotoConfirm: "Vuoi davvero eliminare questa foto?",
     deleteError: "Impossibile eliminare la foto.",
+    likeError: "Impossibile registrare il like.",
     challengeSaved: "Salvato",
     challengeError: "Impossibile salvare la sfida.",
     authError: "Impossibile autenticarsi."
@@ -357,6 +364,11 @@ function setLanguage(lang) {
 }
 
 async function setGuest(guestId) {
+  if (currentGuestId === guestId) {
+    showScreen(screenApp);
+    return;
+  }
+
   currentGuestId = guestId;
   localStorage.setItem("wedding_guest", guestId);
   const guest = findGuestById(guestId);
@@ -377,7 +389,8 @@ async function setGuest(guestId) {
 
 function subscribeGuestStreams() {
   if (!currentGuestId || !isFirebaseConfigured()) return;
-  subscribeGuestChallenges(currentGuestId, (docData) => {
+  unsubscribeGuestChallenges();
+  unsubscribeGuestChallenges = subscribeGuestChallenges(currentGuestId, (docData) => {
     realtimeChallenges = docData || {};
     renderChallenges();
   });
@@ -521,7 +534,19 @@ function bindUIEvents() {
   document.getElementById("photo-grid").addEventListener("click", async (event) => {
     const likeBtn = event.target.closest("[data-photo-like]");
     if (likeBtn && currentGuestId && firebaseOnline) {
-      await togglePhotoLike(likeBtn.dataset.photoLike, currentGuestId);
+      const photoId = likeBtn.dataset.photoLike;
+      if (!photoId || pendingPhotoLikes.has(photoId)) return;
+
+      pendingPhotoLikes.add(photoId);
+      likeBtn.disabled = true;
+      try {
+        await togglePhotoLike(photoId, currentGuestId);
+      } catch {
+        alert(getHomeCopy().likeError);
+      } finally {
+        pendingPhotoLikes.delete(photoId);
+        likeBtn.disabled = false;
+      }
       return;
     }
 
@@ -579,12 +604,21 @@ async function initFirebaseListeners() {
     return;
   }
 
+  unsubscribeActivity();
+  unsubscribePhotos();
+  unsubscribeRanking();
+  unsubscribeGuestChallenges();
+  unsubscribeActivity = () => {};
+  unsubscribePhotos = () => {};
+  unsubscribeRanking = () => {};
+  unsubscribeGuestChallenges = () => {};
+
   try {
     await ensureAuth();
     authUid = getAuthUid();
     firebaseOnline = true;
 
-    subscribeActivity((data) => {
+    unsubscribeActivity = subscribeActivity((data) => {
       realtimeActivity = data;
       renderHomeDashboard();
     }, () => {
@@ -592,7 +626,7 @@ async function initFirebaseListeners() {
       renderHomeDashboard();
     });
 
-    subscribePhotos((data) => {
+    unsubscribePhotos = subscribePhotos((data) => {
       realtimePhotos = data;
       renderPhotos();
     }, () => {
@@ -600,7 +634,7 @@ async function initFirebaseListeners() {
       renderPhotos();
     });
 
-    subscribeRanking((data) => {
+    unsubscribeRanking = subscribeRanking((data) => {
       realtimeRanking = data;
       renderRanking();
     }, () => {
