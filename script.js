@@ -206,16 +206,19 @@ function formatRelativeTimeFromDate(dateValue) {
 function renderGuestCards() {
   const locale = getLocale();
   guestGrid.innerHTML = APP_DATA.guests.map((guest) => `
-      <button class="guest-card" type="button" data-guest-id="${guest.id}">
-        <div class="guest-avatar">${guest.avatar}</div>
-        <span class="guest-name">${guest.name}</span>
-        <span class="guest-role">${locale.roles[guest.roleKey] || ""}</span>
-      </button>
+      <article class="guest-card" data-guest-id="${guest.id}" tabindex="0" role="button" aria-pressed="false" aria-label="${guest.name}">
+        <div class="guest-card__inner">
+          <div class="guest-card__face guest-card__face--front">
+            <div class="guest-avatar">${guest.avatar}</div>
+            <span class="guest-name">${guest.name}</span>
+          </div>
+          <div class="guest-card__face guest-card__face--back">
+            <span class="guest-role">${locale.roles[guest.roleKey] || ""}</span>
+            <button class="guest-enter-btn primary-btn" type="button" data-guest-enter="${guest.id}">${locale.labels.enterCard}</button>
+          </div>
+        </div>
+      </article>
     `).join("");
-
-  guestGrid.querySelectorAll(".guest-card").forEach((card) => {
-    card.addEventListener("click", () => setGuest(card.dataset.guestId));
-  });
 }
 
 function renderActivityFeed() {
@@ -618,6 +621,30 @@ function bindUIEvents() {
   });
 
   uploadPhotoBtn.addEventListener("click", handleUploadPhoto);
+
+  guestGrid.addEventListener("click", (event) => {
+    const enterButton = event.target.closest("[data-guest-enter]");
+    if (enterButton) {
+      setGuest(enterButton.dataset.guestEnter);
+      return;
+    }
+
+    const card = event.target.closest(".guest-card");
+    if (!card) return;
+    card.classList.toggle("guest-card--flipped");
+    card.setAttribute("aria-pressed", card.classList.contains("guest-card--flipped") ? "true" : "false");
+  });
+
+  guestGrid.addEventListener("keydown", (event) => {
+    if (event.target.closest("[data-guest-enter]")) return;
+    const card = event.target.closest(".guest-card");
+    if (!card) return;
+    if (event.key === "Enter" || event.key === " ") {
+      event.preventDefault();
+      card.classList.toggle("guest-card--flipped");
+      card.setAttribute("aria-pressed", card.classList.contains("guest-card--flipped") ? "true" : "false");
+    }
+  });
 }
 
 function restoreSession() {
