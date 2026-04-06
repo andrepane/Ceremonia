@@ -346,7 +346,15 @@ function renderPhotos() {
         <div class="photo-meta">
           <span>${photo.caption || "—"}</span>
           <div class="photo-actions">
-            <button type="button" data-photo-like="${photo.id}">♡ ${photo.likesCount || 0}</button>
+            <button
+              type="button"
+              class="photo-like-btn ${photo.likedByGuestIds?.includes(currentGuestId) ? "photo-like-btn--liked" : ""}"
+              data-photo-like="${photo.id}"
+              aria-pressed="${photo.likedByGuestIds?.includes(currentGuestId) ? "true" : "false"}"
+            >
+              <span class="photo-like-btn__icon">${photo.likedByGuestIds?.includes(currentGuestId) ? "♥" : "♡"}</span>
+              <span>${photo.likesCount || 0}</span>
+            </button>
             ${photo.authorUid === authUid ? `<button type="button" class="photo-delete-btn" data-photo-delete="${photo.id}">${copy.deletePhoto}</button>` : ""}
           </div>
         </div>
@@ -539,6 +547,7 @@ function bindUIEvents() {
 
       pendingPhotoLikes.add(photoId);
       likeBtn.disabled = true;
+      likeBtn.classList.add("photo-like-btn--pulse");
       try {
         await togglePhotoLike(photoId, currentGuestId);
       } catch {
@@ -546,6 +555,7 @@ function bindUIEvents() {
       } finally {
         pendingPhotoLikes.delete(photoId);
         likeBtn.disabled = false;
+        likeBtn.classList.remove("photo-like-btn--pulse");
       }
       return;
     }

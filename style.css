@@ -564,6 +564,50 @@ input {
   gap: 8px;
 }
 
+.photo-like-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font-weight: 700;
+  color: #6f6460;
+  transition: transform 0.2s ease, background 0.2s ease, color 0.2s ease, border-color 0.2s ease;
+}
+
+.photo-like-btn__icon {
+  font-size: 1.05rem;
+  line-height: 1;
+  transition: transform 0.25s ease;
+}
+
+.photo-like-btn--liked {
+  color: #e53950;
+  background: rgba(229, 57, 80, 0.12);
+  border-color: rgba(229, 57, 80, 0.4);
+}
+
+.photo-like-btn--liked .photo-like-btn__icon {
+  transform: scale(1.06);
+}
+
+.photo-like-btn--pulse {
+  animation: like-pop 380ms ease;
+}
+
+@keyframes like-pop {
+  0% {
+    transform: scale(1);
+  }
+  35% {
+    transform: scale(1.16);
+  }
+  65% {
+    transform: scale(0.96);
+  }
+  100% {
+    transform: scale(1);
+  }
+}
+
 .photo-delete-btn {
   color: #8d2f3e;
   border-color: rgba(141, 47, 62, 0.25);
