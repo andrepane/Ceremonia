@@ -383,7 +383,14 @@ input {
   width: 100%;
   height: 100%;
   object-fit: cover;
+  object-position: center 45%;
   display: block;
+}
+
+@supports (-webkit-touch-callout: none) {
+  .guest-avatar__image {
+    transform: translateY(0.5px);
+  }
 }
 
 .guest-name {
