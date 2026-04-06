@@ -199,14 +199,32 @@ async function togglePhotoLike(photoId, guestId) {
     const [photoSnap, likeSnap] = await Promise.all([tx.get(photoRef), tx.get(likeRef)]);
 
     if (!photoSnap.exists()) return false;
-    if (likeSnap.exists()) return false;
+
+    const photoData = photoSnap.data() || {};
+    const currentLikedBy = Array.isArray(photoData.likedByGuestIds)
+      ? photoData.likedByGuestIds
+      : [];
+
+    if (likeSnap.exists()) {
+      tx.delete(likeRef);
+      tx.update(photoRef, {
+        likesCount: increment(-1),
+        likedByGuestIds: currentLikedBy.filter((id) => id !== guestId)
+      });
+      return true;
+    }
 
     tx.set(likeRef, {
       uid: user.uid,
       guestId,
       createdAt: serverTimestamp()
     });
-    tx.update(photoRef, { likesCount: increment(1) });
+    tx.update(photoRef, {
+      likesCount: increment(1),
+      likedByGuestIds: currentLikedBy.includes(guestId)
+        ? currentLikedBy
+        : [...currentLikedBy, guestId]
+    });
     return true;
   });
 
