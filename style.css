@@ -305,14 +305,15 @@ input {
   width: 100%;
   min-height: 196px;
   border-radius: inherit;
-  overflow: hidden;
+  overflow: visible;
   border: 1px solid rgba(255, 255, 255, 0.42);
   box-shadow: 0 18px 34px rgba(59, 37, 24, 0.14);
   transform-style: preserve-3d;
   -webkit-transform-style: preserve-3d;
   will-change: transform;
   transition: transform 0.65s cubic-bezier(0.24, 0.82, 0.27, 1), box-shadow 0.2s ease;
-  transform: translateZ(0);
+  transform: rotateY(0deg) translateZ(0);
+  -webkit-transform: rotateY(0deg) translateZ(0);
 }
 
 .guest-card:hover .guest-card__inner {
@@ -320,7 +321,8 @@ input {
 }
 
 .guest-card--flipped .guest-card__inner {
-  transform: rotateY(180deg);
+  transform: rotateY(180deg) translateZ(0);
+  -webkit-transform: rotateY(180deg) translateZ(0);
 }
 
 .guest-card__face {
@@ -338,7 +340,9 @@ input {
   border: 1px solid rgba(255, 255, 255, 0.4);
   backface-visibility: hidden;
   -webkit-backface-visibility: hidden;
-  transform: rotateY(0deg) translateZ(0.1px);
+  transform-style: preserve-3d;
+  -webkit-transform-style: preserve-3d;
+  overflow: hidden;
 }
 
 .guest-card__face::after {
@@ -350,8 +354,14 @@ input {
   pointer-events: none;
 }
 
+.guest-card__face--front {
+  transform: rotateY(0deg) translateZ(1px);
+  -webkit-transform: rotateY(0deg) translateZ(1px);
+}
+
 .guest-card__face--back {
-  transform: rotateY(180deg) translateZ(0.1px);
+  transform: rotateY(180deg) translateZ(1px);
+  -webkit-transform: rotateY(180deg) translateZ(1px);
   gap: 14px;
 }
 
