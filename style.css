@@ -366,7 +366,7 @@ input {
   gap: 14px;
 }
 
-.guest-avatar {
+/* .guest-avatar {
   width: 68px;
   height: 68px;
   border-radius: 50%;
@@ -386,6 +386,27 @@ input {
   object-fit: cover;
   object-position: center 32%;
   display: block;
+} */
+
+.guest-avatar {
+  width: 68px;
+  height: 68px;
+  border-radius: 50%;
+  overflow: hidden;
+  position: relative;
+  display: block;
+  background: transparent !important;
+}
+
+.guest-avatar__image {
+  position: absolute;
+  inset: -1px;
+  width: calc(100% + 2px);
+  height: calc(100% + 2px);
+  display: block;
+  object-fit: cover;
+  object-position: center 45%;
+  border-radius: 50%;
 }
 
 .guest-name {
