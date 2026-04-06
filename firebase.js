@@ -7,6 +7,7 @@ import {
   setDoc,
   updateDoc,
   addDoc,
+  deleteDoc,
   serverTimestamp,
   onSnapshot,
   query,
@@ -20,7 +21,8 @@ import {
   getStorage,
   ref,
   uploadBytes,
-  getDownloadURL
+  getDownloadURL,
+  deleteObject
 } from "https://www.gstatic.com/firebasejs/10.12.5/firebase-storage.js";
 
 const APP_DATA = window.WEDDING_APP_DATA || {};
@@ -68,6 +70,10 @@ async function ensureAuth() {
       }
     });
   });
+}
+
+function getAuthUid() {
+  return auth?.currentUser?.uid || authUser?.uid || null;
 }
 
 function eventCollection(path) {
@@ -261,15 +267,36 @@ async function setChallengeDone({ guestId, challengeId, done, points }) {
   }
 }
 
+async function deletePhoto(photoId) {
+  const user = await ensureAuth();
+  if (!db || !storage || !user) throw new Error("auth_required");
+
+  const photoRef = eventDoc("photos", photoId);
+  const photoSnap = await getDoc(photoRef);
+  if (!photoSnap.exists()) throw new Error("photo_not_found");
+
+  const photoData = photoSnap.data();
+  if (photoData.authorUid !== user.uid) throw new Error("not_allowed");
+
+  if (photoData.storagePath) {
+    const storageRef = ref(storage, photoData.storagePath);
+    await deleteObject(storageRef);
+  }
+
+  await deleteDoc(photoRef);
+}
+
 export {
   isFirebaseConfigured,
   ensureAuth,
+  getAuthUid,
   linkGuestToAuth,
   subscribeActivity,
   subscribePhotos,
   subscribeRanking,
   subscribeGuestChallenges,
   uploadPhoto,
+  deletePhoto,
   togglePhotoLike,
   setChallengeDone
 };

@@ -1,12 +1,14 @@
 import {
   isFirebaseConfigured,
   ensureAuth,
+  getAuthUid,
   linkGuestToAuth,
   subscribeActivity,
   subscribePhotos,
   subscribeRanking,
   subscribeGuestChallenges,
   uploadPhoto,
+  deletePhoto,
   togglePhotoLike,
   setChallengeDone
 } from "./firebase.js";
@@ -38,6 +40,7 @@ let realtimePhotos = [];
 let realtimeRanking = [];
 let realtimeChallenges = {};
 let firebaseOnline = false;
+let authUid = null;
 
 const challengeCatalog = [
   { id: "language_5min", points: 1 },
@@ -97,6 +100,9 @@ const HOME_DASHBOARD_COPY = {
     uploadError: "No se pudo subir la foto. Inténtalo de nuevo.",
     uploadLoading: "Subiendo...",
     uploadPrompt: "Añade un pie de foto (opcional)",
+    deletePhoto: "Eliminar",
+    deletePhotoConfirm: "¿Seguro que quieres eliminar esta foto?",
+    deleteError: "No se pudo eliminar la foto.",
     challengeSaved: "Guardado",
     challengeError: "No se pudo guardar el reto.",
     authError: "No se pudo autenticar."
@@ -150,6 +156,9 @@ const HOME_DASHBOARD_COPY = {
     uploadError: "Impossibile caricare la foto.",
     uploadLoading: "Caricamento...",
     uploadPrompt: "Aggiungi una didascalia (opzionale)",
+    deletePhoto: "Elimina",
+    deletePhotoConfirm: "Vuoi davvero eliminare questa foto?",
+    deleteError: "Impossibile eliminare la foto.",
     challengeSaved: "Salvato",
     challengeError: "Impossibile salvare la sfida.",
     authError: "Impossibile autenticarsi."
@@ -309,6 +318,7 @@ function renderRanking() {
 
 function renderPhotos() {
   const locale = getLocale();
+  const copy = getHomeCopy();
   const container = document.getElementById("photo-grid");
 
   if (!firebaseOnline) {
@@ -328,7 +338,10 @@ function renderPhotos() {
         <img src="${photo.downloadURL}" alt="${photo.caption || "photo"}" class="photo-img" loading="lazy" />
         <div class="photo-meta">
           <span>${photo.caption || "—"}</span>
-          <button type="button" data-photo-like="${photo.id}">♡ ${photo.likesCount || 0}</button>
+          <div class="photo-actions">
+            <button type="button" data-photo-like="${photo.id}">♡ ${photo.likesCount || 0}</button>
+            ${photo.authorUid === authUid ? `<button type="button" class="photo-delete-btn" data-photo-delete="${photo.id}">${copy.deletePhoto}</button>` : ""}
+          </div>
         </div>
       </article>
     `).join("");
@@ -506,9 +519,20 @@ function bindUIEvents() {
   });
 
   document.getElementById("photo-grid").addEventListener("click", async (event) => {
-    const btn = event.target.closest("[data-photo-like]");
-    if (!btn || !currentGuestId || !firebaseOnline) return;
-    await togglePhotoLike(btn.dataset.photoLike, currentGuestId);
+    const likeBtn = event.target.closest("[data-photo-like]");
+    if (likeBtn && currentGuestId && firebaseOnline) {
+      await togglePhotoLike(likeBtn.dataset.photoLike, currentGuestId);
+      return;
+    }
+
+    const deleteBtn = event.target.closest("[data-photo-delete]");
+    if (!deleteBtn || !firebaseOnline) return;
+    if (!window.confirm(getHomeCopy().deletePhotoConfirm)) return;
+    try {
+      await deletePhoto(deleteBtn.dataset.photoDelete);
+    } catch {
+      alert(getHomeCopy().deleteError);
+    }
   });
 
   document.getElementById("challenge-list").addEventListener("change", async (event) => {
@@ -557,6 +581,7 @@ async function initFirebaseListeners() {
 
   try {
     await ensureAuth();
+    authUid = getAuthUid();
     firebaseOnline = true;
 
     subscribeActivity((data) => {
