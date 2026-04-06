@@ -40,7 +40,7 @@ window.WEDDING_APP_DATA = {
       labels: {
         weekend: "Fin de semana de boda",
         heroTitle: "Cintia & Andrea",
-        heroSubtitle: "4–6 septiembre · Vera",
+        heroSubtitle: "4-6 septiembre - Vera",
         chooseLanguageTitle: "Elige idioma",
         chooseLanguageText: "Selecciona idioma para acceder a tu versión de la app.",
         languageEs: "Español",
@@ -183,7 +183,7 @@ window.WEDDING_APP_DATA = {
       labels: {
         weekend: "Weekend di matrimonio",
         heroTitle: "Cintia & Andrea",
-        heroSubtitle: "4–6 settembre · Vera",
+        heroSubtitle: "4-6 settembre - Vera",
         chooseLanguageTitle: "Scegli la lingua",
         chooseLanguageText: "Seleziona la lingua per accedere alla tua versione dell'app.",
         languageEs: "Spagnolo",

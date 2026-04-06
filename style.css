@@ -91,6 +91,23 @@ input {
   color: var(--muted);
 }
 
+.hero-translation-row {
+  width: 100%;
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 12px;
+  align-items: baseline;
+}
+
+.hero-translation-row--subtitle {
+  margin-top: 12px;
+}
+
+.eyebrow--translation,
+.hero-subtitle--translation {
+  text-align: right;
+}
+
 .hero-title,
 .section-title,
 .app-title,
@@ -107,7 +124,7 @@ input {
 }
 
 .hero-subtitle {
-  margin: 12px 0 0;
+  margin: 0;
   color: var(--muted);
   font-size: 1rem;
 }
@@ -169,7 +186,12 @@ input {
 .language-buttons {
   display: grid;
   gap: 12px;
-  margin-top: 20px;
+}
+
+.language-buttons .primary-btn,
+.language-buttons .secondary-btn {
+  min-height: 84px;
+  font-size: 2rem;
 }
 
 .primary-btn,

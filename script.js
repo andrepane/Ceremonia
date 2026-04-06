@@ -421,15 +421,14 @@ function activateView(viewName) {
 function applyTranslations() {
   const locale = getLocale();
   const labels = locale.labels;
+  const oppositeLabels = (currentLanguage === "es" ? APP_DATA.translations.it : APP_DATA.translations.es).labels;
   document.documentElement.lang = currentLanguage;
 
   document.getElementById("txt-weekend").textContent = labels.weekend;
+  document.getElementById("txt-weekend-translation").textContent = oppositeLabels.weekend;
   document.getElementById("txt-hero-title").textContent = labels.heroTitle;
   document.getElementById("txt-hero-subtitle").textContent = labels.heroSubtitle;
-  document.getElementById("txt-language-title").textContent = labels.chooseLanguageTitle;
-  document.getElementById("txt-language-subtitle").textContent = labels.chooseLanguageText;
-  btnEs.textContent = labels.languageEs;
-  btnIt.textContent = labels.languageIt;
+  document.getElementById("txt-hero-subtitle-translation").textContent = oppositeLabels.heroSubtitle;
   backToLanguage.textContent = labels.back;
   document.getElementById("txt-access").textContent = labels.access;
   document.getElementById("txt-who-title").textContent = labels.whoAreYouTitle;
