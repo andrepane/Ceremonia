@@ -208,6 +208,10 @@ input {
   cursor: not-allowed;
 }
 
+.language-btn--active {
+  box-shadow: var(--shadow);
+}
+
 .primary-btn--full {
   width: 100%;
   margin-top: 16px;
