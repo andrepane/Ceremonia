@@ -1,0 +1,11 @@
+{
+  "name": "Boda Cintia & Andrea",
+  "short_name": "Boda C&A",
+  "description": "App de boda del fin de semana del 4 al 6 de septiembre.",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#f6f3ee",
+  "theme_color": "#7f5f4d",
+  "lang": "es",
+  "icons": []
+}

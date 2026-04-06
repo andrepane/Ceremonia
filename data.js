@@ -1,23 +1,37 @@
 window.WEDDING_APP_DATA = {
-  ceremonyDate: "2026-09-12T19:00:00",
+  ceremonyDate: "2026-09-05T20:00:00",
   guests: [
-    { id: "lucia", name: "Lucía", avatar: "L", roleKey: "friend_f" },
-    { id: "marco", name: "Marco", avatar: "M", roleKey: "family" },
-    { id: "elena", name: "Elena", avatar: "E", roleKey: "guest_f" },
-    { id: "paolo", name: "Paolo", avatar: "P", roleKey: "friend_m" }
+    { id: "cintia_novia", name: "Cintia", avatar: "C", roleKey: "bride" },
+    { id: "andrea_novio", name: "Andrea", avatar: "A", roleKey: "groom" },
+    { id: "manolo", name: "Manolo", avatar: "M", roleKey: "father_bride" },
+    { id: "ana_madre_novia", name: "Ana", avatar: "A", roleKey: "mother_bride" },
+    { id: "simona", name: "Simona", avatar: "S", roleKey: "mother_groom" },
+    { id: "gigi", name: "Gigi", avatar: "G", roleKey: "father_groom" },
+    { id: "jesus", name: "Jesús", avatar: "J", roleKey: "brother_bride" },
+    { id: "irene", name: "Irene", avatar: "I", roleKey: "sister_groom" },
+    { id: "rachele", name: "Rachele", avatar: "R", roleKey: "sister_groom" },
+    { id: "lisa", name: "Lisa", avatar: "L", roleKey: "sister_in_law_groom" },
+    { id: "rosa", name: "Rosa", avatar: "R", roleKey: "sister_in_law_bride" },
+    { id: "josefina", name: "Josefina", avatar: "J", roleKey: "grandmother_bride" },
+    { id: "marina", name: "Marina", avatar: "M", roleKey: "grandmother_groom" },
+    { id: "alicia", name: "Alicia", avatar: "A", roleKey: "aunt_bride" },
+    { id: "gabri", name: "Gabri", avatar: "G", roleKey: "friend_bride_m" },
+    { id: "ana_amiga_novia", name: "Ana", avatar: "A", roleKey: "friend_bride_f" },
+    { id: "tito", name: "Tito", avatar: "T", roleKey: "friend_bride_m" }
   ],
   ranking: [
-    { guestId: "lucia", points: 5 },
-    { guestId: "marco", points: 4 },
-    { guestId: "elena", points: 3 },
-    { guestId: "paolo", points: 2 }
+    { guestId: "cintia_novia", points: 7 },
+    { guestId: "andrea_novio", points: 6 },
+    { guestId: "manolo", points: 5 },
+    { guestId: "ana_madre_novia", points: 4 },
+    { guestId: "simona", points: 3 }
   ],
   translations: {
     es: {
       labels: {
         weekend: "Fin de semana de boda",
-        heroTitle: "Andrea & Sandra",
-        heroSubtitle: "12–14 septiembre · Vera",
+        heroTitle: "Cintia & Andrea",
+        heroSubtitle: "4–6 septiembre · Vera",
         chooseLanguageTitle: "Elige idioma",
         chooseLanguageText: "Selecciona idioma para acceder a tu versión de la app.",
         languageEs: "Español",
@@ -30,7 +44,7 @@ window.WEDDING_APP_DATA = {
         hello: "Hola",
         changeProfile: "Cambiar perfil",
         countdownLabel: "Cuenta atrás para la ceremonia",
-        countdownHint: "Sábado · 19:00 · Ya a esa hora no vale desaparecer.",
+        countdownHint: "Sábado · 20:00 · A esa hora empieza la ceremonia.",
         nowLabel: "Ahora mismo",
         nextLabel: "Próximo momento importante",
         mealsLabel: "Comidas del finde",
@@ -54,57 +68,68 @@ window.WEDDING_APP_DATA = {
         navGame: "Retos",
         navPhotos: "Fotos",
         photoLabel: "Foto",
-        countdownStarted: "Ya ha empezado"
+        countdownStarted: "¡Ya es la ceremonia!"
       },
       roles: {
-        friend_f: "Amiga",
-        friend_m: "Amigo",
-        family: "Familia",
-        guest_f: "Invitada"
+        bride: "Novia",
+        groom: "Novio",
+        father_bride: "Padre de la novia",
+        mother_bride: "Madre de la novia",
+        mother_groom: "Madre del novio",
+        father_groom: "Padre del novio",
+        brother_bride: "Hermano de la novia",
+        sister_groom: "Hermana del novio",
+        sister_in_law_groom: "Cuñada del novio",
+        sister_in_law_bride: "Cuñada de la novia",
+        grandmother_bride: "Abuela de la novia",
+        grandmother_groom: "Abuela del novio",
+        aunt_bride: "Tía de la novia",
+        friend_bride_m: "Amigo de la novia",
+        friend_bride_f: "Amiga de la novia"
       },
       homeCards: [
         {
           label: "Ahora mismo",
-          title: "Tiempo de relax",
-          text: "Piscina, charla, bebida fría y tranquilidad relativa."
+          title: "Fin de semana 4–6 septiembre",
+          text: "Disfrutad del fin de semana completo y preparaos para el gran momento del sábado por la noche."
         },
         {
           label: "Próximo momento importante",
-          title: "Preparación de la boda",
-          text: "Cuando llegue la hora, hará falta estar localizable y ayudar con lo que toque."
+          title: "Ceremonia",
+          text: "Sábado 5 de septiembre a las 20:00. Ese es el momento final de la cuenta atrás."
         },
         {
           label: "Comidas del finde",
           title: "Todo bajo control",
-          text: "Habrá momentos para comer bien, repetir sin vergüenza y sobrevivir dignamente al domingo."
+          text: "Habrá tiempo para compartir, comer bien y disfrutar en familia durante todo el fin de semana."
         }
       ],
       timeline: [
         {
-          day: "Viernes",
-          title: "Llegada + piscina + aterrizaje",
-          text: "Momento de instalarse, hablar, reírse un rato y empezar a entrar en ambiente.",
-          status: "Se puede relajar",
+          day: "Viernes 4",
+          title: "Llegada y bienvenida",
+          text: "Instalarse, saludar a la familia y empezar el fin de semana con calma.",
+          status: "Modo tranquilo",
           tone: "soft"
         },
         {
-          day: "Sábado mañana",
-          title: "Preparación y ayuda",
-          text: "Aquí ya conviene estar disponible. Puede tocar ayudar, preparar cosas o simplemente no desaparecer.",
+          day: "Sábado 5 · mañana",
+          title: "Preparativos",
+          text: "Momento de estar disponibles para ayudar con los últimos detalles.",
           status: "Conviene ayudar",
           tone: "warn"
         },
         {
-          day: "Sábado tarde",
+          day: "Sábado 5 · 20:00",
           title: "Ceremonia",
-          text: "Ya empieza lo importante. Aquí se llega a tiempo, vestido y sin caos innecesario.",
+          text: "Puntuales, preparados y con ganas: aquí empieza el momento más importante.",
           status: "Momento importante",
           tone: "strong"
         },
         {
-          day: "Domingo",
-          title: "Despedida y supervivencia",
-          text: "Café, comentarios sobre el día anterior y recuperación progresiva.",
+          day: "Domingo 6",
+          title: "Despedida",
+          text: "Cierre del fin de semana, fotos finales y vuelta a casa con buenos recuerdos.",
           status: "Modo tranquilo",
           tone: "soft"
         }
@@ -118,7 +143,7 @@ window.WEDDING_APP_DATA = {
         {
           label: "Falso amigo",
           title: "Embarazada ≠ imbarazzata",
-          text: "Una significa una cosa importante. La otra, simplemente vergüenza."
+          text: "Una significa embarazo. La otra, simplemente vergüenza."
         },
         {
           label: "Emergencia útil",
@@ -134,16 +159,16 @@ window.WEDDING_APP_DATA = {
         { text: "Usar correctamente un falso amigo", done: false }
       ],
       photos: [
-        { caption: "Viernes · piscina", likes: 4 },
+        { caption: "Viernes · bienvenida", likes: 4 },
         { caption: "Sábado · previa", likes: 7 },
-        { caption: "Boda · momento top", likes: 12 }
+        { caption: "Sábado · ceremonia", likes: 12 }
       ]
     },
     it: {
       labels: {
         weekend: "Weekend di matrimonio",
-        heroTitle: "Andrea & Sandra",
-        heroSubtitle: "12–14 settembre · Vera",
+        heroTitle: "Cintia & Andrea",
+        heroSubtitle: "4–6 settembre · Vera",
         chooseLanguageTitle: "Scegli la lingua",
         chooseLanguageText: "Seleziona la lingua per accedere alla tua versione dell'app.",
         languageEs: "Spagnolo",
@@ -156,7 +181,7 @@ window.WEDDING_APP_DATA = {
         hello: "Ciao",
         changeProfile: "Cambia profilo",
         countdownLabel: "Conto alla rovescia per la cerimonia",
-        countdownHint: "Sabato · 19:00 · A quell'ora meglio non sparire.",
+        countdownHint: "Sabato · 20:00 · A quell'ora inizia la cerimonia.",
         guideTitle: "Guida del weekend",
         dictionaryTitle: "Dizionario espresso",
         translatorLabel: "Traduttore di emergenza",
@@ -177,57 +202,68 @@ window.WEDDING_APP_DATA = {
         navGame: "Sfide",
         navPhotos: "Foto",
         photoLabel: "Foto",
-        countdownStarted: "È già iniziato"
+        countdownStarted: "La cerimonia è iniziata"
       },
       roles: {
-        friend_f: "Amica",
-        friend_m: "Amico",
-        family: "Famiglia",
-        guest_f: "Invitata"
+        bride: "Sposa",
+        groom: "Sposo",
+        father_bride: "Padre della sposa",
+        mother_bride: "Madre della sposa",
+        mother_groom: "Madre dello sposo",
+        father_groom: "Padre dello sposo",
+        brother_bride: "Fratello della sposa",
+        sister_groom: "Sorella dello sposo",
+        sister_in_law_groom: "Cognata dello sposo",
+        sister_in_law_bride: "Cognata della sposa",
+        grandmother_bride: "Nonna della sposa",
+        grandmother_groom: "Nonna dello sposo",
+        aunt_bride: "Zia della sposa",
+        friend_bride_m: "Amico della sposa",
+        friend_bride_f: "Amica della sposa"
       },
       homeCards: [
         {
           label: "Adesso",
-          title: "Momento relax",
-          text: "Piscina, chiacchiere, bevanda fresca e tranquillità relativa."
+          title: "Weekend 4–6 settembre",
+          text: "Godetevi tutto il weekend e preparatevi al grande momento di sabato sera."
         },
         {
           label: "Prossimo momento importante",
-          title: "Preparazione matrimonio",
-          text: "Quando arriva l'ora, bisogna essere reperibili e dare una mano."
+          title: "Cerimonia",
+          text: "Sabato 5 settembre alle 20:00. Questo è il momento finale del conto alla rovescia."
         },
         {
           label: "Pasti del weekend",
           title: "Tutto sotto controllo",
-          text: "Ci saranno momenti per mangiare bene, fare bis e sopravvivere alla domenica."
+          text: "Ci sarà tempo per stare insieme, mangiare bene e godersi la famiglia per tutto il weekend."
         }
       ],
       timeline: [
         {
-          day: "Venerdì",
-          title: "Arrivo + piscina + atterraggio",
-          text: "Momento per sistemarsi, chiacchierare, ridere e entrare nel clima.",
-          status: "Ci si può rilassare",
+          day: "Venerdì 4",
+          title: "Arrivo e benvenuto",
+          text: "Sistemarsi, salutare la famiglia e iniziare il weekend con calma.",
+          status: "Modalità tranquilla",
           tone: "soft"
         },
         {
-          day: "Sabato mattina",
-          title: "Preparazione e aiuto",
-          text: "Qui conviene essere disponibili: può servire aiuto o organizzazione.",
+          day: "Sabato 5 · mattina",
+          title: "Preparativi",
+          text: "Momento per essere disponibili e aiutare con gli ultimi dettagli.",
           status: "Meglio aiutare",
           tone: "warn"
         },
         {
-          day: "Sabato pomeriggio",
+          day: "Sabato 5 · 20:00",
           title: "Cerimonia",
-          text: "Inizia la parte importante: puntuali, pronti e senza caos.",
+          text: "Puntuali e pronti: qui inizia il momento più importante.",
           status: "Momento importante",
           tone: "strong"
         },
         {
-          day: "Domenica",
-          title: "Saluti e sopravvivenza",
-          text: "Caffè, commenti sul giorno prima e recupero graduale.",
+          day: "Domenica 6",
+          title: "Saluti finali",
+          text: "Chiusura del weekend, ultime foto e rientro a casa con bei ricordi.",
           status: "Modalità tranquilla",
           tone: "soft"
         }
@@ -257,9 +293,9 @@ window.WEDDING_APP_DATA = {
         { text: "Usare bene un falso amico", done: false }
       ],
       photos: [
-        { caption: "Venerdì · piscina", likes: 4 },
+        { caption: "Venerdì · benvenuto", likes: 4 },
         { caption: "Sabato · pre-cerimonia", likes: 7 },
-        { caption: "Matrimonio · momento top", likes: 12 }
+        { caption: "Sabato · cerimonia", likes: 12 }
       ]
     }
   }
