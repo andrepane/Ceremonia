@@ -395,18 +395,19 @@ input {
   overflow: hidden;
   position: relative;
   display: block;
-  background: transparent !important;
+  background: transparent;
 }
 
 .guest-avatar__image {
-  position: absolute;
-  inset: -1px;
-  width: calc(100% + 2px);
-  height: calc(100% + 2px);
+  width: 100%;
+  height: 100%;
   display: block;
   object-fit: cover;
-  object-position: center 45%;
+  object-position: center;
   border-radius: 50%;
+
+  /* clave */
+  transform: scale(1.03);
 }
 
 .guest-name {
