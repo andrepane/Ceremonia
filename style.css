@@ -522,6 +522,14 @@ input {
   box-shadow: var(--shadow);
 }
 
+.photo-img {
+  width: 100%;
+  aspect-ratio: 4 / 5;
+  object-fit: cover;
+  border-radius: 14px;
+  display: block;
+}
+
 .photo-placeholder {
   aspect-ratio: 4 / 5;
   border-radius: 14px;
