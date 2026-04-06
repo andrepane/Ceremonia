@@ -1,50 +1,79 @@
-const CACHE_NAME = "boda-cintia-andrea-v1";
-const APP_ASSETS = [
-  "./",
-  "./index.html",
-  "./style.css",
-  "./script.js",
-  "./data.js",
-  "./manifest.webmanifest"
-];
+const CACHE_NAME = "boda-cintia-andrea-v2";
 
+// Solo assets estáticos que no rompen deploys con contenido viejo.
+const STATIC_ASSETS = ["./manifest.webmanifest"];
+
+// INSTALL → precache mínimo
 self.addEventListener("install", (event) => {
   event.waitUntil(
-    caches.open(CACHE_NAME).then((cache) => cache.addAll(APP_ASSETS))
+    caches.open(CACHE_NAME).then((cache) => cache.addAll(STATIC_ASSETS))
   );
   self.skipWaiting();
 });
 
+// ACTIVATE → limpia cachés antiguos
 self.addEventListener("activate", (event) => {
   event.waitUntil(
-    caches
-      .keys()
-      .then((keys) => Promise.all(keys.filter((k) => k !== CACHE_NAME).map((k) => caches.delete(k))))
+    caches.keys().then((keys) =>
+      Promise.all(
+        keys
+          .filter((key) => key !== CACHE_NAME)
+          .map((key) => caches.delete(key))
+      )
+    )
   );
   self.clients.claim();
 });
 
+// FETCH → estrategia por tipo de recurso
 self.addEventListener("fetch", (event) => {
   if (event.request.method !== "GET") return;
 
+  // HTML/documentos: network-first para evitar servir deploys viejos.
+  if (event.request.destination === "document") {
+    event.respondWith(
+      fetch(event.request).catch(() => caches.match(event.request))
+    );
+    return;
+  }
+
+  // JS/CSS: stale-while-revalidate
+  if (
+    event.request.destination === "script" ||
+    event.request.destination === "style"
+  ) {
+    event.respondWith(
+      caches.match(event.request).then((cached) => {
+        const fetchPromise = fetch(event.request)
+          .then((response) => {
+            if (response && response.status === 200) {
+              caches.open(CACHE_NAME).then((cache) => {
+                cache.put(event.request, response.clone());
+              });
+            }
+            return response;
+          })
+          .catch(() => cached);
+
+        return cached || fetchPromise;
+      })
+    );
+    return;
+  }
+
+  // Imágenes y otros: cache-first
   event.respondWith(
     caches.match(event.request).then((cached) => {
       if (cached) return cached;
 
-      return fetch(event.request)
-        .then((response) => {
-          if (!response || response.status !== 200 || response.type !== "basic") {
-            return response;
-          }
-
-          const cloned = response.clone();
+      return fetch(event.request).then((response) => {
+        if (response && response.status === 200) {
           caches.open(CACHE_NAME).then((cache) => {
-            cache.put(event.request, cloned);
+            cache.put(event.request, response.clone());
           });
-
-          return response;
-        })
-        .catch(() => caches.match("./index.html"));
+        }
+        return response;
+      });
     })
   );
 });
