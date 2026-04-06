@@ -15,9 +15,108 @@ const views = document.querySelectorAll(".view");
 
 const selectedGuestName = document.getElementById("selected-guest-name");
 const countdownElement = document.getElementById("countdown");
+const homeInfoStack = document.getElementById("home-info-stack");
 
 let currentLanguage = "es";
 let currentGuestId = null;
+
+const HOME_DASHBOARD_COPY = {
+  es: {
+    nextStepLabel: "Tu próximo paso",
+    nextStepTitlePre: "Revisa el plan del finde",
+    nextStepTextPre: "Consulta horarios, ubicaciones y detalles para llegar sin prisas.",
+    nextStepCtaPre: "Ver guía del finde",
+    nextStepTargetPre: "guide",
+    nextStepTitleLive: "Estáis en directo",
+    nextStepTextLive: "Sigue el siguiente momento importante y comparte lo que está pasando.",
+    nextStepCtaLive: "Abrir guía en vivo",
+    nextStepTargetLive: "guide",
+    nextStepTitlePost: "Guarda los mejores recuerdos",
+    nextStepTextPost: "La ceremonia ya pasó: ahora toca revivir y compartir fotos del fin de semana.",
+    nextStepCtaPost: "Ver fotos del finde",
+    nextStepTargetPost: "photos",
+    nowLabel: "Lo urgente ahora",
+    nowDefault: "Todo en orden. Revisa la guía para el siguiente momento importante.",
+    quickLabel: "Accesos rápidos",
+    quickActions: [
+      { text: "Guía", target: "guide" },
+      { text: "Diccionario", target: "dictionary" },
+      { text: "Retos", target: "game" },
+      { text: "Fotos", target: "photos" }
+    ],
+    personalLabel: "Tu panel personal",
+    personalNoGuest: "Selecciona un perfil para personalizar recomendaciones.",
+    personalWithGuest: "Hola, {name}. Recomendación: completa un reto y sube una foto del momento.",
+    personalAction: "Ver retos pendientes",
+    activityLabel: "Últimas acciones del grupo",
+    activityHint: "En producción, aquí se verán acciones en tiempo real desde Firebase.",
+    activityTemplates: {
+      upload_photo: "{name} ha subido una foto",
+      complete_challenge: "{name} ha cumplido un reto",
+      add_dictionary_phrase: "{name} ha añadido una frase útil",
+      react_photo: "{name} ha reaccionado a una foto"
+    },
+    minutesAgo: "hace {count} min",
+    hoursAgo: "hace {count} h",
+    moments: {
+      pre: "Ahora estáis en preparación previa.",
+      live: "Ya estáis dentro del fin de semana de boda.",
+      post: "El fin de semana terminó, pero siguen los recuerdos."
+    },
+    nextCeremony: "Próximo momento: ceremonia el sábado a las 20:00."
+  },
+  it: {
+    nextStepLabel: "Il tuo prossimo passo",
+    nextStepTitlePre: "Controlla il piano del weekend",
+    nextStepTextPre: "Guarda orari, luoghi e dettagli per arrivare senza fretta.",
+    nextStepCtaPre: "Apri guida weekend",
+    nextStepTargetPre: "guide",
+    nextStepTitleLive: "Siete in diretta",
+    nextStepTextLive: "Segui il prossimo momento importante e condividi quello che succede.",
+    nextStepCtaLive: "Apri guida live",
+    nextStepTargetLive: "guide",
+    nextStepTitlePost: "Salva i ricordi migliori",
+    nextStepTextPost: "La cerimonia è finita: adesso rivivete e condividete le foto del weekend.",
+    nextStepCtaPost: "Vedi foto weekend",
+    nextStepTargetPost: "photos",
+    nowLabel: "Priorità adesso",
+    nowDefault: "Tutto sotto controllo. Apri la guida per il prossimo momento importante.",
+    quickLabel: "Accessi rapidi",
+    quickActions: [
+      { text: "Guida", target: "guide" },
+      { text: "Dizionario", target: "dictionary" },
+      { text: "Sfide", target: "game" },
+      { text: "Foto", target: "photos" }
+    ],
+    personalLabel: "Il tuo pannello personale",
+    personalNoGuest: "Seleziona un profilo per ricevere consigli personalizzati.",
+    personalWithGuest: "Ciao, {name}. Consiglio: completa una sfida e carica una foto del momento.",
+    personalAction: "Apri sfide",
+    activityLabel: "Ultime azioni del gruppo",
+    activityHint: "In produzione, qui compariranno le azioni in tempo reale da Firebase.",
+    activityTemplates: {
+      upload_photo: "{name} ha caricato una foto",
+      complete_challenge: "{name} ha completato una sfida",
+      add_dictionary_phrase: "{name} ha aggiunto una frase utile",
+      react_photo: "{name} ha reagito a una foto"
+    },
+    minutesAgo: "{count} min fa",
+    hoursAgo: "{count} h fa",
+    moments: {
+      pre: "Adesso siete nella fase di preparazione.",
+      live: "Siete già nel weekend di matrimonio.",
+      post: "Il weekend è finito, ma i ricordi continuano."
+    },
+    nextCeremony: "Prossimo momento: cerimonia sabato alle 20:00."
+  }
+};
+
+const HOME_ACTIVITY_FEED = [
+  { guestId: "gigi", type: "upload_photo", minutesAgo: 5 },
+  { guestId: "rachele", type: "complete_challenge", minutesAgo: 18 },
+  { guestId: "manolo", type: "react_photo", minutesAgo: 37 },
+  { guestId: "ana_amiga_novia", type: "add_dictionary_phrase", minutesAgo: 76 }
+];
 
 function showScreen(screenToShow) {
   [screenLanguage, screenGuest, screenApp].forEach((screen) => {
@@ -31,8 +130,39 @@ function getLocale() {
   return APP_DATA.translations[currentLanguage] || APP_DATA.translations.es;
 }
 
+function getHomeCopy() {
+  return HOME_DASHBOARD_COPY[currentLanguage] || HOME_DASHBOARD_COPY.es;
+}
+
 function findGuestById(guestId) {
   return APP_DATA.guests.find((guest) => guest.id === guestId) || null;
+}
+
+function getHomePhase() {
+  const ceremonyDate = new Date(APP_DATA.ceremonyDate);
+  const weekendStart = new Date(ceremonyDate);
+  weekendStart.setDate(weekendStart.getDate() - 1);
+  weekendStart.setHours(0, 0, 0, 0);
+
+  const weekendEnd = new Date(ceremonyDate);
+  weekendEnd.setDate(weekendEnd.getDate() + 1);
+  weekendEnd.setHours(23, 59, 59, 999);
+
+  const now = new Date();
+  if (now < weekendStart) return "pre";
+  if (now <= weekendEnd) return "live";
+  return "post";
+}
+
+function formatRelativeTime(minutesAgo) {
+  const copy = getHomeCopy();
+
+  if (minutesAgo < 60) {
+    return copy.minutesAgo.replace("{count}", String(minutesAgo));
+  }
+
+  const hours = Math.floor(minutesAgo / 60);
+  return copy.hoursAgo.replace("{count}", String(hours));
 }
 
 function renderGuestCards() {
@@ -58,21 +188,89 @@ function renderGuestCards() {
   });
 }
 
-function renderHomeCards() {
-  const locale = getLocale();
-  const container = document.getElementById("home-info-stack");
+function renderActivityFeed() {
+  const copy = getHomeCopy();
 
-  container.innerHTML = locale.homeCards
-    .map(
-      (card) => `
-      <article class="card">
-        <p class="card-label">${card.label}</p>
-        <h3 class="card-title">${card.title}</h3>
-        <p class="card-text">${card.text}</p>
-      </article>
-    `
-    )
-    .join("");
+  return HOME_ACTIVITY_FEED.map((item) => {
+    const guest = findGuestById(item.guestId);
+    const name = guest ? guest.name : item.guestId;
+    const template = copy.activityTemplates[item.type] || "{name}";
+    const actionText = template.replace("{name}", name);
+
+    return `
+      <li class="activity-item">
+        <span class="activity-item__text">${actionText}</span>
+        <span class="activity-item__time">${formatRelativeTime(item.minutesAgo)}</span>
+      </li>
+    `;
+  }).join("");
+}
+
+function renderHomeDashboard() {
+  const copy = getHomeCopy();
+  const phase = getHomePhase();
+  const phaseSuffix = phase === "pre" ? "Pre" : phase === "live" ? "Live" : "Post";
+  const currentGuest = findGuestById(currentGuestId);
+
+  const nextStepTitle = copy[`nextStepTitle${phaseSuffix}`];
+  const nextStepText = copy[`nextStepText${phaseSuffix}`];
+  const nextStepCta = copy[`nextStepCta${phaseSuffix}`];
+  const nextStepTarget = copy[`nextStepTarget${phaseSuffix}`];
+
+  const personalText = currentGuest
+    ? copy.personalWithGuest.replace("{name}", currentGuest.name)
+    : copy.personalNoGuest;
+
+  const urgentText = phase === "post"
+    ? `${copy.moments.post} ${copy.nowDefault}`
+    : `${copy.moments[phase]} ${copy.nextCeremony}`;
+
+  homeInfoStack.innerHTML = `
+    <article class="card home-card home-card--next-step">
+      <p class="card-label">${copy.nextStepLabel}</p>
+      <h3 class="card-title">${nextStepTitle}</h3>
+      <p class="card-text">${nextStepText}</p>
+      <button class="primary-btn home-action-btn" type="button" data-target-view="${nextStepTarget}">
+        ${nextStepCta}
+      </button>
+    </article>
+
+    <article class="card home-card">
+      <p class="card-label">${copy.nowLabel}</p>
+      <p class="card-text">${urgentText}</p>
+    </article>
+
+    <article class="card home-card">
+      <p class="card-label">${copy.quickLabel}</p>
+      <div class="home-quick-grid">
+        ${copy.quickActions
+          .map(
+            (action) => `
+              <button class="secondary-btn home-action-btn" type="button" data-target-view="${action.target}">
+                ${action.text}
+              </button>
+            `
+          )
+          .join("")}
+      </div>
+    </article>
+
+    <article class="card home-card">
+      <p class="card-label">${copy.personalLabel}</p>
+      <p class="card-text">${personalText}</p>
+      <button class="secondary-btn home-action-btn" type="button" data-target-view="game">
+        ${copy.personalAction}
+      </button>
+    </article>
+
+    <article class="card home-card home-card--activity">
+      <p class="card-label">${copy.activityLabel}</p>
+      <ul class="activity-list">
+        ${renderActivityFeed()}
+      </ul>
+      <p class="card-text home-activity-hint">${copy.activityHint}</p>
+    </article>
+  `;
 }
 
 function renderTimeline() {
@@ -174,6 +372,7 @@ function setGuest(guestId) {
   selectedGuestName.textContent = guest ? guest.name : "Invitado";
 
   showScreen(screenApp);
+  renderHomeDashboard();
 }
 
 function activateView(viewName) {
@@ -278,7 +477,7 @@ function updateCountdown() {
 
 function renderAllDynamicSections() {
   renderGuestCards();
-  renderHomeCards();
+  renderHomeDashboard();
   renderTimeline();
   renderDictionary();
   renderChallenges();
@@ -311,6 +510,12 @@ navButtons.forEach((button) => {
   });
 });
 
+homeInfoStack.addEventListener("click", (event) => {
+  const targetButton = event.target.closest("[data-target-view]");
+  if (!targetButton) return;
+  activateView(targetButton.dataset.targetView);
+});
+
 function restoreSession() {
   const savedLang = localStorage.getItem("wedding_lang");
   const savedGuestId = localStorage.getItem("wedding_guest");
@@ -327,6 +532,7 @@ function restoreSession() {
     currentGuestId = savedGuestId;
     const guest = findGuestById(savedGuestId);
     selectedGuestName.textContent = guest.name;
+    renderHomeDashboard();
     showScreen(screenApp);
     return;
   }
@@ -343,7 +549,6 @@ restoreSession();
 activateView("home");
 updateCountdown();
 setInterval(updateCountdown, 60000);
-
 
 if ("serviceWorker" in navigator) {
   window.addEventListener("load", () => {

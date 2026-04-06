@@ -342,6 +342,64 @@ input {
   margin-top: 16px;
 }
 
+.home-card {
+  display: grid;
+  gap: 12px;
+}
+
+.home-card .card-text {
+  margin-top: 0;
+}
+
+.home-card--next-step {
+  border-color: rgba(127, 95, 77, 0.28);
+}
+
+.home-action-btn {
+  width: 100%;
+}
+
+.home-quick-grid {
+  display: grid;
+  gap: 10px;
+}
+
+.activity-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  gap: 10px;
+}
+
+.activity-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  gap: 10px;
+  padding-bottom: 10px;
+  border-bottom: 1px dashed var(--line);
+}
+
+.activity-item:last-child {
+  border-bottom: 0;
+  padding-bottom: 0;
+}
+
+.activity-item__text {
+  font-size: 0.95rem;
+}
+
+.activity-item__time {
+  color: var(--muted);
+  font-size: 0.82rem;
+  white-space: nowrap;
+}
+
+.home-activity-hint {
+  font-size: 0.9rem;
+}
+
 .section-block {
   display: grid;
   gap: 16px;
