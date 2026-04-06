@@ -366,7 +366,7 @@ input {
   gap: 14px;
 }
 
-/* .guest-avatar {
+.guest-avatar {
   width: 68px;
   height: 68px;
   border-radius: 50%;
@@ -386,9 +386,9 @@ input {
   object-fit: cover;
   object-position: center 32%;
   display: block;
-} */
+}
 
-.guest-avatar {
+/*.guest-avatar {
   width: 68px;
   height: 68px;
   border-radius: 50%;
@@ -404,7 +404,7 @@ input {
   display: block;
   object-fit: cover;
   object-position: center;
-  border-radius: 50%;
+  border-radius: 50%; */
 
   /* clave */
   transform: scale(1.01);
