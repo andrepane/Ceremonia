@@ -558,6 +558,15 @@ input {
   border: 1px solid var(--line);
 }
 
+.photo-actions {
+  display: inline-flex;
+  gap: 8px;
+}
+
+.photo-delete-btn {
+  color: #7a2d2d;
+}
+
 .bottom-nav {
   position: fixed;
   left: 0;
