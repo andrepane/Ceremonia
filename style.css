@@ -388,12 +388,6 @@ input {
   display: block;
 }
 
-@supports (-webkit-touch-callout: none) {
-  .guest-avatar__image {
-    transform: translateY(0.5px);
-  }
-}
-
 .guest-name {
   font-weight: 700;
   text-align: center;
