@@ -1,12 +1,12 @@
 window.WEDDING_APP_DATA = {
   eventId: "boda-cintia-andrea",
   firebaseConfig: {
-    apiKey: "",
-    authDomain: "",
-    projectId: "",
-    storageBucket: "",
-    messagingSenderId: "",
-    appId: ""
+    apiKey: "AIzaSyBJxCr98ul2N6vXIxSkdG8h1zKpPgYhEK4",
+    authDomain: "ceremonia-f11ae.firebaseapp.com",
+    projectId: "ceremonia-f11ae",
+    storageBucket: "ceremonia-f11ae.firebasestorage.app",
+    messagingSenderId: "146753464023",
+    appId: "1:146753464023:web:2decc6675f39eebb51b292"
   },
   ceremonyDate: "2026-09-05T20:00:00",
   guests: [
