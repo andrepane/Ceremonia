@@ -132,7 +132,8 @@ input {
 .section-title {
   margin: 0;
   font-size: 2rem;
-  line-height: 1;
+  line-height: 1.12;
+  padding-top: 0.04em;
 }
 
 .section-title--small {
@@ -385,12 +386,6 @@ input {
   object-fit: cover;
   object-position: center 45%;
   display: block;
-}
-
-@supports (-webkit-touch-callout: none) {
-  .guest-avatar__image {
-    transform: translateY(0.5px);
-  }
 }
 
 .guest-name {
