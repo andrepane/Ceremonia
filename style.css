@@ -809,3 +809,7 @@ input {
     grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 }
+
+.guest-avatar {
+  background: transparent !important;
+}
