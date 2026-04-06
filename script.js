@@ -366,12 +366,32 @@ function renderPhotos() {
     `).join("");
 }
 
-function setLanguage(lang) {
+function delay(ms) {
+  return new Promise((resolve) => {
+    setTimeout(resolve, ms);
+  });
+}
+
+async function playLanguageSelectionAnimation(lang) {
+  const selectedButton = lang === "es" ? btnEs : btnIt;
+  btnEs.disabled = true;
+  btnIt.disabled = true;
+  selectedButton.classList.remove("language-btn--selected");
+  void selectedButton.offsetWidth;
+  selectedButton.classList.add("language-btn--selected");
+  await delay(420);
+  selectedButton.classList.remove("language-btn--selected");
+  btnEs.disabled = false;
+  btnIt.disabled = false;
+}
+
+async function setLanguage(lang) {
   currentLanguage = lang;
   localStorage.setItem("wedding_lang", lang);
   applyTranslations();
   renderAllDynamicSections();
   highlightSelectedLanguage();
+  await playLanguageSelectionAnimation(lang);
   showScreen(screenGuest);
 }
 

@@ -191,7 +191,8 @@ input {
 .language-buttons .primary-btn,
 .language-buttons .secondary-btn {
   min-height: 84px;
-  font-size: 2rem;
+  font-size: 1.45rem;
+  letter-spacing: 0.02em;
 }
 
 .primary-btn,
@@ -232,6 +233,32 @@ input {
 
 .language-btn--active {
   box-shadow: var(--shadow);
+}
+
+.language-btn--selected {
+  animation: languagePop 0.55s cubic-bezier(.2, .9, .2, 1) forwards;
+}
+
+@keyframes languagePop {
+  0% {
+    transform: scale(1);
+  }
+  35% {
+    transform: scale(1.08);
+  }
+  65% {
+    transform: scale(0.96);
+  }
+  100% {
+    transform: scale(1.02);
+    box-shadow: 0 0 0 14px rgba(0, 0, 0, 0), 0 10px 35px rgba(255, 78, 139, 0.35);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .language-btn--selected {
+    animation: none;
+  }
 }
 
 .primary-btn--full {
