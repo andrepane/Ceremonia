@@ -340,23 +340,7 @@ function renderPhotos() {
           <span>${photo.caption || "—"}</span>
           <div class="photo-actions">
             <button type="button" data-photo-like="${photo.id}">♡ ${photo.likesCount || 0}</button>
-            ${photo.authorUid === authUid
-    ? `<button
-                type="button"
-                class="photo-delete-btn photo-icon-btn"
-                data-photo-delete="${photo.id}"
-                aria-label="${copy.deletePhoto}"
-                title="${copy.deletePhoto}"
-              >
-                <svg class="photo-delete-icon" viewBox="0 0 24 24" aria-hidden="true" focusable="false">
-                  <path d="M4 7h16" />
-                  <path d="M9 7V5a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2" />
-                  <path d="M7 7l1 12a1 1 0 0 0 1 .92h6a1 1 0 0 0 1-.92L17 7" />
-                  <path d="M10 11v6" />
-                  <path d="M14 11v6" />
-                </svg>
-              </button>`
-    : ""}
+            ${photo.authorUid === authUid ? `<button type="button" class="photo-delete-btn" data-photo-delete="${photo.id}">${copy.deletePhoto}</button>` : ""}
           </div>
         </div>
       </article>

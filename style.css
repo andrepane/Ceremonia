@@ -569,26 +569,6 @@ input {
   border-color: rgba(141, 47, 62, 0.25);
 }
 
-.photo-icon-btn {
-  width: 38px;
-  min-width: 38px;
-  min-height: 38px;
-  padding: 0;
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-}
-
-.photo-delete-icon {
-  width: 18px;
-  height: 18px;
-  stroke: currentColor;
-  stroke-width: 1.6;
-  fill: none;
-  stroke-linecap: round;
-  stroke-linejoin: round;
-}
-
 .bottom-nav {
   position: fixed;
   left: 0;
