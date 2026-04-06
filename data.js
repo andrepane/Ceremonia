@@ -11,7 +11,7 @@ window.WEDDING_APP_DATA = {
   ceremonyDate: "2026-09-05T20:00:00",
   guests: [
     { id: "cintia_novia", name: "Cintia", avatar: "C", roleKey: "bride", sex: "f" },
-    { id: "andrea_novio", name: "Andrea", avatar: "A", roleKey: "groom", sex: "m" },
+    { id: "andrea_novio", name: "Andrea", avatar: "A", avatarImage: "images/andrea.png", roleKey: "groom", sex: "m" },
     { id: "manolo", name: "Manolo", avatar: "M", roleKey: "father_bride", sex: "m" },
     { id: "ana_madre_novia", name: "Ana", avatar: "A", roleKey: "mother_bride", sex: "f" },
     { id: "simona", name: "Simona", avatar: "S", roleKey: "mother_groom", sex: "f" },

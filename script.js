@@ -203,13 +203,20 @@ function formatRelativeTimeFromDate(dateValue) {
   return copy.hoursAgo.replace("{count}", String(Math.floor(diffMinutes / 60)));
 }
 
+function renderGuestAvatar(guest) {
+  if (guest.avatarImage) {
+    return `<img class="guest-avatar__image" src="${guest.avatarImage}" alt="Avatar de ${guest.name}" loading="lazy" decoding="async">`;
+  }
+  return guest.avatar;
+}
+
 function renderGuestCards() {
   const locale = getLocale();
   guestGrid.innerHTML = APP_DATA.guests.map((guest) => `
       <article class="guest-card" data-guest-id="${guest.id}" tabindex="0" role="button" aria-pressed="false" aria-label="${guest.name}">
         <div class="guest-card__inner">
           <div class="guest-card__face guest-card__face--front">
-            <div class="guest-avatar">${guest.avatar}</div>
+            <div class="guest-avatar">${renderGuestAvatar(guest)}</div>
             <span class="guest-name">${guest.name}</span>
           </div>
           <div class="guest-card__face guest-card__face--back">

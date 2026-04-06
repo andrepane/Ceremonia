@@ -376,6 +376,14 @@ input {
   font-weight: 700;
   font-size: 1.4rem;
   font-family: "Cormorant Garamond", serif;
+  overflow: hidden;
+}
+
+.guest-avatar__image {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
 }
 
 .guest-name {
