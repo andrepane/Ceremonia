@@ -385,6 +385,7 @@ input {
   height: 86px;
   border-radius: 14px;
   background: transparent;
+  -webkit-mask-image: -webkit-radial-gradient(white, black);
 }
 
 .guest-avatar__image {
@@ -393,10 +394,13 @@ input {
   object-fit: contain;
   object-position: center;
   display: block;
+  border-radius: inherit;
+  clip-path: inset(0 round 14px);
   transform: none;
   backface-visibility: hidden;
   -webkit-backface-visibility: hidden;
   -webkit-transform: translateZ(0);
+  transform: translateZ(0);
 }
 
 .guest-name {
