@@ -64,6 +64,8 @@ window.WEDDING_APP_DATA = {
         translatorLabel: "Traductor de emergencia",
         translatorTitle: "Próximamente",
         translatorText: "Aquí iría el campo para escribir, traducir y escuchar la frase.",
+        falseFriendsLabel: "Falsos amigos",
+        usefulPhrasesLabel: "Frases útiles",
         translatorPlaceholder: "Escribe una frase...",
         translateBtn: "Traducir",
         gameTitle: "Retos del finde",
@@ -199,21 +201,28 @@ window.WEDDING_APP_DATA = {
           tone: "soft"
         }
       ],
-      dictionary: [
+      falseFriends: [
         {
-          label: "Falso amigo",
-          title: "Vaso ≠ vaso",
-          text: "En italiano, para beber normalmente dirías bicchiere."
+          es: "Vaso (de beber)",
+          it: "Bicchiere"
         },
         {
-          label: "Falso amigo",
-          title: "Embarazada ≠ imbarazzata",
-          text: "Una significa embarazo. La otra, simplemente vergüenza."
+          es: "Embarazada",
+          it: "Incinta"
         },
         {
-          label: "Emergencia útil",
-          title: "Frase rápida",
-          text: "¿Dónde está todo el mundo? / Dov'è andato tutto il mondo?"
+          es: "Vergüenza",
+          it: "Imbarazzo"
+        }
+      ],
+      usefulPhrases: [
+        {
+          es: "Hola, que tal?",
+          it: "Ciao, come stai?"
+        },
+        {
+          es: "Has hecho ya Duolingo?",
+          it: "Hai già fatto Duolingo?"
         }
       ],
       challenges: [
@@ -254,6 +263,8 @@ window.WEDDING_APP_DATA = {
         translatorLabel: "Traduttore di emergenza",
         translatorTitle: "Prossimamente",
         translatorText: "Qui andrebbero campo testo, traduzione e audio.",
+        falseFriendsLabel: "Falsi amici",
+        usefulPhrasesLabel: "Frasi utili",
         translatorPlaceholder: "Scrivi una frase...",
         translateBtn: "Traduci",
         gameTitle: "Sfide del weekend",
@@ -389,21 +400,28 @@ window.WEDDING_APP_DATA = {
           tone: "soft"
         }
       ],
-      dictionary: [
+      falseFriends: [
         {
-          label: "Falso amico",
-          title: "Vaso ≠ vaso",
-          text: "In italiano, per bere normalmente diresti bicchiere."
+          es: "Vaso (de beber)",
+          it: "Bicchiere"
         },
         {
-          label: "Falso amico",
-          title: "Embarazada ≠ imbarazzata",
-          text: "Una parola parla di gravidanza. L'altra solo di imbarazzo."
+          es: "Embarazada",
+          it: "Incinta"
         },
         {
-          label: "Emergenza utile",
-          title: "Frase rapida",
-          text: "¿Dónde está todo el mundo? / Dov'è andato tutto il mondo?"
+          es: "Vergüenza",
+          it: "Imbarazzo"
+        }
+      ],
+      usefulPhrases: [
+        {
+          es: "Hola, que tal?",
+          it: "Ciao, come stai?"
+        },
+        {
+          es: "Has hecho ya Duolingo?",
+          it: "Hai già fatto Duolingo?"
         }
       ],
       challenges: [
