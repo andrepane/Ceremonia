@@ -706,6 +706,10 @@ input {
   margin-top: 12px;
 }
 
+.accordion-content[hidden] {
+  display: none !important;
+}
+
 .dictionary-row {
   border-top: 1px dashed var(--line);
   padding-top: 12px;
