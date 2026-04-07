@@ -491,7 +491,8 @@ function applyTranslations() {
   document.getElementById("txt-who-subtitle").textContent = labels.whoAreYouText;
   updateWelcomeLabel();
   document.getElementById("txt-hello-prefix").textContent = labels.hello;
-  changeProfile.textContent = labels.changeProfile;
+  changeProfile.setAttribute("aria-label", labels.changeProfile);
+  changeProfile.setAttribute("title", labels.changeProfile);
   document.getElementById("txt-countdown-label").textContent = labels.countdownLabel;
   document.getElementById("txt-countdown-hint").textContent = labels.countdownHint;
   document.getElementById("txt-guide-title").textContent = labels.guideTitle;
