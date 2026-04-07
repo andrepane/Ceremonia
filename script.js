@@ -484,7 +484,21 @@ function activateView(viewName) {
   const targetButton = document.querySelector(`[data-view="${viewName}"]`);
   if (targetView) targetView.classList.add("view--active");
   if (targetButton) targetButton.classList.add("nav-btn--active");
+  if (viewName === "dictionary") resetDictionaryAccordions();
   scrollViewportToTop();
+}
+
+function setAccordionState(id, expanded) {
+  const toggle = document.getElementById(`${id}-toggle`);
+  const content = document.getElementById(`${id}-list`);
+  if (!toggle || !content) return;
+  toggle.setAttribute("aria-expanded", expanded ? "true" : "false");
+  content.hidden = !expanded;
+}
+
+function resetDictionaryAccordions() {
+  setAccordionState("false-friends", false);
+  setAccordionState("useful-phrases", false);
 }
 
 function applyTranslations() {
@@ -624,11 +638,10 @@ function bindUIEvents() {
 
   ["false-friends", "useful-phrases"].forEach((id) => {
     const toggle = document.getElementById(`${id}-toggle`);
-    const content = document.getElementById(`${id}-list`);
+    if (!toggle) return;
     toggle.addEventListener("click", () => {
       const isExpanded = toggle.getAttribute("aria-expanded") === "true";
-      toggle.setAttribute("aria-expanded", isExpanded ? "false" : "true");
-      content.hidden = isExpanded;
+      setAccordionState(id, !isExpanded);
     });
   });
 
@@ -724,6 +737,7 @@ function restoreSession() {
     return;
   }
   showScreen(savedLang ? screenGuest : screenLanguage);
+  resetDictionaryAccordions();
 }
 
 async function initFirebaseListeners() {
