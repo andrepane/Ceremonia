@@ -671,6 +671,58 @@ input {
   margin-top: 4px;
 }
 
+
+.accordion-card {
+  gap: 0;
+}
+
+.accordion-toggle {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  background: transparent;
+  border: 0;
+  padding: 0;
+  color: inherit;
+  text-align: left;
+  cursor: pointer;
+}
+
+.accordion-arrow {
+  font-size: 1.1rem;
+  color: var(--muted);
+  transition: transform 0.2s ease;
+}
+
+.accordion-toggle[aria-expanded="true"] .accordion-arrow {
+  transform: rotate(180deg);
+}
+
+.accordion-content {
+  display: grid;
+  gap: 12px;
+  margin-top: 12px;
+}
+
+.dictionary-row {
+  border-top: 1px dashed var(--line);
+  padding-top: 12px;
+}
+
+.dictionary-row:first-child {
+  border-top: 0;
+  padding-top: 0;
+}
+
+.dictionary-row .card-title {
+  font-size: 1.25rem;
+}
+
+.dictionary-row .card-text {
+  margin-top: 6px;
+}
 .translator-placeholder {
   display: grid;
   gap: 10px;

@@ -122,8 +122,6 @@
             <div class="section-block">
               <h3 id="txt-dictionary-title" class="section-title">Diccionario exprés</h3>
 
-              <div id="dictionary-list" class="dictionary-list"></div>
-
               <div class="card translator-card">
                 <p id="txt-translator-label" class="card-label">Traductor de emergencia</p>
                 <h4 id="txt-translator-title" class="card-title">Próximamente</h4>
@@ -136,6 +134,22 @@
                     Traducir
                   </button>
                 </div>
+              </div>
+
+              <div class="card accordion-card">
+                <button id="false-friends-toggle" class="accordion-toggle" type="button" aria-expanded="false">
+                  <span id="txt-false-friends-label" class="card-label">Falsos amigos</span>
+                  <span class="accordion-arrow" aria-hidden="true">▾</span>
+                </button>
+                <div id="false-friends-list" class="accordion-content" hidden></div>
+              </div>
+
+              <div class="card accordion-card">
+                <button id="useful-phrases-toggle" class="accordion-toggle" type="button" aria-expanded="false">
+                  <span id="txt-useful-phrases-label" class="card-label">Frases útiles</span>
+                  <span class="accordion-arrow" aria-hidden="true">▾</span>
+                </button>
+                <div id="useful-phrases-list" class="accordion-content" hidden></div>
               </div>
             </div>
           </section>

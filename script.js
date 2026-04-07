@@ -328,8 +328,20 @@ function renderTimeline() {
 
 function renderDictionary() {
   const locale = getLocale();
-  document.getElementById("dictionary-list").innerHTML = locale.dictionary.map((entry) => `
-      <article class="card"><p class="card-label">${entry.label}</p><h4 class="card-title">${entry.title}</h4><p class="card-text">${entry.text}</p></article>`).join("");
+  const falseFriendItems = (locale.falseFriends || []).map((entry) => {
+    const term = currentLanguage === "es" ? entry.it : entry.es;
+    const translation = currentLanguage === "es" ? entry.es : entry.it;
+    return `<article class="dictionary-row"><h4 class="card-title">${term}</h4><p class="card-text">${translation}</p></article>`;
+  }).join("");
+
+  const phraseItems = (locale.usefulPhrases || []).map((entry) => {
+    const phrase = currentLanguage === "es" ? entry.es : entry.it;
+    const translation = currentLanguage === "es" ? entry.it : entry.es;
+    return `<article class="dictionary-row"><h4 class="card-title">${phrase}</h4><p class="card-text">${translation}</p></article>`;
+  }).join("");
+
+  document.getElementById("false-friends-list").innerHTML = falseFriendItems;
+  document.getElementById("useful-phrases-list").innerHTML = phraseItems;
 }
 
 function getLocalizedChallenges() {
@@ -502,6 +514,8 @@ function applyTranslations() {
   document.getElementById("txt-translator-label").textContent = labels.translatorLabel;
   document.getElementById("txt-translator-title").textContent = labels.translatorTitle;
   document.getElementById("txt-translator-text").textContent = labels.translatorText;
+  document.getElementById("txt-false-friends-label").textContent = labels.falseFriendsLabel;
+  document.getElementById("txt-useful-phrases-label").textContent = labels.usefulPhrasesLabel;
   document.getElementById("translator-input").placeholder = labels.translatorPlaceholder;
   document.getElementById("translator-btn").textContent = labels.translateBtn;
   document.getElementById("txt-game-title").textContent = labels.gameTitle;
@@ -606,6 +620,16 @@ function bindUIEvents() {
   homeInfoStack.addEventListener("click", (event) => {
     const targetButton = event.target.closest("[data-target-view]");
     if (targetButton) activateView(targetButton.dataset.targetView);
+  });
+
+  ["false-friends", "useful-phrases"].forEach((id) => {
+    const toggle = document.getElementById(`${id}-toggle`);
+    const content = document.getElementById(`${id}-list`);
+    toggle.addEventListener("click", () => {
+      const isExpanded = toggle.getAttribute("aria-expanded") === "true";
+      toggle.setAttribute("aria-expanded", isExpanded ? "false" : "true");
+      content.hidden = isExpanded;
+    });
   });
 
   document.getElementById("photo-grid").addEventListener("click", async (event) => {
