@@ -216,7 +216,7 @@ function renderGuestCards() {
       <article class="guest-card" data-guest-id="${guest.id}" tabindex="0" role="button" aria-pressed="false" aria-label="${guest.name}">
         <div class="guest-card__inner">
           <div class="guest-card__face guest-card__face--front">
-            <div class="guest-avatar">${renderGuestAvatar(guest)}</div>
+            <div class="guest-avatar ${guest.avatarImage ? "guest-avatar--image" : ""}">${renderGuestAvatar(guest)}</div>
             <span class="guest-name">${guest.name}</span>
           </div>
           <div class="guest-card__face guest-card__face--back">

@@ -380,18 +380,23 @@ input {
   overflow: hidden;
 }
 
+.guest-avatar--image {
+  width: 86px;
+  height: 86px;
+  border-radius: 14px;
+  background: transparent;
+}
+
 .guest-avatar__image {
   width: 100%;
   height: 100%;
-  object-fit: cover;
+  object-fit: contain;
   object-position: center;
   display: block;
-  transform: scale(1.01);
-  transform-origin: center;
+  transform: none;
   backface-visibility: hidden;
   -webkit-backface-visibility: hidden;
-  -webkit-transform: scale(1.01) translateZ(0);
-  -webkit-mask-image: -webkit-radial-gradient(white, black);
+  -webkit-transform: translateZ(0);
 }
 
 .guest-name {
