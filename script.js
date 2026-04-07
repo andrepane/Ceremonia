@@ -172,9 +172,14 @@ const HOME_ACTIVITY_FEED = [
   { guestId: "manolo", type: "react_photo", minutesAgo: 37 }
 ];
 
+function scrollViewportToTop() {
+  window.scrollTo({ top: 0, left: 0, behavior: "auto" });
+}
+
 function showScreen(screenToShow) {
   [screenLanguage, screenGuest, screenApp].forEach((screen) => screen.classList.remove("screen--active"));
   screenToShow.classList.add("screen--active");
+  scrollViewportToTop();
 }
 
 const getLocale = () => APP_DATA.translations[currentLanguage] || APP_DATA.translations.es;
@@ -466,6 +471,7 @@ function activateView(viewName) {
   const targetButton = document.querySelector(`[data-view="${viewName}"]`);
   if (targetView) targetView.classList.add("view--active");
   if (targetButton) targetButton.classList.add("nav-btn--active");
+  scrollViewportToTop();
 }
 
 function applyTranslations() {
