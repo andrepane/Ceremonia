@@ -25,7 +25,7 @@ window.WEDDING_APP_DATA = {
     { id: "marina", name: "Marina", avatar: "M", roleKey: "grandmother_groom", sex: "f" },
     { id: "alicia", name: "Alicia", avatar: "A", roleKey: "aunt_bride", sex: "f" },
     { id: "gabri", name: "Gabri", avatar: "G", roleKey: "friend_bride_m", sex: "m" },
-    { id: "ana_amiga_novia", name: "Ana", avatar: "A", roleKey: "friend_bride_f", sex: "f" },
+    { id: "ana_amiga_novia", name: "Ana", avatar: "A", avatarImage: "images/ana-amiga.png", roleKey: "friend_bride_f", sex: "f" },
     { id: "tito", name: "Tito", avatar: "T", roleKey: "friend_bride_m", sex: "m" }
   ],
   ranking: [
