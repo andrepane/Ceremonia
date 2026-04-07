@@ -486,7 +486,8 @@ function applyTranslations() {
   document.getElementById("txt-hero-title").textContent = labels.heroTitle;
   document.getElementById("txt-hero-subtitle").textContent = labels.heroSubtitle;
   document.getElementById("txt-hero-subtitle-translation").textContent = oppositeLabels.heroSubtitle;
-  backToLanguage.textContent = labels.back;
+  backToLanguage.setAttribute("aria-label", labels.back);
+  backToLanguage.setAttribute("title", labels.back);
   document.getElementById("txt-access").textContent = labels.access;
   document.getElementById("txt-who-title").textContent = labels.whoAreYouTitle;
   document.getElementById("txt-who-subtitle").textContent = labels.whoAreYouText;
