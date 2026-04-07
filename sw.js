@@ -1,7 +1,7 @@
-const CACHE_NAME = "boda-cintia-andrea-v2";
+const CACHE_NAME = "boda-cintia-andrea-v3";
 
 // Solo assets estáticos que no rompen deploys con contenido viejo.
-const STATIC_ASSETS = ["./manifest.webmanifest"];
+const STATIC_ASSETS = ["./manifest.webmanifest", "./icon-192.png?v=3", "./icon-512.png?v=3"];
 
 // INSTALL → precache mínimo
 self.addEventListener("install", (event) => {
