@@ -179,6 +179,7 @@ function scrollViewportToTop() {
 function showScreen(screenToShow) {
   [screenLanguage, screenGuest, screenApp].forEach((screen) => screen.classList.remove("screen--active"));
   screenToShow.classList.add("screen--active");
+  document.body.classList.toggle("body--language-locked", screenToShow === screenLanguage);
   scrollViewportToTop();
 }
 

@@ -35,6 +35,12 @@ body {
     linear-gradient(180deg, #f9f7f3 0%, #f1ece5 100%);
 }
 
+body.body--language-locked {
+  overflow: hidden;
+  overscroll-behavior: none;
+  touch-action: none;
+}
+
 button,
 input {
   font: inherit;
