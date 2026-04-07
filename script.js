@@ -329,8 +329,8 @@ function renderTimeline() {
 function renderDictionary() {
   const locale = getLocale();
   const falseFriendItems = (locale.falseFriends || []).map((entry) => {
-    const term = currentLanguage === "es" ? entry.it : entry.es;
-    const translation = currentLanguage === "es" ? entry.es : entry.it;
+    const term = entry.term ?? (currentLanguage === "es" ? entry.it : entry.es);
+    const translation = entry.translation ?? (currentLanguage === "es" ? entry.es : entry.it);
     return `<article class="dictionary-row"><h4 class="card-title">${term}</h4><p class="card-text">${translation}</p></article>`;
   }).join("");
 

@@ -203,16 +203,188 @@ window.WEDDING_APP_DATA = {
       ],
       falseFriends: [
         {
-          es: "Vaso (de beber)",
-          it: "Bicchiere"
+          term: "🍴 Comida (los que más lío generan)",
+          translation: ""
         },
         {
-          es: "Embarazada",
-          it: "Incinta"
+          term: "il burro",
+          translation: "mantequilla"
         },
         {
-          es: "Vergüenza",
-          it: "Imbarazzo"
+          term: "❌ el burro",
+          translation: "asno"
+        },
+        {
+          term: "l’aceto",
+          translation: "vinagre"
+        },
+        {
+          term: "❌ el aceite",
+          translation: "olio"
+        },
+        {
+          term: "il caldo",
+          translation: "calor / caliente"
+        },
+        {
+          term: "❌ el caldo",
+          translation: "brodo"
+        },
+        {
+          term: "l’arrosto",
+          translation: "asado"
+        },
+        {
+          term: "❌ el arroz",
+          translation: "riso"
+        },
+        {
+          term: "la melanzana",
+          translation: "berenjena"
+        },
+        {
+          term: "❌ la manzana",
+          translation: "mela"
+        },
+        {
+          term: "il timo",
+          translation: "tomillo"
+        },
+        {
+          term: "❌ el timo",
+          translation: "truffa"
+        },
+        {
+          term: "🧠 Palabras que engañan mucho",
+          translation: ""
+        },
+        {
+          term: "la camera",
+          translation: "habitación"
+        },
+        {
+          term: "❌ la cámara",
+          translation: "camera"
+        },
+        {
+          term: "il negozio",
+          translation: "tienda"
+        },
+        {
+          term: "❌ el negocio",
+          translation: "commercio / affare"
+        },
+        {
+          term: "l’officina",
+          translation: "taller"
+        },
+        {
+          term: "❌ la oficina",
+          translation: "ufficio"
+        },
+        {
+          term: "la salita",
+          translation: "subida"
+        },
+        {
+          term: "❌ la salida",
+          translation: "uscita"
+        },
+        {
+          term: "il camino",
+          translation: "chimenea"
+        },
+        {
+          term: "❌ el camino",
+          translation: "strada / cammino"
+        },
+        {
+          term: "🗣️ Clásicos peligrosos",
+          translation: ""
+        },
+        {
+          term: "loro",
+          translation: "ellos / suyo"
+        },
+        {
+          term: "❌ el loro",
+          translation: "pappagallo"
+        },
+        {
+          term: "la lupa",
+          translation: "loba"
+        },
+        {
+          term: "❌ la lupa",
+          translation: "lente de aumento"
+        },
+        {
+          term: "l’osso",
+          translation: "hueso"
+        },
+        {
+          term: "❌ el oso",
+          translation: "orso"
+        },
+        {
+          term: "la gamba",
+          translation: "pierna"
+        },
+        {
+          term: "❌ la gamba",
+          translation: "gambero"
+        },
+        {
+          term: "il topo",
+          translation: "ratón"
+        },
+        {
+          term: "❌ el topo",
+          translation: "talpa"
+        },
+        {
+          term: "🎯 Otros que confunden",
+          translation: ""
+        },
+        {
+          term: "la carta",
+          translation: "papel / menú"
+        },
+        {
+          term: "❌ la carta",
+          translation: "lettera"
+        },
+        {
+          term: "la tasca",
+          translation: "bolsillo"
+        },
+        {
+          term: "❌ la tasca",
+          translation: "taberna"
+        },
+        {
+          term: "la tenda",
+          translation: "cortina / tienda de campaña"
+        },
+        {
+          term: "❌ la tienda",
+          translation: "negozio"
+        },
+        {
+          term: "il mantello",
+          translation: "capa"
+        },
+        {
+          term: "❌ el mantel",
+          translation: "tovaglia"
+        },
+        {
+          term: "la messa",
+          translation: "misa"
+        },
+        {
+          term: "❌ la mesa",
+          translation: "tavolo"
         }
       ],
       usefulPhrases: [
@@ -402,16 +574,204 @@ window.WEDDING_APP_DATA = {
       ],
       falseFriends: [
         {
-          es: "Vaso (de beber)",
-          it: "Bicchiere"
+          term: "🍴 Cibo e cose quotidiane",
+          translation: ""
         },
         {
-          es: "Embarazada",
-          it: "Incinta"
+          term: "Aceite",
+          translation: "olio"
         },
         {
-          es: "Vergüenza",
-          it: "Imbarazzo"
+          term: "❌ Aceto ≠ aceite",
+          translation: "in spagnolo si dice vinagre"
+        },
+        {
+          term: "Burro",
+          translation: "asino"
+        },
+        {
+          term: "❌ Burro (italiano, cibo) ≠ burro",
+          translation: "in spagnolo si dice mantequilla"
+        },
+        {
+          term: "Trufa",
+          translation: "tartufo"
+        },
+        {
+          term: "❌ Truffa ≠ trufa",
+          translation: "in spagnolo si dice timo"
+        },
+        {
+          term: "⚠️ Timo ≠ truffa",
+          translation: "in spagnolo si dice tomillo"
+        },
+        {
+          term: "Nata",
+          translation: "panna"
+        },
+        {
+          term: "❌ Nata (participio di nascere) ≠ nata",
+          translation: "in spagnolo si dice nacida"
+        },
+        {
+          term: "Mantel",
+          translation: "tovaglia"
+        },
+        {
+          term: "❌ Mantello ≠ mantel",
+          translation: "in spagnolo si dice capa"
+        },
+        {
+          term: "🧠 Uso comune e errori tipici",
+          translation: ""
+        },
+        {
+          term: "Embarazada",
+          translation: "incinta"
+        },
+        {
+          term: "❌ Imbarazzata ≠ embarazada",
+          translation: "in spagnolo si dice avergonzada"
+        },
+        {
+          term: "Oficina",
+          translation: "ufficio"
+        },
+        {
+          term: "❌ Officina ≠ oficina",
+          translation: "in spagnolo si dice taller mecánico"
+        },
+        {
+          term: "⚠️ Oficio ≠ ufficio",
+          translation: "significa profesión"
+        },
+        {
+          term: "Padrón",
+          translation: "anagrafe"
+        },
+        {
+          term: "❌ Padrone ≠ padrón",
+          translation: "in spagnolo si dice dueño"
+        },
+        {
+          term: "Éxito",
+          translation: "successo"
+        },
+        {
+          term: "❌ Esito ≠ éxito",
+          translation: "in spagnolo si dice resultado"
+        },
+        {
+          term: "Compresa",
+          translation: "garza / assorbente"
+        },
+        {
+          term: "❌ Compresa (inclusa) ≠ compresa",
+          translation: "in spagnolo si dice incluida / comprendida"
+        },
+        {
+          term: "🗣️ Parole ingannevoli",
+          translation: ""
+        },
+        {
+          term: "Vaso",
+          translation: "bicchiere"
+        },
+        {
+          term: "❌ Vaso (decorativo) ≠ vaso",
+          translation: "in spagnolo si dice florero / tiesto"
+        },
+        {
+          term: "Loro",
+          translation: "pappagallo"
+        },
+        {
+          term: "❌ Loro (pronome) ≠ loro",
+          translation: "in spagnolo si dice ellos"
+        },
+        {
+          term: "Rato",
+          translation: "momento"
+        },
+        {
+          term: "❌ Rata ≠ rato",
+          translation: "in spagnolo si dice topo"
+        },
+        {
+          term: "Nudo",
+          translation: "nodo"
+        },
+        {
+          term: "❌ “Essere nudi” ≠ nudo",
+          translation: "in spagnolo si dice estar desnudo"
+        },
+        {
+          term: "Largo",
+          translation: "lungo"
+        },
+        {
+          term: "❌ “Largo” (ampio) ≠ largo",
+          translation: "in spagnolo si dice ancho"
+        },
+        {
+          term: "🎯 Altri falsi amici curiosi",
+          translation: ""
+        },
+        {
+          term: "Disparo",
+          translation: "sparo"
+        },
+        {
+          term: "❌ Paro ≠ disparo",
+          translation: "il contrario è impar"
+        },
+        {
+          term: "Tienda",
+          translation: "negozio"
+        },
+        {
+          term: "❌ Tenda ≠ tienda",
+          translation: "in spagnolo si dice cortina / tienda de campaña"
+        },
+        {
+          term: "Mancha",
+          translation: "macchia"
+        },
+        {
+          term: "❌ Mancia ≠ mancha",
+          translation: "in spagnolo si dice propina"
+        },
+        {
+          term: "Verme",
+          translation: "vedermi"
+        },
+        {
+          term: "❌ Verme (insetto) ≠ verme",
+          translation: "in spagnolo si dice gusano"
+        },
+        {
+          term: "Parada",
+          translation: "fermata"
+        },
+        {
+          term: "❌ Parata ≠ parada",
+          translation: "in spagnolo si dice desfile"
+        },
+        {
+          term: "Abocado",
+          translation: "≠ avvocato"
+        },
+        {
+          term: "❌ Avocado ≠ abocado",
+          translation: "in spagnolo si dice aguacate"
+        },
+        {
+          term: "Vera",
+          translation: "bordo / sponda"
+        },
+        {
+          term: "❌ “Vera” (opposto di falsa) ≠ vera",
+          translation: "in spagnolo si dice verdadera"
         }
       ],
       usefulPhrases: [
