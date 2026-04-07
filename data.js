@@ -55,7 +55,7 @@ window.WEDDING_APP_DATA = {
         hello: "Hola",
         changeProfile: "Cambiar perfil",
         countdownLabel: "Cuenta atrás para la ceremonia",
-        countdownHint: "Sábado 5 · A esa hora empieza la ceremonia.",
+        countdownHint: "Sábado 5 · 20:00 · A esa hora empieza la ceremonia.",
         nowLabel: "Ahora mismo",
         nextLabel: "Próximo momento importante",
         mealsLabel: "Comidas del finde",
@@ -122,31 +122,80 @@ window.WEDDING_APP_DATA = {
       ],
       timeline: [
         {
-          day: "Viernes 4",
-          title: "Llegada y bienvenida",
-          text: "Instalarse, saludar a la familia y empezar el fin de semana con calma.",
-          status: "Modo tranquilo",
+          day: "Viernes 4 · 15:00",
+          title: "Llegada",
+          text: "Llegamos sobre las 15:00 y arrancamos el fin de semana.",
+          status: "Bienvenida",
+          tone: "soft"
+        },
+        {
+          day: "Viernes 4 · tarde",
+          title: "Piscina, mini golf, pádel y relax",
+          text: "Tarde libre para disfrutar juntos y ponerse en modo vacaciones.",
+          status: "Plan libre",
+          tone: "soft"
+        },
+        {
+          day: "Viernes 4 · 21:00",
+          title: "Pescaito frito",
+          text: "Cena informal para empezar el finde como se merece.",
+          status: "Comida",
+          tone: "warn"
+        },
+        {
+          day: "Sábado 5 · 9:00–10:00",
+          title: "Desayuno",
+          text: "Desayuno para coger energía antes del día grande.",
+          status: "Comida",
           tone: "soft"
         },
         {
           day: "Sábado 5 · mañana",
+          title: "Piscina, mini golf, pádel y relax",
+          text: "El resto de la mañana, plan libre para disfrutar y recargar pilas.",
+          status: "Plan libre",
+          tone: "soft"
+        },
+        {
+          day: "Sábado 5 · 14:00",
+          title: "Almuerzo",
+          text: "Paella de marisco para compartir todos juntos.",
+          status: "Comida",
+          tone: "warn"
+        },
+        {
+          day: "Sábado 5 · tarde",
           title: "Preparativos",
-          text: "Momento de estar disponibles para ayudar con los últimos detalles.",
+          text: "Últimos detalles antes del gran momento.",
           status: "Conviene ayudar",
           tone: "warn"
         },
         {
           day: "Sábado 5 · 20:00",
           title: "Ceremonia",
-          text: "Puntuales, preparados y con ganas: aquí empieza el momento más importante.",
+          text: "Puntuales y preparados: empieza el momento más importante.",
           status: "Momento importante",
           tone: "strong"
         },
         {
-          day: "Domingo 6",
-          title: "Despedida",
-          text: "Cierre del fin de semana, fotos finales y vuelta a casa con buenos recuerdos.",
-          status: "Modo tranquilo",
+          day: "Sábado 5 · 21:00/21:30",
+          title: "Cena con chef privado",
+          text: "Después de la ceremonia, cena especial todos juntos.",
+          status: "Comida",
+          tone: "warn"
+        },
+        {
+          day: "Sábado 5 · 23:00–5:00",
+          title: "Baile",
+          text: "Desde las 23:00 hasta las 5:00, toca celebrarlo bailando.",
+          status: "Fiesta",
+          tone: "strong"
+        },
+        {
+          day: "Domingo 6 · mañana",
+          title: "Desayuno y check-out",
+          text: "Último desayuno juntos y cierre del fin de semana.",
+          status: "Despedida",
           tone: "soft"
         }
       ],
@@ -199,7 +248,7 @@ window.WEDDING_APP_DATA = {
         hello: "Ciao",
         changeProfile: "Cambia profilo",
         countdownLabel: "Conto alla rovescia per la cerimonia",
-        countdownHint: "Sabato 5 · A quell'ora inizia la cerimonia.",
+        countdownHint: "Sabato 5 · 20:00 · A quell'ora inizia la cerimonia.",
         guideTitle: "Guida del weekend",
         dictionaryTitle: "Dizionario espresso",
         translatorLabel: "Traduttore di emergenza",
@@ -263,16 +312,51 @@ window.WEDDING_APP_DATA = {
       ],
       timeline: [
         {
-          day: "Venerdì 4",
-          title: "Arrivo e benvenuto",
-          text: "Sistemarsi, salutare la famiglia e iniziare il weekend con calma.",
-          status: "Modalità tranquilla",
+          day: "Venerdì 4 · 15:00",
+          title: "Arrivo",
+          text: "Arriviamo verso le 15:00 e iniziamo il weekend.",
+          status: "Benvenuto",
+          tone: "soft"
+        },
+        {
+          day: "Venerdì 4 · pomeriggio",
+          title: "Piscina, mini golf, padel e relax",
+          text: "Pomeriggio libero per stare insieme e rilassarsi.",
+          status: "Programma libero",
+          tone: "soft"
+        },
+        {
+          day: "Venerdì 4 · 21:00",
+          title: "Pescaito frito",
+          text: "Cena informale per aprire il weekend nel modo migliore.",
+          status: "Pasto",
+          tone: "warn"
+        },
+        {
+          day: "Sabato 5 · 9:00–10:00",
+          title: "Colazione",
+          text: "Colazione per fare energia prima della giornata più intensa.",
+          status: "Pasto",
           tone: "soft"
         },
         {
           day: "Sabato 5 · mattina",
+          title: "Piscina, mini golf, padel e relax",
+          text: "Il resto della mattina è libero tra relax e attività.",
+          status: "Programma libero",
+          tone: "soft"
+        },
+        {
+          day: "Sabato 5 · 14:00",
+          title: "Pranzo",
+          text: "Paella ai frutti di mare da condividere tutti insieme.",
+          status: "Pasto",
+          tone: "warn"
+        },
+        {
+          day: "Sabato 5 · pomeriggio",
           title: "Preparativi",
-          text: "Momento per essere disponibili e aiutare con gli ultimi dettagli.",
+          text: "Ultimi dettagli prima del grande momento.",
           status: "Meglio aiutare",
           tone: "warn"
         },
@@ -284,10 +368,24 @@ window.WEDDING_APP_DATA = {
           tone: "strong"
         },
         {
-          day: "Domenica 6",
-          title: "Saluti finali",
-          text: "Chiusura del weekend, ultime foto e rientro a casa con bei ricordi.",
-          status: "Modalità tranquilla",
+          day: "Sabato 5 · 21:00/21:30",
+          title: "Cena con chef privato",
+          text: "Dopo la cerimonia, cena speciale tutti insieme.",
+          status: "Pasto",
+          tone: "warn"
+        },
+        {
+          day: "Sabato 5 · 23:00–5:00",
+          title: "Ballo",
+          text: "Dalle 23:00 alle 5:00 si festeggia in pista.",
+          status: "Festa",
+          tone: "strong"
+        },
+        {
+          day: "Domenica 6 · mattina",
+          title: "Colazione e check-out",
+          text: "Ultima colazione insieme e chiusura del weekend.",
+          status: "Saluti",
           tone: "soft"
         }
       ],
