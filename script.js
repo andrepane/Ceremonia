@@ -203,20 +203,39 @@ function formatRelativeTimeFromDate(dateValue) {
   return copy.hoursAgo.replace("{count}", String(Math.floor(diffMinutes / 60)));
 }
 
+function normalizeGuestNameForImage(name = "") {
+  return name
+    .normalize("NFD")
+    .replace(/[̀-ͯ]/g, "")
+    .toLowerCase()
+    .trim()
+    .replace(/\s+/g, "_")
+    .replace(/[^a-z0-9_]/g, "");
+}
+
+function getGuestAvatarImage(guest) {
+  if (guest.avatarImage) return guest.avatarImage;
+  const imageName = normalizeGuestNameForImage(guest.name);
+  return imageName ? `images/${imageName}.png` : "";
+}
+
 function renderGuestAvatar(guest) {
-  if (guest.avatarImage) {
-    return `<img class="guest-avatar__image" src="${guest.avatarImage}" alt="Avatar de ${guest.name}" loading="lazy" decoding="async">`;
+  const avatarImage = getGuestAvatarImage(guest);
+  if (avatarImage) {
+    return `<img class="guest-avatar__image" src="${avatarImage}" alt="Avatar de ${guest.name}" loading="lazy" decoding="async" onerror="this.parentElement.classList.remove('guest-avatar--image');this.outerHTML='${guest.avatar}';">`;
   }
   return guest.avatar;
 }
 
 function renderGuestCards() {
   const locale = getLocale();
-  guestGrid.innerHTML = APP_DATA.guests.map((guest) => `
+  guestGrid.innerHTML = APP_DATA.guests.map((guest) => {
+    const avatarImage = getGuestAvatarImage(guest);
+    return `
       <article class="guest-card" data-guest-id="${guest.id}" tabindex="0" role="button" aria-pressed="false" aria-label="${guest.name}">
         <div class="guest-card__inner">
           <div class="guest-card__face guest-card__face--front">
-            <div class="guest-avatar ${guest.avatarImage ? "guest-avatar--image" : ""}">${renderGuestAvatar(guest)}</div>
+            <div class="guest-avatar ${avatarImage ? "guest-avatar--image" : ""}">${renderGuestAvatar(guest)}</div>
             <span class="guest-name">${guest.name}</span>
           </div>
           <div class="guest-card__face guest-card__face--back">
@@ -225,7 +244,8 @@ function renderGuestCards() {
           </div>
         </div>
       </article>
-    `).join("");
+    `;
+  }).join("");
 }
 
 function renderActivityFeed() {
