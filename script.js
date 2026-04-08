@@ -58,12 +58,13 @@ const challengeCatalog = [
 const HOME_DASHBOARD_COPY = {
   es: {
     weekendFormatLabel: "Qué tipo de boda será",
-    weekendFormatTitle: "Una boda para convivir el finde",
+    weekendFormatTitle: "Esto no es una boda típica.",
     weekendFormatParagraphs: [
-      "Este no es un evento típico. Es un fin de semana juntos en una casa, con tiempo para estar, comer, hablar y celebrar.",
-      "No hay prisas ni protocolos estrictos. Habrá momentos importantes (como la ceremonia), pero la mayor parte del tiempo es para disfrutar juntos.",
-      "Todo ocurre en el mismo sitio: piscina, comida, preparación, boda y fiesta. A ratos será relax, a ratos tocará echar una mano y a ratos simplemente dejarse llevar.",
-      "La idea es simple: estar bien, sin complicarse."
+      "Es un fin de semana juntos en una casa, con tiempo para estar, comer, hablar y celebrar sin prisas.",
+      "No hay protocolos rígidos ni horarios militares. Habrá momentos importantes —como la ceremonia—, pero la mayor parte del tiempo es simplemente para disfrutar juntos.",
+      "Todo ocurre en el mismo sitio: piscina, comida, preparación, boda y fiesta. A ratos será relax, a ratos hará falta echar una mano y a ratos simplemente dejarse llevar.",
+      "Aquí la dinámica es fácil: si hace falta algo, se ayuda. Si suena buena música, se baila. Ven cómodo, ven a gusto, y sin complicarte más de la cuenta.",
+      "La idea es simple: estar juntos."
     ],
     nextStepLabel: "Tu próximo paso",
     nextStepTitlePre: "Revisa el plan del finde",
