@@ -517,14 +517,20 @@ function getLocalizedChallenge(challengeId) {
 function renderChallengeItem(challenge, { completed = false } = {}) {
   if (!challenge) return "";
   const category = getChallengeCategoryLabel(challenge.category);
+  const completeLabel = currentLanguage === "it" ? "Completa" : "Completar";
+  const completedLabel = currentLanguage === "it" ? "Completata" : "Completado";
   return `
-    <label class="challenge-item ${completed ? "challenge-item--completed" : ""}">
-      <input type="checkbox" data-challenge-id="${challenge.id}" ${completed ? "checked" : ""} ${currentGuestId ? "" : "disabled"} />
-      <span>
+    <article class="challenge-item ${completed ? "challenge-item--completed" : ""}">
+      <div class="challenge-item__content">
         <span class="challenge-item__category">${category}</span>
         <span class="challenge-item__text">${challenge.label}</span>
-      </span>
-    </label>
+      </div>
+      <label class="challenge-complete-btn">
+        <input type="checkbox" data-challenge-id="${challenge.id}" ${completed ? "checked" : ""} ${currentGuestId ? "" : "disabled"} />
+        <span class="challenge-complete-btn__chip">${completed ? "✓" : "○"}</span>
+        <span class="challenge-complete-btn__label">${completed ? completedLabel : completeLabel}</span>
+      </label>
+    </article>
   `;
 }
 
