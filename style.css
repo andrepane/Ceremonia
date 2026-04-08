@@ -774,6 +774,34 @@ input {
   color: var(--text);
 }
 
+.challenge-group {
+  display: grid;
+  gap: 10px;
+}
+
+.challenge-item--completed {
+  opacity: 0.78;
+}
+
+.challenge-item__category {
+  display: inline-block;
+  margin-bottom: 2px;
+  font-size: 0.72rem;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  color: var(--accent-strong);
+}
+
+.challenge-item__text {
+  display: block;
+}
+
+.challenge-item--empty {
+  justify-content: center;
+  color: var(--muted);
+  font-style: italic;
+}
+
 .challenge-item input {
   width: 18px;
   height: 18px;
