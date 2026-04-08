@@ -500,6 +500,7 @@ async function setGuest(guestId) {
   const guest = findGuestById(guestId);
   selectedGuestName.textContent = guest ? guest.name : "Invitado";
   updateWelcomeLabel();
+  renderTimeline();
   showScreen(screenApp);
   renderHomeDashboard();
   renderGuestCards();
@@ -775,6 +776,7 @@ function restoreSession() {
     currentGuestId = savedGuestId;
     selectedGuestName.textContent = findGuestById(savedGuestId).name;
     updateWelcomeLabel();
+    renderTimeline();
     renderHomeDashboard();
     showScreen(screenApp);
     return;
