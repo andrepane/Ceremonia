@@ -83,6 +83,22 @@ function eventDoc(path, id) {
   return doc(db, "events", eventId, path, id);
 }
 
+function subscribeGuests(onData, onError) {
+  if (!db) return () => {};
+
+  return onSnapshot(
+    eventCollection("guests"),
+    (snapshot) => {
+      const guests = {};
+      snapshot.forEach((item) => {
+        guests[item.id] = item.data();
+      });
+      onData(guests);
+    },
+    onError
+  );
+}
+
 async function linkGuestToAuth(guestId) {
   const user = await ensureAuth();
   if (!db || !user || !guestId) return;
@@ -94,6 +110,24 @@ async function linkGuestToAuth(guestId) {
       updatedAt: serverTimestamp(),
       updatedByUid: user.uid,
       lastAuthUid: user.uid
+    },
+    { merge: true }
+  );
+}
+
+async function setGuestOccupancy(guestId, occupied) {
+  const user = await ensureAuth();
+  if (!db || !user || !guestId) throw new Error("auth_required");
+
+  await setDoc(
+    eventDoc("guests", guestId),
+    {
+      id: guestId,
+      isOccupied: occupied,
+      occupiedByUid: occupied ? user.uid : null,
+      occupiedAt: occupied ? serverTimestamp() : null,
+      updatedAt: serverTimestamp(),
+      updatedByUid: user.uid
     },
     { merge: true }
   );
@@ -312,7 +346,9 @@ export {
   isFirebaseConfigured,
   ensureAuth,
   getAuthUid,
+  subscribeGuests,
   linkGuestToAuth,
+  setGuestOccupancy,
   subscribeActivity,
   subscribePhotos,
   subscribeRanking,
