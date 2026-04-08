@@ -196,6 +196,8 @@ const HOME_ACTIVITY_FEED = [
   { guestId: "manolo", type: "react_photo", minutesAgo: 37 }
 ];
 
+const SATURDAY_ONLY_GUEST_IDS = new Set(["ana_amiga_novia", "gabri", "tito"]);
+
 function scrollViewportToTop() {
   window.scrollTo({ top: 0, left: 0, behavior: "auto" });
 }
@@ -340,7 +342,12 @@ function updateWelcomeLabel() {
 
 function renderTimeline() {
   const locale = getLocale();
-  document.getElementById("timeline").innerHTML = locale.timeline.map((item) => `
+  const isSaturdayOnlyGuest = SATURDAY_ONLY_GUEST_IDS.has(currentGuestId);
+  const timelineItems = isSaturdayOnlyGuest
+    ? locale.timeline.filter((item) => !/^viernes|^venerdì/i.test(item.day || ""))
+    : locale.timeline;
+
+  document.getElementById("timeline").innerHTML = timelineItems.map((item) => `
       <article class="timeline-item"><span class="timeline-day">${item.day}</span><h4 class="timeline-title">${item.title}</h4>
       <p class="timeline-text">${item.text}</p><span class="status-tag status-tag--${item.tone}">${item.status}</span></article>`).join("");
 }
