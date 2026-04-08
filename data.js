@@ -402,11 +402,11 @@ window.WEDDING_APP_DATA = {
         }
       ],
       challenges: [
-        { text: "Hablar 5 minutos en el otro idioma", done: true },
-        { text: "Ayudar en un momento de preparación", done: true },
-        { text: "Hacerse una foto con alguien nuevo", done: true },
-        { text: "Bailar una canción entera", done: false },
-        { text: "Usar correctamente un falso amigo", done: false }
+        { text: "Hablar con alguien con quien aún no habías hablado", done: true },
+        { text: "Decir una frase en el otro idioma", done: true },
+        { text: "Subir una foto con 3 o más personas", done: true },
+        { text: "Aplaudir sin motivo aparente", done: false },
+        { text: "Estar en la pista cuando empieza una canción", done: false }
       ],
       photos: [
         { caption: "Viernes · bienvenida", likes: 4 },
@@ -793,11 +793,11 @@ window.WEDDING_APP_DATA = {
         }
       ],
       challenges: [
-        { text: "Parlare 5 minuti nell'altra lingua", done: true },
-        { text: "Aiutare in un momento di preparazione", done: true },
-        { text: "Fare una foto con qualcuno di nuovo", done: true },
-        { text: "Ballare una canzone intera", done: false },
-        { text: "Usare bene un falso amico", done: false }
+        { text: "Parlare con qualcuno con cui non avevi ancora parlato", done: true },
+        { text: "Dire una frase nell'altra lingua", done: true },
+        { text: "Caricare una foto con 3 o più persone", done: true },
+        { text: "Applaudire senza motivo apparente", done: false },
+        { text: "Essere in pista quando inizia una canzone", done: false }
       ],
       photos: [
         { caption: "Venerdì · benvenuto", likes: 4 },
