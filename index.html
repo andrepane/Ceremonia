@@ -33,7 +33,23 @@
 
     <!-- PANTALLA 1: IDIOMA -->
     <section id="screen-language" class="screen screen--active">
-      <div class="screen__inner screen__inner--center">
+      <div id="envelope-intro" class="envelope-intro" aria-hidden="false">
+        <button id="envelope-trigger" class="envelope-trigger" type="button" aria-label="Abrir invitación">
+          <span class="envelope-shadow" aria-hidden="true"></span>
+          <span class="envelope" aria-hidden="true">
+            <span class="envelope-flap">
+              <span class="envelope-monogram">CA</span>
+            </span>
+            <span class="envelope-pocket"></span>
+            <span class="envelope-card">
+              <span class="envelope-card__ornament">CA</span>
+            </span>
+          </span>
+          <span class="envelope-hint">Toca para abrir la invitación</span>
+        </button>
+      </div>
+
+      <div class="screen__inner screen__inner--center language-home-content" id="language-home-content" aria-hidden="true">
         <div class="hero-translation-row">
           <p id="txt-weekend" class="eyebrow">Fin de semana de boda</p>
           <p id="txt-weekend-translation" class="eyebrow eyebrow--translation">Weekend di matrimonio</p>

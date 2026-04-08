@@ -22,6 +22,9 @@ const APP_DATA = window.WEDDING_APP_DATA;
 const screenLanguage = document.getElementById("screen-language");
 const screenGuest = document.getElementById("screen-guest");
 const screenApp = document.getElementById("screen-app");
+const envelopeIntro = document.getElementById("envelope-intro");
+const envelopeTrigger = document.getElementById("envelope-trigger");
+const languageHomeContent = document.getElementById("language-home-content");
 
 const btnEs = document.getElementById("btn-es");
 const btnIt = document.getElementById("btn-it");
@@ -64,6 +67,7 @@ const challengeCatalog = [
 
 const SATURDAY_ONLY_GUEST_IDS = new Set(["tito", "ana_amiga_novia", "gabri"]);
 const FRIDAY_TIMELINE_ITEMS_TO_HIDE = 3;
+const INTRO_SESSION_KEY = "wedding_intro_opened";
 
 const HOME_DASHBOARD_COPY = {
   es: {
@@ -201,6 +205,38 @@ const HOME_ACTIVITY_FEED = [
 
 function scrollViewportToTop() {
   window.scrollTo({ top: 0, left: 0, behavior: "auto" });
+}
+
+function revealLanguageHome({ skipAnimation = false } = {}) {
+  if (!screenLanguage || !languageHomeContent || !envelopeIntro) return;
+  screenLanguage.classList.add("screen-language--revealed");
+  languageHomeContent.setAttribute("aria-hidden", "false");
+  envelopeIntro.setAttribute("aria-hidden", "true");
+
+  if (skipAnimation) {
+    envelopeIntro.classList.add("envelope-intro--closed");
+    envelopeIntro.classList.remove("envelope-intro--opened");
+    return;
+  }
+
+  envelopeIntro.classList.add("envelope-intro--opened");
+  window.setTimeout(() => {
+    envelopeIntro.classList.add("envelope-intro--closed");
+  }, 980);
+}
+
+function resetLanguageIntro() {
+  if (!screenLanguage || !languageHomeContent || !envelopeIntro) return;
+  screenLanguage.classList.remove("screen-language--revealed");
+  languageHomeContent.setAttribute("aria-hidden", "true");
+  envelopeIntro.classList.remove("envelope-intro--opened", "envelope-intro--closed");
+  envelopeIntro.setAttribute("aria-hidden", "false");
+}
+
+function openInvitationIntro() {
+  if (screenLanguage.classList.contains("screen-language--revealed")) return;
+  revealLanguageHome();
+  sessionStorage.setItem(INTRO_SESSION_KEY, "1");
 }
 
 function showScreen(screenToShow) {
@@ -538,6 +574,8 @@ function applyTranslations() {
   const locale = getLocale();
   const labels = locale.labels;
   const oppositeLabels = (currentLanguage === "es" ? APP_DATA.translations.it : APP_DATA.translations.es).labels;
+  const openInvitationLabel = currentLanguage === "it" ? "Apri invito" : "Abrir invitación";
+  const openInvitationHint = currentLanguage === "it" ? "Tocca per aprire l'invito" : "Toca para abrir la invitación";
   document.documentElement.lang = currentLanguage;
 
   document.getElementById("txt-weekend").textContent = labels.weekend;
@@ -545,6 +583,9 @@ function applyTranslations() {
   document.getElementById("txt-hero-title").textContent = labels.heroTitle;
   document.getElementById("txt-hero-subtitle").textContent = labels.heroSubtitle;
   document.getElementById("txt-hero-subtitle-translation").textContent = oppositeLabels.heroSubtitle;
+  if (envelopeTrigger) envelopeTrigger.setAttribute("aria-label", openInvitationLabel);
+  const envelopeHint = document.querySelector(".envelope-hint");
+  if (envelopeHint) envelopeHint.textContent = openInvitationHint;
   backToLanguage.setAttribute("aria-label", labels.back);
   backToLanguage.setAttribute("title", labels.back);
   document.getElementById("txt-access").textContent = labels.access;
@@ -656,7 +697,13 @@ async function handleUploadPhoto() {
 function bindUIEvents() {
   btnEs.addEventListener("click", () => setLanguage("es"));
   btnIt.addEventListener("click", () => setLanguage("it"));
-  backToLanguage.addEventListener("click", () => showScreen(screenLanguage));
+  envelopeTrigger?.addEventListener("click", openInvitationIntro);
+  backToLanguage.addEventListener("click", () => {
+    const introAlreadyOpened = sessionStorage.getItem(INTRO_SESSION_KEY) === "1";
+    if (introAlreadyOpened) revealLanguageHome({ skipAnimation: true });
+    else resetLanguageIntro();
+    showScreen(screenLanguage);
+  });
   changeProfile.addEventListener("click", async () => {
     const previousGuestId = currentGuestId;
     if (isFirebaseConfigured() && previousGuestId) {
@@ -767,6 +814,7 @@ function bindUIEvents() {
 function restoreSession() {
   const savedLang = localStorage.getItem("wedding_lang");
   const savedGuestId = localStorage.getItem("wedding_guest");
+  const introAlreadyOpened = sessionStorage.getItem(INTRO_SESSION_KEY) === "1";
   if (savedLang && APP_DATA.translations[savedLang]) currentLanguage = savedLang;
   applyTranslations();
   renderAllDynamicSections();
@@ -782,6 +830,10 @@ function restoreSession() {
     return;
   }
   showScreen(savedLang ? screenGuest : screenLanguage);
+  if (!savedLang) {
+    if (introAlreadyOpened) revealLanguageHome({ skipAnimation: true });
+    else resetLanguageIntro();
+  }
 }
 
 async function initFirebaseListeners() {
