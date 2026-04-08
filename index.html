@@ -34,24 +34,41 @@
     <!-- PANTALLA 1: IDIOMA -->
     <section id="screen-language" class="screen screen--active">
       <div class="screen__inner screen__inner--center">
-        <div class="hero-translation-row">
-          <p id="txt-weekend" class="eyebrow">Fin de semana de boda</p>
-          <p id="txt-weekend-translation" class="eyebrow eyebrow--translation">Weekend di matrimonio</p>
-        </div>
-        <h1 id="txt-hero-title" class="hero-title">Cintia & Andrea</h1>
-        <div class="hero-translation-row hero-translation-row--subtitle">
-          <p id="txt-hero-subtitle" class="hero-subtitle">4-6 septiembre - Vera</p>
-          <p id="txt-hero-subtitle-translation" class="hero-subtitle hero-subtitle--translation">4-6 settembre - Vera</p>
-        </div>
+        <div class="invitation-stage" id="invitation-stage">
+          <button id="envelope-trigger" class="envelope-scene" type="button" aria-label="Abrir invitación">
+            <div class="envelope-shadow" aria-hidden="true"></div>
+            <div class="envelope-body" aria-hidden="true">
+              <div class="envelope-back"></div>
+              <div class="envelope-card-shell">
+                <article class="invitation-card">
+                  <p id="txt-weekend" class="eyebrow invitation-card__eyebrow">Fin de semana de boda</p>
+                  <h1 id="txt-hero-title" class="hero-title invitation-card__title">Cintia & Andrea</h1>
+                  <div class="hero-translation-row hero-translation-row--subtitle invitation-card__subtitle-row">
+                    <p id="txt-hero-subtitle" class="hero-subtitle">4-6 septiembre - Vera</p>
+                    <p id="txt-hero-subtitle-translation" class="hero-subtitle hero-subtitle--translation">4-6 settembre - Vera</p>
+                  </div>
+                  <p class="invitation-monogram" aria-label="Monograma">CA</p>
+                </article>
+              </div>
+              <div class="envelope-front"></div>
+              <div class="envelope-flap">
+                <div class="envelope-flap__inner"></div>
+              </div>
+            </div>
+          </button>
 
-        <div class="card card--language">
-          <div class="language-buttons">
-            <button id="btn-es" class="primary-btn" type="button" data-lang="es">
-              Español
-            </button>
-            <button id="btn-it" class="secondary-btn" type="button" data-lang="it">
-              Italiano
-            </button>
+          <div class="language-panel card card--language" id="language-panel">
+            <div class="hero-translation-row invitation-stage__translation">
+              <p id="txt-weekend-translation" class="eyebrow eyebrow--translation">Weekend di matrimonio</p>
+            </div>
+            <div class="language-buttons">
+              <button id="btn-es" class="primary-btn" type="button" data-lang="es" disabled>
+                Español
+              </button>
+              <button id="btn-it" class="secondary-btn" type="button" data-lang="it" disabled>
+                Italiano
+              </button>
+            </div>
           </div>
         </div>
       </div>

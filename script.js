@@ -22,6 +22,8 @@ const APP_DATA = window.WEDDING_APP_DATA;
 const screenLanguage = document.getElementById("screen-language");
 const screenGuest = document.getElementById("screen-guest");
 const screenApp = document.getElementById("screen-app");
+const invitationStage = document.getElementById("invitation-stage");
+const envelopeTrigger = document.getElementById("envelope-trigger");
 
 const btnEs = document.getElementById("btn-es");
 const btnIt = document.getElementById("btn-it");
@@ -53,6 +55,7 @@ let unsubscribeRanking = () => {};
 let unsubscribeGuestChallenges = () => {};
 let unsubscribeGuestPresence = () => {};
 const pendingPhotoLikes = new Set();
+let invitationOpened = false;
 
 const challengeCatalog = [
   { id: "language_5min", points: 1 },
@@ -207,6 +210,9 @@ function showScreen(screenToShow) {
   [screenLanguage, screenGuest, screenApp].forEach((screen) => screen.classList.remove("screen--active"));
   screenToShow.classList.add("screen--active");
   document.body.classList.toggle("body--language-locked", screenToShow === screenLanguage);
+  if (screenToShow === screenLanguage) {
+    invitationStage.classList.remove("invitation-stage--touch");
+  }
   scrollViewportToTop();
 }
 
@@ -545,6 +551,7 @@ function applyTranslations() {
   document.getElementById("txt-hero-title").textContent = labels.heroTitle;
   document.getElementById("txt-hero-subtitle").textContent = labels.heroSubtitle;
   document.getElementById("txt-hero-subtitle-translation").textContent = oppositeLabels.heroSubtitle;
+  envelopeTrigger.setAttribute("aria-label", currentLanguage === "it" ? "Apri invito" : "Abrir invitación");
   backToLanguage.setAttribute("aria-label", labels.back);
   backToLanguage.setAttribute("title", labels.back);
   document.getElementById("txt-access").textContent = labels.access;
@@ -654,6 +661,25 @@ async function handleUploadPhoto() {
 }
 
 function bindUIEvents() {
+  envelopeTrigger.addEventListener("pointerdown", () => {
+    if (invitationOpened) return;
+    invitationStage.classList.add("invitation-stage--touch");
+  });
+
+  ["pointerup", "pointerleave", "pointercancel"].forEach((eventName) => {
+    envelopeTrigger.addEventListener(eventName, () => {
+      invitationStage.classList.remove("invitation-stage--touch");
+    });
+  });
+
+  envelopeTrigger.addEventListener("click", () => {
+    if (invitationOpened) return;
+    invitationOpened = true;
+    invitationStage.classList.add("invitation-stage--opened");
+    btnEs.disabled = false;
+    btnIt.disabled = false;
+  });
+
   btnEs.addEventListener("click", () => setLanguage("es"));
   btnIt.addEventListener("click", () => setLanguage("it"));
   backToLanguage.addEventListener("click", () => showScreen(screenLanguage));
