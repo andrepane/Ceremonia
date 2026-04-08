@@ -474,7 +474,7 @@ function renderChallengeItem(challenge, { completed = false } = {}) {
   const category = getChallengeCategoryLabel(challenge.category);
   return `
     <label class="challenge-item ${completed ? "challenge-item--completed" : ""}">
-      <input type="checkbox" data-challenge-id="${challenge.id}" ${completed ? "checked" : ""} ${currentGuestId ? "" : "disabled"} ${completed ? "disabled" : ""} />
+      <input type="checkbox" data-challenge-id="${challenge.id}" ${completed ? "checked" : ""} ${currentGuestId ? "" : "disabled"} />
       <span>
         <span class="challenge-item__category">${category}</span>
         <span class="challenge-item__text">${challenge.label}</span>
@@ -864,7 +864,7 @@ function bindUIEvents() {
     }
   });
 
-  document.getElementById("challenge-list-pending").addEventListener("change", async (event) => {
+  const handleChallengeToggle = async (event) => {
     const check = event.target;
     if (!check.matches("input[data-challenge-id]") || !currentGuestId || !firebaseOnline) return;
     const challengeId = check.dataset.challengeId;
@@ -872,8 +872,11 @@ function bindUIEvents() {
     const nextCompletedIds = check.checked
       ? Array.from(new Set([...state.completedIds, challengeId]))
       : state.completedIds.filter((id) => id !== challengeId);
+    const nextActiveIds = check.checked
+      ? state.activeIds.filter((id) => id !== challengeId)
+      : [challengeId, ...state.activeIds.filter((id) => id !== challengeId)].slice(0, MAX_ACTIVE_CHALLENGES);
     const projectedState = {
-      activeIds: state.activeIds.filter((id) => id !== challengeId),
+      activeIds: nextActiveIds,
       completedIds: nextCompletedIds,
       seenIds: Array.from(new Set([...state.seenIds, challengeId]))
     };
@@ -894,7 +897,10 @@ function bindUIEvents() {
       check.checked = !check.checked;
       alert(getHomeCopy().challengeError);
     }
-  });
+  };
+
+  document.getElementById("challenge-list-pending").addEventListener("change", handleChallengeToggle);
+  document.getElementById("challenge-list-completed").addEventListener("change", handleChallengeToggle);
 
   uploadPhotoBtn.addEventListener("click", handleUploadPhoto);
 
