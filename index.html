@@ -31,9 +31,36 @@
 <body>
   <div class="app-shell">
 
-    <!-- PANTALLA 1: IDIOMA -->
+    <!-- PANTALLA 1: INTRO + IDIOMA -->
     <section id="screen-language" class="screen screen--active">
-      <div class="screen__inner screen__inner--center">
+      <div id="intro-overlay" class="intro-overlay">
+        <button
+          id="envelope-trigger"
+          class="intro-envelope"
+          type="button"
+          aria-label="Abrir invitación"
+          aria-controls="language-home"
+        >
+          <span class="intro-envelope__shadow" aria-hidden="true"></span>
+          <span class="intro-envelope__body" aria-hidden="true">
+            <span class="intro-envelope__side intro-envelope__side--left"></span>
+            <span class="intro-envelope__side intro-envelope__side--right"></span>
+            <span class="intro-envelope__front"></span>
+            <span class="intro-envelope__texture"></span>
+            <span class="intro-envelope__monogram">CA</span>
+          </span>
+          <span class="intro-envelope__flap" aria-hidden="true">
+            <span class="intro-envelope__flap-gradient"></span>
+          </span>
+          <span class="intro-envelope__card" aria-hidden="true">
+            <span class="intro-envelope__card-line"></span>
+            <span class="intro-envelope__card-line intro-envelope__card-line--short"></span>
+          </span>
+          <span class="intro-envelope__hint">Toca para abrir</span>
+        </button>
+      </div>
+
+      <div id="language-home" class="screen__inner screen__inner--center language-home" aria-hidden="true">
         <div class="hero-translation-row">
           <p id="txt-weekend" class="eyebrow">Fin de semana de boda</p>
           <p id="txt-weekend-translation" class="eyebrow eyebrow--translation">Weekend di matrimonio</p>

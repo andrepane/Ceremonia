@@ -23,6 +23,10 @@ const screenLanguage = document.getElementById("screen-language");
 const screenGuest = document.getElementById("screen-guest");
 const screenApp = document.getElementById("screen-app");
 
+const introOverlay = document.getElementById("intro-overlay");
+const envelopeTrigger = document.getElementById("envelope-trigger");
+const languageHome = document.getElementById("language-home");
+
 const btnEs = document.getElementById("btn-es");
 const btnIt = document.getElementById("btn-it");
 const backToLanguage = document.getElementById("back-to-language");
@@ -39,6 +43,8 @@ const homeInfoStack = document.getElementById("home-info-stack");
 
 let currentLanguage = "es";
 let currentGuestId = null;
+let introCompleted = false;
+let introAnimating = false;
 let realtimeActivity = [];
 let realtimePhotos = [];
 let realtimeRanking = [];
@@ -206,7 +212,8 @@ function scrollViewportToTop() {
 function showScreen(screenToShow) {
   [screenLanguage, screenGuest, screenApp].forEach((screen) => screen.classList.remove("screen--active"));
   screenToShow.classList.add("screen--active");
-  document.body.classList.toggle("body--language-locked", screenToShow === screenLanguage);
+  const shouldLockViewport = screenToShow === screenLanguage && !introCompleted;
+  document.body.classList.toggle("body--language-locked", shouldLockViewport);
   scrollViewportToTop();
 }
 
@@ -460,6 +467,34 @@ async function playLanguageSelectionAnimation(lang) {
   btnIt.disabled = false;
 }
 
+async function playEnvelopeIntro() {
+  if (introAnimating || introCompleted || !envelopeTrigger || !introOverlay || !languageHome) return;
+  introAnimating = true;
+  envelopeTrigger.disabled = true;
+  envelopeTrigger.classList.add("intro-envelope--pressed");
+  await delay(170);
+  envelopeTrigger.classList.remove("intro-envelope--pressed");
+  envelopeTrigger.classList.add("intro-envelope--open");
+  await delay(900);
+  languageHome.classList.add("language-home--visible");
+  languageHome.setAttribute("aria-hidden", "false");
+  await delay(260);
+  introOverlay.classList.add("intro-overlay--hidden");
+  introCompleted = true;
+  introAnimating = false;
+  document.body.classList.remove("body--language-locked");
+}
+
+function completeIntroImmediately() {
+  if (!introOverlay || !languageHome || !envelopeTrigger) return;
+  introCompleted = true;
+  introAnimating = false;
+  envelopeTrigger.classList.add("intro-envelope--open");
+  introOverlay.classList.add("intro-overlay--hidden");
+  languageHome.classList.add("language-home--visible");
+  languageHome.setAttribute("aria-hidden", "false");
+}
+
 async function setLanguage(lang) {
   currentLanguage = lang;
   localStorage.setItem("wedding_lang", lang);
@@ -656,7 +691,14 @@ async function handleUploadPhoto() {
 function bindUIEvents() {
   btnEs.addEventListener("click", () => setLanguage("es"));
   btnIt.addEventListener("click", () => setLanguage("it"));
-  backToLanguage.addEventListener("click", () => showScreen(screenLanguage));
+  if (envelopeTrigger) {
+    envelopeTrigger.addEventListener("click", playEnvelopeIntro, { once: true });
+  }
+  backToLanguage.addEventListener("click", () => {
+    showScreen(screenLanguage);
+    if (!introCompleted) return;
+    completeIntroImmediately();
+  });
   changeProfile.addEventListener("click", async () => {
     const previousGuestId = currentGuestId;
     if (isFirebaseConfigured() && previousGuestId) {
@@ -781,7 +823,12 @@ function restoreSession() {
     showScreen(screenApp);
     return;
   }
-  showScreen(savedLang ? screenGuest : screenLanguage);
+  if (savedLang) {
+    completeIntroImmediately();
+    showScreen(screenGuest);
+    return;
+  }
+  showScreen(screenLanguage);
 }
 
 async function initFirebaseListeners() {
