@@ -346,6 +346,27 @@ input {
   box-shadow: 0 22px 36px rgba(59, 37, 24, 0.18);
 }
 
+.guest-card--locked .guest-card__inner {
+  border-color: rgba(168, 69, 69, 0.45);
+  box-shadow: 0 20px 36px rgba(133, 45, 45, 0.2);
+}
+
+.guest-lock-badge {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  z-index: 2;
+  padding: 4px 9px;
+  border-radius: 999px;
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.03em;
+  text-transform: uppercase;
+  color: #fff;
+  background: linear-gradient(135deg, #b84a4a, #9e2f2f);
+  box-shadow: 0 10px 20px rgba(131, 33, 33, 0.28);
+}
+
 .guest-card--flipped .guest-card__inner {
   transform: rotateY(180deg) translateZ(0);
   -webkit-transform: rotateY(180deg) translateZ(0);

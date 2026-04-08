@@ -3,10 +3,14 @@ import {
   ensureAuth,
   getAuthUid,
   linkGuestToAuth,
+  subscribeGuestPresence,
   subscribeActivity,
   subscribePhotos,
   subscribeRanking,
   subscribeGuestChallenges,
+  lockGuestProfile,
+  switchGuestProfileLock,
+  releaseGuestProfileLock,
   uploadPhoto,
   deletePhoto,
   togglePhotoLike,
@@ -39,12 +43,15 @@ let realtimeActivity = [];
 let realtimePhotos = [];
 let realtimeRanking = [];
 let realtimeChallenges = {};
+let realtimeGuestLocks = {};
 let firebaseOnline = false;
 let authUid = null;
+let hasActiveGuestLock = false;
 let unsubscribeActivity = () => {};
 let unsubscribePhotos = () => {};
 let unsubscribeRanking = () => {};
 let unsubscribeGuestChallenges = () => {};
+let unsubscribeGuestPresence = () => {};
 const pendingPhotoLikes = new Set();
 
 const challengeCatalog = [
@@ -254,16 +261,25 @@ function renderGuestCards() {
   const locale = getLocale();
   guestGrid.innerHTML = APP_DATA.guests.map((guest) => {
     const avatarImage = getGuestAvatarImage(guest);
+    const lockInfo = realtimeGuestLocks[guest.id] || {};
+    const lockedByOther = Boolean(lockInfo.lockedByUid && lockInfo.lockedByUid !== authUid);
+    const lockBadge = lockedByOther
+      ? `<span class="guest-lock-badge">${currentLanguage === "it" ? "Occupato" : "Bloqueado"}</span>`
+      : "";
+    const enterLabel = lockedByOther
+      ? (currentLanguage === "it" ? "Profilo occupato" : "Perfil ocupado")
+      : locale.labels.enterCard;
     return `
-      <article class="guest-card" data-guest-id="${guest.id}" tabindex="0" role="button" aria-pressed="false" aria-label="${guest.name}">
+      <article class="guest-card ${lockedByOther ? "guest-card--locked" : ""}" data-guest-id="${guest.id}" tabindex="0" role="button" aria-pressed="false" aria-label="${guest.name}">
         <div class="guest-card__inner">
           <div class="guest-card__face guest-card__face--front">
+            ${lockBadge}
             <div class="guest-avatar ${avatarImage ? "guest-avatar--image" : ""}">${renderGuestAvatar(guest)}</div>
             <span class="guest-name">${guest.name}</span>
           </div>
           <div class="guest-card__face guest-card__face--back">
             <span class="guest-role">${locale.roles[guest.roleKey] || ""}</span>
-            <button class="guest-enter-btn primary-btn" type="button" data-guest-enter="${guest.id}">${locale.labels.enterCard}</button>
+            <button class="guest-enter-btn primary-btn" type="button" data-guest-enter="${guest.id}" ${lockedByOther ? "disabled" : ""}>${enterLabel}</button>
           </div>
         </div>
       </article>
@@ -452,6 +468,25 @@ async function setGuest(guestId) {
     return;
   }
 
+  if (isFirebaseConfigured()) {
+    try {
+      await ensureAuth();
+      if (currentGuestId) {
+        await switchGuestProfileLock(currentGuestId, guestId);
+      } else {
+        await lockGuestProfile(guestId);
+      }
+      hasActiveGuestLock = true;
+    } catch (error) {
+      if (error?.message === "guest_locked") {
+        alert(currentLanguage === "it" ? "Questo profilo è già occupato." : "Este perfil ya está ocupado.");
+        return;
+      }
+      alert(getHomeCopy().authError);
+      return;
+    }
+  }
+
   currentGuestId = guestId;
   localStorage.setItem("wedding_guest", guestId);
   const guest = findGuestById(guestId);
@@ -459,10 +494,10 @@ async function setGuest(guestId) {
   updateWelcomeLabel();
   showScreen(screenApp);
   renderHomeDashboard();
+  renderGuestCards();
 
   if (isFirebaseConfigured()) {
     try {
-      await ensureAuth();
       await linkGuestToAuth(guestId);
       subscribeGuestStreams();
     } catch {
@@ -613,10 +648,20 @@ function bindUIEvents() {
   btnEs.addEventListener("click", () => setLanguage("es"));
   btnIt.addEventListener("click", () => setLanguage("it"));
   backToLanguage.addEventListener("click", () => showScreen(screenLanguage));
-  changeProfile.addEventListener("click", () => {
+  changeProfile.addEventListener("click", async () => {
+    const previousGuestId = currentGuestId;
+    if (isFirebaseConfigured() && previousGuestId) {
+      try {
+        await releaseGuestProfileLock(previousGuestId);
+      } catch {
+        // no-op
+      }
+    }
+    hasActiveGuestLock = false;
     localStorage.removeItem("wedding_guest");
     currentGuestId = null;
     updateWelcomeLabel();
+    renderGuestCards();
     showScreen(screenGuest);
   });
   navButtons.forEach((button) => button.addEventListener("click", () => activateView(button.dataset.view)));
@@ -739,10 +784,12 @@ async function initFirebaseListeners() {
   unsubscribePhotos();
   unsubscribeRanking();
   unsubscribeGuestChallenges();
+  unsubscribeGuestPresence();
   unsubscribeActivity = () => {};
   unsubscribePhotos = () => {};
   unsubscribeRanking = () => {};
   unsubscribeGuestChallenges = () => {};
+  unsubscribeGuestPresence = () => {};
 
   try {
     await ensureAuth();
@@ -755,6 +802,20 @@ async function initFirebaseListeners() {
     }, () => {
       firebaseOnline = false;
       renderHomeDashboard();
+    });
+
+    unsubscribeGuestPresence = subscribeGuestPresence((data) => {
+      realtimeGuestLocks = data.reduce((acc, guestDoc) => {
+        acc[guestDoc.id] = {
+          locked: Boolean(guestDoc.locked),
+          lockedByUid: guestDoc.lockedByUid || null
+        };
+        return acc;
+      }, {});
+      renderGuestCards();
+    }, () => {
+      firebaseOnline = false;
+      renderGuestCards();
     });
 
     unsubscribePhotos = subscribePhotos((data) => {
@@ -773,11 +834,28 @@ async function initFirebaseListeners() {
       renderRanking();
     });
 
-    if (currentGuestId) subscribeGuestStreams();
+    if (currentGuestId) {
+      try {
+        await lockGuestProfile(currentGuestId);
+        hasActiveGuestLock = true;
+        subscribeGuestStreams();
+      } catch {
+        hasActiveGuestLock = false;
+        localStorage.removeItem("wedding_guest");
+        currentGuestId = null;
+        updateWelcomeLabel();
+        showScreen(screenGuest);
+      }
+    }
   } catch {
     firebaseOnline = false;
   }
 }
+
+window.addEventListener("beforeunload", () => {
+  if (!isFirebaseConfigured() || !currentGuestId || !hasActiveGuestLock) return;
+  releaseGuestProfileLock(currentGuestId).catch(() => {});
+});
 
 bindUIEvents();
 restoreSession();

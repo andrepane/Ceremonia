@@ -148,6 +148,129 @@ function subscribeGuestChallenges(guestId, onData, onError) {
   );
 }
 
+function subscribeGuestPresence(onData, onError) {
+  if (!db) return () => {};
+
+  const q = query(eventCollection("guests"));
+  return onSnapshot(
+    q,
+    (snapshot) => {
+      onData(snapshot.docs.map((d) => ({ id: d.id, ...d.data() })));
+    },
+    onError
+  );
+}
+
+async function lockGuestProfile(guestId) {
+  const user = await ensureAuth();
+  if (!db || !user || !guestId) throw new Error("auth_required");
+
+  const guestRef = eventDoc("guests", guestId);
+  const result = await runTransaction(db, async (tx) => {
+    const snap = await tx.get(guestRef);
+    const data = snap.exists() ? snap.data() : {};
+    const lockedByUid = data?.lockedByUid || null;
+
+    if (lockedByUid && lockedByUid !== user.uid) return false;
+
+    tx.set(
+      guestRef,
+      {
+        id: guestId,
+        locked: true,
+        lockedByUid: user.uid,
+        updatedAt: serverTimestamp(),
+        updatedByUid: user.uid,
+        lastAuthUid: user.uid
+      },
+      { merge: true }
+    );
+    return true;
+  });
+
+  if (!result) throw new Error("guest_locked");
+}
+
+async function switchGuestProfileLock(fromGuestId, toGuestId) {
+  const user = await ensureAuth();
+  if (!db || !user || !toGuestId) throw new Error("auth_required");
+
+  if (!fromGuestId || fromGuestId === toGuestId) {
+    await lockGuestProfile(toGuestId);
+    return;
+  }
+
+  const fromRef = eventDoc("guests", fromGuestId);
+  const toRef = eventDoc("guests", toGuestId);
+
+  const result = await runTransaction(db, async (tx) => {
+    const [fromSnap, toSnap] = await Promise.all([tx.get(fromRef), tx.get(toRef)]);
+    const fromData = fromSnap.exists() ? fromSnap.data() : {};
+    const toData = toSnap.exists() ? toSnap.data() : {};
+    const toLockedByUid = toData?.lockedByUid || null;
+
+    if (toLockedByUid && toLockedByUid !== user.uid) return false;
+
+    if ((fromData?.lockedByUid || null) === user.uid) {
+      tx.set(
+        fromRef,
+        {
+          id: fromGuestId,
+          locked: false,
+          lockedByUid: null,
+          updatedAt: serverTimestamp(),
+          updatedByUid: user.uid,
+          lastAuthUid: user.uid
+        },
+        { merge: true }
+      );
+    }
+
+    tx.set(
+      toRef,
+      {
+        id: toGuestId,
+        locked: true,
+        lockedByUid: user.uid,
+        updatedAt: serverTimestamp(),
+        updatedByUid: user.uid,
+        lastAuthUid: user.uid
+      },
+      { merge: true }
+    );
+
+    return true;
+  });
+
+  if (!result) throw new Error("guest_locked");
+}
+
+async function releaseGuestProfileLock(guestId) {
+  const user = await ensureAuth();
+  if (!db || !user || !guestId) return;
+
+  const guestRef = eventDoc("guests", guestId);
+  await runTransaction(db, async (tx) => {
+    const snap = await tx.get(guestRef);
+    if (!snap.exists()) return;
+    const data = snap.data() || {};
+    if (data.lockedByUid !== user.uid) return;
+
+    tx.set(
+      guestRef,
+      {
+        id: guestId,
+        locked: false,
+        lockedByUid: null,
+        updatedAt: serverTimestamp(),
+        updatedByUid: user.uid,
+        lastAuthUid: user.uid
+      },
+      { merge: true }
+    );
+  });
+}
+
 async function emitActivity(type, guestId, metadata = {}) {
   const user = await ensureAuth();
   if (!db || !user) throw new Error("auth_required");
@@ -313,10 +436,14 @@ export {
   ensureAuth,
   getAuthUid,
   linkGuestToAuth,
+  subscribeGuestPresence,
   subscribeActivity,
   subscribePhotos,
   subscribeRanking,
   subscribeGuestChallenges,
+  lockGuestProfile,
+  switchGuestProfileLock,
+  releaseGuestProfileLock,
   uploadPhoto,
   deletePhoto,
   togglePhotoLike,
