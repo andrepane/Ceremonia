@@ -3,9 +3,7 @@ import {
   ensureAuth,
   getAuthUid,
   linkGuestToAuth,
-  setGuestOccupancy,
   subscribeActivity,
-  subscribeGuests,
   subscribePhotos,
   subscribeRanking,
   subscribeGuestChallenges,
@@ -47,9 +45,7 @@ let unsubscribeActivity = () => {};
 let unsubscribePhotos = () => {};
 let unsubscribeRanking = () => {};
 let unsubscribeGuestChallenges = () => {};
-let unsubscribeGuests = () => {};
 const pendingPhotoLikes = new Set();
-let realtimeGuests = {};
 
 const challengeCatalog = [
   { id: "language_5min", points: 1 },
@@ -256,30 +252,18 @@ function renderGuestAvatar(guest) {
 
 function renderGuestCards() {
   const locale = getLocale();
-  const currentUid = getAuthUid();
   guestGrid.innerHTML = APP_DATA.guests.map((guest) => {
-    const guestState = realtimeGuests?.[guest.id] || {};
-    const occupiedByOther = Boolean(guestState.isOccupied && guestState.occupiedByUid && guestState.occupiedByUid !== currentUid);
     const avatarImage = getGuestAvatarImage(guest);
     return `
-      <article
-        class="guest-card ${occupiedByOther ? "guest-card--occupied" : ""}"
-        data-guest-id="${guest.id}"
-        tabindex="${occupiedByOther ? "-1" : "0"}"
-        role="button"
-        aria-pressed="false"
-        aria-disabled="${occupiedByOther ? "true" : "false"}"
-        aria-label="${guest.name}${occupiedByOther ? ` · ${locale.labels.profileBusy}` : ""}"
-      >
+      <article class="guest-card" data-guest-id="${guest.id}" tabindex="0" role="button" aria-pressed="false" aria-label="${guest.name}">
         <div class="guest-card__inner">
           <div class="guest-card__face guest-card__face--front">
             <div class="guest-avatar ${avatarImage ? "guest-avatar--image" : ""}">${renderGuestAvatar(guest)}</div>
             <span class="guest-name">${guest.name}</span>
-            ${occupiedByOther ? `<span class="guest-status-pill">${locale.labels.profileBusy}</span>` : ""}
           </div>
           <div class="guest-card__face guest-card__face--back">
             <span class="guest-role">${locale.roles[guest.roleKey] || ""}</span>
-            <button class="guest-enter-btn primary-btn" type="button" data-guest-enter="${guest.id}" ${occupiedByOther ? "disabled" : ""}>${occupiedByOther ? locale.labels.profileBusy : locale.labels.enterCard}</button>
+            <button class="guest-enter-btn primary-btn" type="button" data-guest-enter="${guest.id}">${locale.labels.enterCard}</button>
           </div>
         </div>
       </article>
@@ -463,12 +447,6 @@ async function setLanguage(lang) {
 }
 
 async function setGuest(guestId) {
-  const selectedGuestState = realtimeGuests?.[guestId];
-  if (selectedGuestState?.isOccupied && selectedGuestState?.occupiedByUid && selectedGuestState.occupiedByUid !== getAuthUid()) {
-    return;
-  }
-
-  const previousGuestId = currentGuestId;
   if (currentGuestId === guestId) {
     showScreen(screenApp);
     return;
@@ -485,11 +463,7 @@ async function setGuest(guestId) {
   if (isFirebaseConfigured()) {
     try {
       await ensureAuth();
-      if (previousGuestId && previousGuestId !== guestId) {
-        await setGuestOccupancy(previousGuestId, false);
-      }
       await linkGuestToAuth(guestId);
-      await setGuestOccupancy(guestId, true);
       subscribeGuestStreams();
     } catch {
       alert(getHomeCopy().authError);
@@ -640,9 +614,6 @@ function bindUIEvents() {
   btnIt.addEventListener("click", () => setLanguage("it"));
   backToLanguage.addEventListener("click", () => showScreen(screenLanguage));
   changeProfile.addEventListener("click", () => {
-    if (currentGuestId && isFirebaseConfigured()) {
-      setGuestOccupancy(currentGuestId, false).catch(() => {});
-    }
     localStorage.removeItem("wedding_guest");
     currentGuestId = null;
     updateWelcomeLabel();
@@ -717,14 +688,12 @@ function bindUIEvents() {
   guestGrid.addEventListener("click", (event) => {
     const enterButton = event.target.closest("[data-guest-enter]");
     if (enterButton) {
-      if (enterButton.disabled) return;
       setGuest(enterButton.dataset.guestEnter);
       return;
     }
 
     const card = event.target.closest(".guest-card");
     if (!card) return;
-    if (card.classList.contains("guest-card--occupied")) return;
     card.classList.toggle("guest-card--flipped");
     card.setAttribute("aria-pressed", card.classList.contains("guest-card--flipped") ? "true" : "false");
   });
@@ -733,7 +702,6 @@ function bindUIEvents() {
     if (event.target.closest("[data-guest-enter]")) return;
     const card = event.target.closest(".guest-card");
     if (!card) return;
-    if (card.classList.contains("guest-card--occupied")) return;
     if (event.key === "Enter" || event.key === " ") {
       event.preventDefault();
       card.classList.toggle("guest-card--flipped");
@@ -771,12 +739,10 @@ async function initFirebaseListeners() {
   unsubscribePhotos();
   unsubscribeRanking();
   unsubscribeGuestChallenges();
-  unsubscribeGuests();
   unsubscribeActivity = () => {};
   unsubscribePhotos = () => {};
   unsubscribeRanking = () => {};
   unsubscribeGuestChallenges = () => {};
-  unsubscribeGuests = () => {};
 
   try {
     await ensureAuth();
@@ -808,28 +774,6 @@ async function initFirebaseListeners() {
     });
 
     if (currentGuestId) subscribeGuestStreams();
-
-    unsubscribeGuests = subscribeGuests((data) => {
-      realtimeGuests = data || {};
-      const activeGuestState = currentGuestId ? realtimeGuests?.[currentGuestId] : null;
-      const occupiedByOther = Boolean(
-        currentGuestId &&
-          activeGuestState?.isOccupied &&
-          activeGuestState?.occupiedByUid &&
-          activeGuestState.occupiedByUid !== getAuthUid()
-      );
-
-      if (occupiedByOther) {
-        localStorage.removeItem("wedding_guest");
-        currentGuestId = null;
-        updateWelcomeLabel();
-        showScreen(screenGuest);
-      }
-      renderGuestCards();
-    }, () => {
-      realtimeGuests = {};
-      renderGuestCards();
-    });
   } catch {
     firebaseOnline = false;
   }

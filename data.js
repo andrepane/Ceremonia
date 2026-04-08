@@ -86,8 +86,7 @@ window.WEDDING_APP_DATA = {
         navPhotos: "Fotos",
         navMap: "Mapa",
         photoLabel: "Foto",
-        countdownStarted: "¡Ya es la ceremonia!",
-        profileBusy: "Ocupado"
+        countdownStarted: "¡Ya es la ceremonia!"
       },
       roles: {
         bride: "Novia",
@@ -458,8 +457,7 @@ window.WEDDING_APP_DATA = {
         navPhotos: "Foto",
         navMap: "Mappa",
         photoLabel: "Foto",
-        countdownStarted: "La cerimonia è iniziata",
-        profileBusy: "Occupato"
+        countdownStarted: "La cerimonia è iniziata"
       },
       roles: {
         bride: "Sposa",
