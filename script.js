@@ -62,6 +62,9 @@ const challengeCatalog = [
   { id: "false_friend", points: 1 }
 ];
 
+const SATURDAY_ONLY_GUEST_IDS = new Set(["tito", "ana_amiga_novia", "gabri"]);
+const FRIDAY_TIMELINE_ITEMS_TO_HIDE = 3;
+
 const HOME_DASHBOARD_COPY = {
   es: {
     weekendFormatLabel: "Qué tipo de boda será",
@@ -340,7 +343,12 @@ function updateWelcomeLabel() {
 
 function renderTimeline() {
   const locale = getLocale();
-  document.getElementById("timeline").innerHTML = locale.timeline.map((item) => `
+  const isSaturdayOnlyGuest = SATURDAY_ONLY_GUEST_IDS.has(currentGuestId);
+  const timelineItems = isSaturdayOnlyGuest
+    ? locale.timeline.slice(FRIDAY_TIMELINE_ITEMS_TO_HIDE)
+    : locale.timeline;
+
+  document.getElementById("timeline").innerHTML = timelineItems.map((item) => `
       <article class="timeline-item"><span class="timeline-day">${item.day}</span><h4 class="timeline-title">${item.title}</h4>
       <p class="timeline-text">${item.text}</p><span class="status-tag status-tag--${item.tone}">${item.status}</span></article>`).join("");
 }
@@ -492,6 +500,7 @@ async function setGuest(guestId) {
   const guest = findGuestById(guestId);
   selectedGuestName.textContent = guest ? guest.name : "Invitado";
   updateWelcomeLabel();
+  renderTimeline();
   showScreen(screenApp);
   renderHomeDashboard();
   renderGuestCards();
@@ -767,6 +776,7 @@ function restoreSession() {
     currentGuestId = savedGuestId;
     selectedGuestName.textContent = findGuestById(savedGuestId).name;
     updateWelcomeLabel();
+    renderTimeline();
     renderHomeDashboard();
     showScreen(screenApp);
     return;
