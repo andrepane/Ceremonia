@@ -57,6 +57,14 @@ const challengeCatalog = [
 
 const HOME_DASHBOARD_COPY = {
   es: {
+    weekendFormatLabel: "Qué tipo de boda será",
+    weekendFormatTitle: "Una boda para convivir el finde",
+    weekendFormatParagraphs: [
+      "Este no es un evento típico. Es un fin de semana juntos en una casa, con tiempo para estar, comer, hablar y celebrar.",
+      "No hay prisas ni protocolos estrictos. Habrá momentos importantes (como la ceremonia), pero la mayor parte del tiempo es para disfrutar juntos.",
+      "Todo ocurre en el mismo sitio: piscina, comida, preparación, boda y fiesta. A ratos será relax, a ratos tocará echar una mano y a ratos simplemente dejarse llevar.",
+      "La idea es simple: estar bien, sin complicarse."
+    ],
     nextStepLabel: "Tu próximo paso",
     nextStepTitlePre: "Revisa el plan del finde",
     nextStepTextPre: "Consulta horarios, ubicaciones y detalles para llegar sin prisas.",
@@ -111,6 +119,14 @@ const HOME_DASHBOARD_COPY = {
     authError: "No se pudo autenticar."
   },
   it: {
+    weekendFormatLabel: "Che tipo di matrimonio sarà",
+    weekendFormatTitle: "Un matrimonio da vivere nel weekend",
+    weekendFormatParagraphs: [
+      "Non è un evento tipico: è un fine settimana insieme in una casa, con tempo per stare, mangiare, parlare e festeggiare.",
+      "Niente fretta e niente protocolli rigidi. Ci saranno momenti importanti (come la cerimonia), ma la maggior parte del tempo sarà per godersela insieme.",
+      "Succede tutto nello stesso posto: piscina, cibo, preparazione, matrimonio e festa. A tratti sarà relax, a tratti servirà dare una mano e a tratti basterà lasciarsi andare.",
+      "L'idea è semplice: stare bene, senza complicarsi."
+    ],
     nextStepLabel: "Il tuo prossimo passo",
     nextStepTitlePre: "Controlla il piano del weekend",
     nextStepTextPre: "Guarda orari, luoghi e dettagli per arrivare senza fretta.",
@@ -281,29 +297,15 @@ function renderActivityFeed() {
 
 function renderHomeDashboard() {
   const copy = getHomeCopy();
-  const phase = getHomePhase();
-  const phaseSuffix = phase === "pre" ? "Pre" : phase === "live" ? "Live" : "Post";
-  const currentGuest = findGuestById(currentGuestId);
-  const personalText = currentGuest ? copy.personalWithGuest.replace("{name}", currentGuest.name) : copy.personalNoGuest;
-  const urgentText = phase === "post" ? `${copy.moments.post} ${copy.nowDefault}` : `${copy.moments[phase]} ${copy.nextCeremony}`;
+  const formatParagraphs = (copy.weekendFormatParagraphs || [])
+    .map((paragraph) => `<p class="card-text">${paragraph}</p>`)
+    .join("");
 
   homeInfoStack.innerHTML = `
-    <article class="card home-card home-card--next-step"><p class="card-label">${copy.nextStepLabel}</p>
-      <h3 class="card-title">${copy[`nextStepTitle${phaseSuffix}`]}</h3>
-      <p class="card-text">${copy[`nextStepText${phaseSuffix}`]}</p>
-      <button class="primary-btn home-action-btn" type="button" data-target-view="${copy[`nextStepTarget${phaseSuffix}`]}">${copy[`nextStepCta${phaseSuffix}`]}</button>
-    </article>
-
-    <article class="card home-card"><p class="card-label">${copy.nowLabel}</p><p class="card-text">${urgentText}</p></article>
-
-    <article class="card home-card"><p class="card-label">${copy.mapLabel}</p>
-      <h3 class="card-title">${copy.mapTitle}</h3>
-      <p class="card-text">${copy.mapText}</p>
-      <button class="secondary-btn home-action-btn" type="button" data-target-view="map">${copy.mapAction}</button>
-    </article>
-
-    <article class="card home-card"><p class="card-label">${copy.personalLabel}</p><p class="card-text">${personalText}</p>
-      <button class="secondary-btn home-action-btn" type="button" data-target-view="game">${copy.personalAction}</button>
+    <article class="card home-card home-card--weekend-format">
+      <p class="card-label">${copy.weekendFormatLabel}</p>
+      <h3 class="card-title">${copy.weekendFormatTitle}</h3>
+      ${formatParagraphs}
     </article>
 
     <article class="card home-card home-card--activity"><p class="card-label">${copy.activityLabel}</p><ul class="activity-list">${renderActivityFeed()}</ul>
