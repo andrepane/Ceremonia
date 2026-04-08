@@ -54,12 +54,23 @@ let unsubscribeGuestChallenges = () => {};
 let unsubscribeGuestPresence = () => {};
 const pendingPhotoLikes = new Set();
 
-const challengeCatalog = [
-  { id: "language_5min", points: 1 },
-  { id: "help_prep", points: 1 },
-  { id: "new_person_photo", points: 1 },
-  { id: "full_song_dance", points: 1 },
-  { id: "false_friend", points: 1 }
+const MAX_ACTIVE_CHALLENGES = 5;
+const CHALLENGE_DATABASE = [
+  { id: "language_5min", category: "language", points: 1, text: { es: "Hablar 5 minutos en el otro idioma", it: "Parlare 5 minuti nell'altra lingua" } },
+  { id: "false_friend", category: "language", points: 1, text: { es: "Usar correctamente un falso amigo", it: "Usare bene un falso amico" } },
+  { id: "translate_toast", category: "language", points: 1, text: { es: "Traducir un brindis corto para alguien", it: "Tradurre un brindisi breve per qualcuno" } },
+  { id: "help_prep", category: "support", points: 1, text: { es: "Ayudar en un momento de preparación", it: "Aiutare in un momento di preparazione" } },
+  { id: "set_table", category: "support", points: 1, text: { es: "Ayudar a preparar una mesa o recogerla", it: "Aiutare a preparare o riordinare un tavolo" } },
+  { id: "water_run", category: "support", points: 1, text: { es: "Llevar agua o bebida a alguien que lo necesite", it: "Portare acqua o bevande a chi ne ha bisogno" } },
+  { id: "new_person_photo", category: "social", points: 1, text: { es: "Hacerse una foto con alguien nuevo", it: "Fare una foto con qualcuno di nuovo" } },
+  { id: "new_conversation", category: "social", points: 1, text: { es: "Hablar con alguien a quien no conocías", it: "Parlare con qualcuno che non conoscevi" } },
+  { id: "group_photo", category: "social", points: 1, text: { es: "Montar una foto de grupo espontánea", it: "Organizzare una foto di gruppo spontanea" } },
+  { id: "full_song_dance", category: "party", points: 1, text: { es: "Bailar una canción entera", it: "Ballare una canzone intera" } },
+  { id: "dance_partner_swap", category: "party", points: 1, text: { es: "Bailar con una persona diferente", it: "Ballare con una persona diversa" } },
+  { id: "karaoke_30s", category: "party", points: 1, text: { es: "Cantar 30 segundos de una canción", it: "Cantare 30 secondi di una canzone" } },
+  { id: "pool_relax", category: "weekend", points: 1, text: { es: "Disfrutar 10 minutos de plan relax", it: "Godersi 10 minuti di relax" } },
+  { id: "mini_golf", category: "weekend", points: 1, text: { es: "Jugar una partida de mini golf", it: "Fare una partita a mini golf" } },
+  { id: "share_memory", category: "weekend", points: 1, text: { es: "Contar una anécdota del finde con el grupo", it: "Raccontare un aneddoto del weekend al gruppo" } }
 ];
 
 const SATURDAY_ONLY_GUEST_IDS = new Set(["tito", "ana_amiga_novia", "gabri"]);
@@ -198,6 +209,84 @@ const HOME_ACTIVITY_FEED = [
   { guestId: "rachele", type: "complete_challenge", minutesAgo: 18 },
   { guestId: "manolo", type: "react_photo", minutesAgo: 37 }
 ];
+
+const CHALLENGE_BY_ID = new Map(CHALLENGE_DATABASE.map((challenge) => [challenge.id, challenge]));
+
+function getChallengeCategoryLabel(category) {
+  const labels = {
+    es: {
+      language: "Idioma",
+      support: "Ayuda",
+      social: "Social",
+      party: "Fiesta",
+      weekend: "Finde"
+    },
+    it: {
+      language: "Lingua",
+      support: "Aiuto",
+      social: "Sociale",
+      party: "Festa",
+      weekend: "Weekend"
+    }
+  };
+  return labels[currentLanguage]?.[category] || category;
+}
+
+function getChallengeStateFromRealtime() {
+  const defaultState = { activeIds: [], completedIds: [], seenIds: [] };
+  if (!firebaseOnline || !currentGuestId) return defaultState;
+
+  const legacyCompleted = Object.entries(realtimeChallenges?.completed || {})
+    .filter(([, isDone]) => Boolean(isDone))
+    .map(([id]) => id);
+
+  const completedIds = Array.from(new Set([...(realtimeChallenges?.completedIds || []), ...legacyCompleted]));
+  const seenIds = Array.from(new Set([...(realtimeChallenges?.seenIds || []), ...completedIds]));
+  const validActive = (realtimeChallenges?.activeIds || []).filter((id) => CHALLENGE_BY_ID.has(id) && !completedIds.includes(id));
+  return { activeIds: validActive, completedIds, seenIds };
+}
+
+function buildChallengeDeck(state) {
+  const completedSet = new Set(state.completedIds);
+  const seenSet = new Set(state.seenIds);
+  const activeSet = new Set(state.activeIds.filter((id) => !completedSet.has(id)));
+
+  const normalizedActiveIds = Array.from(activeSet).filter((id) => CHALLENGE_BY_ID.has(id));
+  const usedCategories = new Set(
+    normalizedActiveIds
+      .map((id) => CHALLENGE_BY_ID.get(id)?.category)
+      .filter(Boolean)
+  );
+
+  const slotsLeft = Math.max(0, MAX_ACTIVE_CHALLENGES - normalizedActiveIds.length);
+  if (slotsLeft > 0) {
+    for (const challenge of CHALLENGE_DATABASE) {
+      if (normalizedActiveIds.length >= MAX_ACTIVE_CHALLENGES) break;
+      if (completedSet.has(challenge.id) || activeSet.has(challenge.id) || seenSet.has(challenge.id)) continue;
+      if (usedCategories.has(challenge.category)) continue;
+      normalizedActiveIds.push(challenge.id);
+      activeSet.add(challenge.id);
+      seenSet.add(challenge.id);
+      usedCategories.add(challenge.category);
+    }
+  }
+
+  if (normalizedActiveIds.length < MAX_ACTIVE_CHALLENGES) {
+    for (const challenge of CHALLENGE_DATABASE) {
+      if (normalizedActiveIds.length >= MAX_ACTIVE_CHALLENGES) break;
+      if (completedSet.has(challenge.id) || activeSet.has(challenge.id) || seenSet.has(challenge.id)) continue;
+      normalizedActiveIds.push(challenge.id);
+      activeSet.add(challenge.id);
+      seenSet.add(challenge.id);
+    }
+  }
+
+  return {
+    activeIds: normalizedActiveIds.slice(0, MAX_ACTIVE_CHALLENGES),
+    completedIds: Array.from(completedSet),
+    seenIds: Array.from(seenSet)
+  };
+}
 
 function scrollViewportToTop() {
   window.scrollTo({ top: 0, left: 0, behavior: "auto" });
@@ -371,25 +460,78 @@ function renderDictionary() {
   document.getElementById("useful-phrases-list").innerHTML = phraseItems;
 }
 
-function getLocalizedChallenges() {
+function getLocalizedChallenge(challengeId) {
+  const challenge = CHALLENGE_BY_ID.get(challengeId);
+  if (!challenge) return null;
+  return {
+    ...challenge,
+    label: challenge.text[currentLanguage] || challenge.text.es
+  };
+}
+
+function renderChallengeItem(challenge, { completed = false } = {}) {
+  if (!challenge) return "";
+  const category = getChallengeCategoryLabel(challenge.category);
+  return `
+    <label class="challenge-item ${completed ? "challenge-item--completed" : ""}">
+      <input type="checkbox" data-challenge-id="${challenge.id}" ${completed ? "checked" : ""} ${currentGuestId ? "" : "disabled"} ${completed ? "disabled" : ""} />
+      <span>
+        <span class="challenge-item__category">${category}</span>
+        <span class="challenge-item__text">${challenge.label}</span>
+      </span>
+    </label>
+  `;
+}
+
+function getFallbackChallengeLists() {
   const locale = getLocale();
-  return (locale.challenges || []).map((item, index) => ({
-    id: challengeCatalog[index]?.id || `challenge_${index + 1}`,
-    points: challengeCatalog[index]?.points || 1,
-    text: item.text,
-    done: firebaseOnline && currentGuestId ? Boolean(realtimeChallenges?.completed?.[challengeCatalog[index]?.id || `challenge_${index + 1}`]) : Boolean(item.done)
-  }));
+  const fallback = (locale.challenges || []).map((item, index) => {
+    const databaseItem = CHALLENGE_DATABASE[index];
+    if (!databaseItem) return null;
+    return {
+      ...databaseItem,
+      done: Boolean(item.done),
+      label: item.text || databaseItem.text[currentLanguage] || databaseItem.text.es
+    };
+  }).filter(Boolean);
+
+  return {
+    pending: fallback.filter((item) => !item.done).slice(0, MAX_ACTIVE_CHALLENGES),
+    completed: fallback.filter((item) => item.done)
+  };
 }
 
 function renderChallenges() {
-  const container = document.getElementById("challenge-list");
-  const items = getLocalizedChallenges();
-  container.innerHTML = items.map((challenge) => `
-      <label class="challenge-item">
-        <input type="checkbox" data-challenge-id="${challenge.id}" ${challenge.done ? "checked" : ""} ${currentGuestId ? "" : "disabled"} />
-        <span>${challenge.text}</span>
-      </label>
-    `).join("");
+  const pendingContainer = document.getElementById("challenge-list-pending");
+  const completedContainer = document.getElementById("challenge-list-completed");
+  const labels = getLocale().labels;
+
+  if (!firebaseOnline || !currentGuestId) {
+    const fallbackLists = getFallbackChallengeLists();
+    pendingContainer.innerHTML = fallbackLists.pending.map((challenge) => renderChallengeItem(challenge)).join("");
+    completedContainer.innerHTML = fallbackLists.completed.map((challenge) => renderChallengeItem(challenge, { completed: true })).join("");
+  } else {
+    const currentState = getChallengeStateFromRealtime();
+    const deck = buildChallengeDeck(currentState);
+    const pendingItems = deck.activeIds.map((id) => getLocalizedChallenge(id)).filter(Boolean);
+    const completedItems = deck.completedIds.map((id) => getLocalizedChallenge(id)).filter(Boolean);
+    pendingContainer.innerHTML = pendingItems.map((challenge) => renderChallengeItem(challenge)).join("");
+    completedContainer.innerHTML = completedItems.length
+      ? completedItems.map((challenge) => renderChallengeItem(challenge, { completed: true })).join("")
+      : `<article class="challenge-item challenge-item--empty">${labels.noChallengesCompleted}</article>`;
+  }
+
+  if (!pendingContainer.innerHTML.trim()) {
+    pendingContainer.innerHTML = `<article class="challenge-item challenge-item--empty">${labels.noChallengesPending}</article>`;
+  }
+  if (!completedContainer.innerHTML.trim()) {
+    completedContainer.innerHTML = `<article class="challenge-item challenge-item--empty">${labels.noChallengesCompleted}</article>`;
+  }
+
+  const totalPoints = firebaseOnline && currentGuestId
+    ? (realtimeRanking.find((entry) => (entry.guestId || entry.id) === currentGuestId)?.points || 0)
+    : 0;
+  document.getElementById("txt-progress-title").textContent = labels.progressTitleDynamic.replace("{points}", String(totalPoints));
 }
 
 function renderRanking() {
@@ -567,8 +709,10 @@ function applyTranslations() {
   document.getElementById("translator-btn").textContent = labels.translateBtn;
   document.getElementById("txt-game-title").textContent = labels.gameTitle;
   document.getElementById("txt-progress-label").textContent = labels.progressLabel;
-  document.getElementById("txt-progress-title").textContent = labels.progressTitle;
+  document.getElementById("txt-progress-title").textContent = labels.progressTitleDynamic.replace("{points}", "0");
   document.getElementById("txt-progress-text").textContent = labels.progressText;
+  document.getElementById("txt-challenges-pending-label").textContent = labels.pendingChallengesLabel;
+  document.getElementById("txt-challenges-completed-label").textContent = labels.completedChallengesLabel;
   document.getElementById("txt-ranking-label").textContent = labels.rankingLabel;
   document.getElementById("txt-photos-title").textContent = labels.photosTitle;
   document.getElementById("txt-map-title").textContent = labels.mapTitle;
@@ -720,16 +864,31 @@ function bindUIEvents() {
     }
   });
 
-  document.getElementById("challenge-list").addEventListener("change", async (event) => {
+  document.getElementById("challenge-list-pending").addEventListener("change", async (event) => {
     const check = event.target;
     if (!check.matches("input[data-challenge-id]") || !currentGuestId || !firebaseOnline) return;
-    const challenge = challengeCatalog.find((item) => item.id === check.dataset.challengeId);
+    const challengeId = check.dataset.challengeId;
+    const state = getChallengeStateFromRealtime();
+    const nextCompletedIds = check.checked
+      ? Array.from(new Set([...state.completedIds, challengeId]))
+      : state.completedIds.filter((id) => id !== challengeId);
+    const projectedState = {
+      activeIds: state.activeIds.filter((id) => id !== challengeId),
+      completedIds: nextCompletedIds,
+      seenIds: Array.from(new Set([...state.seenIds, challengeId]))
+    };
+    const nextDeck = buildChallengeDeck(projectedState);
+    const challenge = CHALLENGE_BY_ID.get(check.dataset.challengeId);
     try {
       await setChallengeDone({
         guestId: currentGuestId,
-        challengeId: check.dataset.challengeId,
+        challengeId,
         done: check.checked,
-        points: challenge?.points || 1
+        points: challenge?.points || 1,
+        activeIds: nextDeck.activeIds,
+        completedIds: nextDeck.completedIds,
+        seenIds: nextDeck.seenIds,
+        maxActiveChallenges: MAX_ACTIVE_CHALLENGES
       });
     } catch {
       check.checked = !check.checked;
@@ -839,9 +998,11 @@ async function initFirebaseListeners() {
     unsubscribeRanking = subscribeRanking((data) => {
       realtimeRanking = data;
       renderRanking();
+      renderChallenges();
     }, () => {
       firebaseOnline = false;
       renderRanking();
+      renderChallenges();
     });
 
     if (currentGuestId) {

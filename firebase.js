@@ -358,7 +358,16 @@ async function togglePhotoLike(photoId, guestId) {
   return changed;
 }
 
-async function setChallengeDone({ guestId, challengeId, done, points }) {
+async function setChallengeDone({
+  guestId,
+  challengeId,
+  done,
+  points,
+  activeIds = [],
+  completedIds = [],
+  seenIds = [],
+  maxActiveChallenges = 5
+}) {
   const user = await ensureAuth();
   if (!db || !user) throw new Error("auth_required");
 
@@ -374,11 +383,17 @@ async function setChallengeDone({ guestId, challengeId, done, points }) {
     if (prevDone === done) return false;
 
     const nextCompleted = { ...(existing.completed || {}), [challengeId]: done };
+    const nextCompletedIds = Array.from(new Set(completedIds.filter((id) => Boolean(id))));
+    const nextSeenIds = Array.from(new Set(seenIds.filter((id) => Boolean(id))));
+    const normalizedActiveIds = Array.from(new Set(activeIds.filter((id) => Boolean(id)))).slice(0, maxActiveChallenges);
     tx.set(
       challengeRef,
       {
         guestId,
         completed: nextCompleted,
+        completedIds: nextCompletedIds,
+        seenIds: nextSeenIds,
+        activeIds: normalizedActiveIds,
         updatedAt: serverTimestamp(),
         updatedByUid: user.uid
       },
