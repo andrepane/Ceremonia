@@ -346,23 +346,6 @@ input {
   box-shadow: 0 22px 36px rgba(59, 37, 24, 0.18);
 }
 
-.guest-card--occupied .guest-card__inner {
-  filter: grayscale(0.2);
-}
-
-.guest-card--occupied .guest-card__face {
-  background: linear-gradient(145deg, rgba(232, 224, 218, 0.98), rgba(214, 198, 188, 0.96));
-}
-
-.guest-card--occupied .guest-avatar {
-  background: linear-gradient(145deg, #d5cbc4, #c8b8ac);
-}
-
-.guest-card--occupied .guest-name,
-.guest-card--occupied .guest-role {
-  color: #6b5a4f;
-}
-
 .guest-card--flipped .guest-card__inner {
   transform: rotateY(180deg) translateZ(0);
   -webkit-transform: rotateY(180deg) translateZ(0);
@@ -450,18 +433,6 @@ input {
   text-align: center;
 }
 
-.guest-status-pill {
-  font-size: 0.72rem;
-  font-weight: 700;
-  text-transform: uppercase;
-  letter-spacing: 0.04em;
-  color: #7c3420;
-  background: rgba(255, 204, 190, 0.92);
-  border: 1px solid rgba(162, 82, 52, 0.35);
-  border-radius: 999px;
-  padding: 4px 10px;
-}
-
 .guest-role {
   font-size: 0.95rem;
   color: var(--muted);
@@ -474,13 +445,6 @@ input {
   min-width: 96px;
   padding: 0 14px;
   font-size: 0.95rem;
-}
-
-.guest-enter-btn:disabled {
-  opacity: 1;
-  cursor: not-allowed;
-  background: #bca79b;
-  border-color: #bca79b;
 }
 
 @media (max-width: 480px) {
