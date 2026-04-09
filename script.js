@@ -6,15 +6,12 @@ import {
   subscribeGuestPresence,
   subscribeActivity,
   subscribePhotos,
-  subscribeRanking,
-  subscribeGuestChallenges,
   lockGuestProfile,
   switchGuestProfileLock,
   releaseGuestProfileLock,
   uploadPhoto,
   deletePhoto,
-  togglePhotoLike,
-  setChallengeDone
+  togglePhotoLike
 } from "./firebase.js";
 
 const APP_DATA = window.WEDDING_APP_DATA;
@@ -46,23 +43,18 @@ let currentLanguage = "es";
 let currentGuestId = null;
 let realtimeActivity = [];
 let realtimePhotos = [];
-let realtimeRanking = [];
-let realtimeChallenges = {};
 let realtimeGuestLocks = {};
 let firebaseOnline = false;
 let authUid = null;
 let hasActiveGuestLock = false;
 let unsubscribeActivity = () => {};
 let unsubscribePhotos = () => {};
-let unsubscribeRanking = () => {};
-let unsubscribeGuestChallenges = () => {};
 let unsubscribeGuestPresence = () => {};
 const pendingPhotoLikes = new Set();
 let isWeekendFormatExpanded = false;
 let homeActivityLoading = true;
 let homePhotosLoading = true;
 
-const MAX_ACTIVE_CHALLENGES = 5;
 const WEEKEND_TIMELINE_STARTS = [
   { dayOffset: -1, hour: 15, minute: 0 },
   { dayOffset: -1, hour: 17, minute: 0 },
@@ -75,68 +67,6 @@ const WEEKEND_TIMELINE_STARTS = [
   { dayOffset: 0, hour: 21, minute: 15 },
   { dayOffset: 0, hour: 23, minute: 0 },
   { dayOffset: 1, hour: 9, minute: 0 }
-];
-const CHALLENGE_DATABASE = [
-  { id: "social_new_person", category: "social", points: 1, text: { es: "Hablar con alguien con quien aún no habías hablado", it: "Parlare con qualcuno con cui non avevi ancora parlato" } },
-  { id: "social_other_family", category: "social", points: 1, text: { es: "Hablar con alguien de la otra familia", it: "Parlare con qualcuno dell'altra famiglia" } },
-  { id: "social_mixed_languages", category: "social", points: 1, text: { es: "Participar en una conversación con mezcla de idiomas", it: "Partecipare a una conversazione con mix di lingue" } },
-  { id: "social_switch_group", category: "social", points: 1, text: { es: "Cambiar de grupo de conversación al menos una vez", it: "Cambiare gruppo di conversazione almeno una volta" } },
-  { id: "social_four_people", category: "social", points: 1, text: { es: "Participar en una conversación de 4 o más personas", it: "Partecipare a una conversazione con 4 o più persone" } },
-  { id: "social_new_story", category: "social", points: 1, text: { es: "Escuchar una historia de alguien que no conocías bien", it: "Ascoltare una storia da qualcuno che non conoscevi bene" } },
-  { id: "social_how_they_know", category: "social", points: 1, text: { es: "Preguntar a alguien cómo conoce a los novios", it: "Chiedere a qualcuno come conosce gli sposi" } },
-  { id: "social_unexpected_talk", category: "social", points: 1, text: { es: "Acabar hablando con alguien con quien no esperabas hablar", it: "Finire a parlare con qualcuno con cui non ti aspettavi di parlare" } },
-  { id: "social_someone_translates", category: "social", points: 1, text: { es: "Participar en una conversación donde alguien traduzca algo", it: "Partecipare a una conversazione in cui qualcuno traduce qualcosa" } },
-  { id: "social_not_getting_it", category: "social", points: 1, text: { es: "Estar en una conversación en la que alguien diga “no me estoy enterando”", it: "Essere in una conversazione in cui qualcuno dica «non ci sto capendo niente»" } },
-  { id: "culture_phrase_other_language", category: "culture_language", points: 1, text: { es: "Decir una frase en el otro idioma", it: "Dire una frase nell'altra lingua" } },
-  { id: "culture_understand_without_translation", category: "culture_language", points: 1, text: { es: "Entender algo sin que te lo traduzcan", it: "Capire qualcosa senza traduzione" } },
-  { id: "culture_ask_word_meaning", category: "culture_language", points: 1, text: { es: "Preguntar el significado de una palabra", it: "Chiedere il significato di una parola" } },
-  { id: "culture_repeat_difficult_word", category: "culture_language", points: 1, text: { es: "Repetir correctamente una palabra difícil", it: "Ripetere correttamente una parola difficile" } },
-  { id: "culture_mix_es_it", category: "culture_language", points: 1, text: { es: "Mezclar español e italiano en una frase", it: "Mescolare spagnolo e italiano in una frase" } },
-  { id: "culture_teach_word", category: "culture_language", points: 1, text: { es: "Enseñar una palabra de tu idioma a alguien", it: "Insegnare una parola della tua lingua a qualcuno" } },
-  { id: "culture_translate_moment", category: "culture_language", points: 1, text: { es: "Hacer de traductor en un momento puntual", it: "Fare da traduttore in un momento preciso" } },
-  { id: "culture_understand_nothing", category: "culture_language", points: 1, text: { es: "Escuchar una frase y no entender nada (y reconocerlo)", it: "Sentire una frase e non capire nulla (e ammetterlo)" } },
-  { id: "culture_new_word_weekend", category: "culture_language", points: 1, text: { es: "Aprender una palabra nueva durante el finde", it: "Imparare una parola nuova durante il weekend" } },
-  { id: "culture_correct_word", category: "culture_language", points: 1, text: { es: "Corregir correctamente una palabra", it: "Correggere correttamente una parola" } },
-  { id: "photo_friday", category: "photos", points: 1, text: { es: "Subir una foto del viernes (llegada / piscina)", it: "Caricare una foto del venerdì (arrivo / piscina)" } },
-  { id: "photo_other_family", category: "photos", points: 1, text: { es: "Subir una foto con alguien de la otra familia", it: "Caricare una foto con qualcuno dell'altra famiglia" } },
-  { id: "photo_three_people", category: "photos", points: 1, text: { es: "Subir una foto con 3 o más personas", it: "Caricare una foto con 3 o più persone" } },
-  { id: "photo_before_ceremony", category: "photos", points: 1, text: { es: "Subir una foto antes de la ceremonia", it: "Caricare una foto prima della cerimonia" } },
-  { id: "photo_after_ceremony", category: "photos", points: 1, text: { es: "Subir una foto después de la ceremonia", it: "Caricare una foto dopo la cerimonia" } },
-  { id: "photo_unexpected_moment", category: "photos", points: 1, text: { es: "Subir una foto de un momento inesperado", it: "Caricare una foto di un momento inaspettato" } },
-  { id: "photo_with_you", category: "photos", points: 1, text: { es: "Subir una foto en la que salgas tú", it: "Caricare una foto in cui ci sei tu" } },
-  { id: "photo_group", category: "photos", points: 1, text: { es: "Subir una foto del grupo", it: "Caricare una foto del gruppo" } },
-  { id: "photo_three_likes", category: "photos", points: 1, text: { es: "Conseguir 3 likes en una foto", it: "Ottenere 3 like su una foto" } },
-  { id: "photo_two_uploads", category: "photos", points: 1, text: { es: "Subir al menos 2 fotos durante el finde", it: "Caricare almeno 2 foto durante il weekend" } },
-  { id: "chaos_clap_no_reason", category: "chaos", points: 1, text: { es: "Aplaudir sin motivo aparente", it: "Applaudire senza motivo apparente" } },
-  { id: "chaos_absurd_toast", category: "chaos", points: 1, text: { es: "Hacer un brindis por algo absurdo (repetible)", it: "Fare un brindisi per qualcosa di assurdo (ripetibile)" } },
-  { id: "chaos_sternocleidomastoideo", category: "chaos", points: 1, text: { es: "Gritar “ESTERNOCLEIDOMASTOIDEO”", it: "Gridare «STERNOCLEIDOMASTOIDEO»" } },
-  { id: "chaos_absurd_word", category: "chaos", points: 1, text: { es: "Gritar otra palabra absurda (ej: “HIPOPÓTAMO”)", it: "Gridare un'altra parola assurda (es: «IPPOPOTAMO»)" } },
-  { id: "chaos_gestures_only", category: "chaos", points: 1, text: { es: "Comunicar algo sin palabras, solo con gestos", it: "Comunicare qualcosa senza parole, solo con gesti" } },
-  { id: "chaos_drink_no_hands", category: "chaos", points: 1, text: { es: "Beber un vaso de agua sin usar las manos", it: "Bere un bicchiere d'acqua senza usare le mani" } },
-  { id: "chaos_foreign_accent", category: "chaos", points: 1, text: { es: "Hablar con acento extranjero durante 5 minutos", it: "Parlare con accento straniero per 5 minuti" } },
-  { id: "chaos_follow_someone", category: "chaos", points: 1, text: { es: "Seguir a alguien sin que se dé cuenta durante 2 minutos", it: "Seguire qualcuno senza farsi notare per 2 minuti" } },
-  { id: "chaos_animal_imitation", category: "chaos", points: 1, text: { es: "Imitar a un animal", it: "Imitare un animale" } },
-  { id: "chaos_fake_toast", category: "chaos", points: 1, text: { es: "Levantar la copa como si fueras a brindar… y no hacerlo", it: "Alzare il calice come per brindare... e non farlo" } },
-  { id: "chaos_start_clapping_group", category: "chaos", points: 1, text: { es: "Empezar a aplaudir e intentar que alguien se una", it: "Iniziare ad applaudire e provare a far unire qualcuno" } },
-  { id: "chaos_point_nothing", category: "chaos", points: 1, text: { es: "Señalar algo inexistente y actuar como si fuera importante", it: "Indicare qualcosa che non esiste e comportarti come se fosse importante" } },
-  { id: "chaos_greet_old_friend", category: "chaos", points: 1, text: { es: "Saludar a alguien como si lo conocieras de toda la vida", it: "Salutare qualcuno come se lo conoscessi da sempre" } },
-  { id: "chaos_move_without_words", category: "chaos", points: 1, text: { es: "Cambiar de sitio sin decir nada y actuar normal", it: "Cambiare posto senza dire nulla e comportarti normalmente" } },
-  { id: "chaos_shhh", category: "chaos", points: 1, text: { es: "Decir “shhh” sin que esté pasando nada", it: "Dire «shhh» quando non sta succedendo nulla" } },
-  { id: "chaos_stand_sit", category: "chaos", points: 1, text: { es: "Levantarte como si fueras a decir algo importante… y sentarte", it: "Alzarti come per dire qualcosa di importante... e sederti" } },
-  { id: "chaos_overreact", category: "chaos", points: 1, text: { es: "Reaccionar exageradamente a algo normal", it: "Reagire in modo esagerato a qualcosa di normale" } },
-  { id: "chaos_phone_surprised", category: "chaos", points: 1, text: { es: "Mirar el móvil, sorprenderte… y no explicar nada", it: "Guardare il telefono, stupirti... e non spiegare nulla" } },
-  { id: "chaos_toast_two_people", category: "chaos", points: 1, text: { es: "Brindar solo con una persona sin motivo", it: "Brindare solo con una persona senza motivo" } },
-  { id: "chaos_have_you_seen_it", category: "chaos", points: 1, text: { es: "Mirar alrededor y decir “¿lo habéis visto?” sin contexto", it: "Guardarti intorno e dire «l'avete visto?» senza contesto" } },
-  { id: "ambience_clap_end_song", category: "ambience", points: 1, text: { es: "Aplaudir al final de una canción", it: "Applaudire alla fine di una canzone" } },
-  { id: "ambience_stand_when_song_starts", category: "ambience", points: 1, text: { es: "Levantarte cuando empieza una canción", it: "Alzarti quando inizia una canzone" } },
-  { id: "ambience_on_dancefloor_start", category: "ambience", points: 1, text: { es: "Estar en la pista cuando empieza una canción", it: "Essere in pista quando inizia una canzone" } },
-  { id: "ambience_full_song_dancefloor", category: "ambience", points: 1, text: { es: "Permanecer en la pista durante una canción entera", it: "Restare in pista per una canzone intera" } },
-  { id: "ambience_good_song_comment", category: "ambience", points: 1, text: { es: "Decir “esta canción es buenísima”", it: "Dire «questa canzone è bellissima»" } },
-  { id: "ambience_go_when_people_dancing", category: "ambience", points: 1, text: { es: "Ir a la pista cuando ya hay gente bailando", it: "Andare in pista quando c'è già gente che balla" } },
-  { id: "ambience_keep_beat_unknown_song", category: "ambience", points: 1, text: { es: "Seguir el ritmo aunque no conozcas la canción", it: "Seguire il ritmo anche se non conosci la canzone" } },
-  { id: "ambience_collective_applause", category: "ambience", points: 1, text: { es: "Estar en un momento de aplauso colectivo", it: "Essere in un momento di applauso collettivo" } },
-  { id: "ambience_leave_table_to_dance", category: "ambience", points: 1, text: { es: "Levantarte de la mesa para ir a bailar", it: "Alzarti dal tavolo per andare a ballare" } },
-  { id: "ambience_return_dancefloor", category: "ambience", points: 1, text: { es: "Volver a la pista después de haber salido", it: "Tornare in pista dopo essere uscito" } }
 ];
 
 const SATURDAY_ONLY_GUEST_IDS = new Set(["tito", "ana_amiga_novia", "gabri"]);
@@ -176,17 +106,17 @@ const HOME_DASHBOARD_COPY = {
     mapAction: "Abrir sección mapa",
     personalLabel: "Tu panel personal",
     personalNoGuest: "Selecciona un perfil para personalizar recomendaciones.",
-    personalWithGuest: "Hola, {name}. Recomendación: completa un reto y sube una foto del momento.",
-    personalAction: "Ver retos pendientes",
+    personalWithGuest: "Hola, {name}. Recomendación: sube una foto del momento.",
+    personalAction: "Ver fotos del finde",
     activityLabel: "Últimas acciones del grupo",
     activityTemplates: {
       upload_photo: "{name} ha subido una foto",
-      complete_challenge: "{name} ha cumplido un reto",
+      complete_challenge: "{name} ha compartido un momento",
       react_photo: "{name} ha reaccionado a una foto"
     },
     activityEmpty: "Aún no hay actividad compartida.",
     activityEmptyElegant: "Sé el primero en subir una foto.",
-    activityFallback: "Mostrando datos demo por falta de conexión a Firebase.",
+    activityFallback: "Sin conexión a Firebase: cuando vuelva, verás la actividad del grupo aquí.",
     activityLoading: "Cargando actividad del grupo...",
     offlineBanner: "Sin conexión en tiempo real. Mostrando contenido de respaldo.",
     minutesAgo: "hace {count} min",
@@ -215,8 +145,6 @@ const HOME_DASHBOARD_COPY = {
     deletePhotoConfirm: "¿Seguro que quieres eliminar esta foto?",
     deleteError: "No se pudo eliminar la foto.",
     likeError: "No se pudo registrar el like.",
-    challengeSaved: "Guardado",
-    challengeError: "No se pudo guardar el reto.",
     authError: "No se pudo autenticar."
   },
   it: {
@@ -251,17 +179,17 @@ const HOME_DASHBOARD_COPY = {
     mapAction: "Apri sezione mappa",
     personalLabel: "Il tuo pannello personale",
     personalNoGuest: "Seleziona un profilo per ricevere consigli personalizzati.",
-    personalWithGuest: "Ciao, {name}. Consiglio: completa una sfida e carica una foto del momento.",
-    personalAction: "Apri sfide",
+    personalWithGuest: "Ciao, {name}. Consiglio: carica una foto del momento.",
+    personalAction: "Vedi foto del weekend",
     activityLabel: "Ultime azioni del gruppo",
     activityTemplates: {
       upload_photo: "{name} ha caricato una foto",
-      complete_challenge: "{name} ha completato una sfida",
+      complete_challenge: "{name} ha condiviso un momento",
       react_photo: "{name} ha reagito a una foto"
     },
     activityEmpty: "Non ci sono ancora attività condivise.",
     activityEmptyElegant: "Sii il primo a caricare una foto.",
-    activityFallback: "Mostro dati demo perché Firebase non è disponibile.",
+    activityFallback: "Senza connessione a Firebase: quando torna, vedrai qui l'attività del gruppo.",
     activityLoading: "Caricamento attività del gruppo...",
     offlineBanner: "Senza connessione realtime. Mostro contenuti di fallback.",
     minutesAgo: "{count} min fa",
@@ -290,95 +218,10 @@ const HOME_DASHBOARD_COPY = {
     deletePhotoConfirm: "Vuoi davvero eliminare questa foto?",
     deleteError: "Impossibile eliminare la foto.",
     likeError: "Impossibile registrare il like.",
-    challengeSaved: "Salvato",
-    challengeError: "Impossibile salvare la sfida.",
     authError: "Impossibile autenticarsi."
   }
 };
 
-const HOME_ACTIVITY_FEED = [
-  { guestId: "gigi", type: "upload_photo", minutesAgo: 5 },
-  { guestId: "rachele", type: "complete_challenge", minutesAgo: 18 },
-  { guestId: "manolo", type: "react_photo", minutesAgo: 37 }
-];
-
-const CHALLENGE_BY_ID = new Map(CHALLENGE_DATABASE.map((challenge) => [challenge.id, challenge]));
-
-function getChallengeCategoryLabel(category) {
-  const labels = {
-    es: {
-      social: "🧑‍🤝‍🧑 SOCIALES",
-      culture_language: "🇪🇸🇮🇹 CULTURA / IDIOMA",
-      photos: "📸 FOTOS",
-      chaos: "🎭 MODO CAOS",
-      ambience: "🎶 AMBIENTE"
-    },
-    it: {
-      social: "🧑‍🤝‍🧑 SOCIALI",
-      culture_language: "🇪🇸🇮🇹 CULTURA / LINGUA",
-      photos: "📸 FOTO",
-      chaos: "🎭 MODALITÀ CAOS",
-      ambience: "🎶 ATMOSFERA"
-    }
-  };
-  return labels[currentLanguage]?.[category] || category;
-}
-
-function getChallengeStateFromRealtime() {
-  const defaultState = { activeIds: [], completedIds: [], seenIds: [] };
-  if (!firebaseOnline || !currentGuestId) return defaultState;
-
-  const legacyCompleted = Object.entries(realtimeChallenges?.completed || {})
-    .filter(([, isDone]) => Boolean(isDone))
-    .map(([id]) => id);
-
-  const completedIds = Array.from(new Set([...(realtimeChallenges?.completedIds || []), ...legacyCompleted]));
-  const seenIds = Array.from(new Set([...(realtimeChallenges?.seenIds || []), ...completedIds]));
-  const validActive = (realtimeChallenges?.activeIds || []).filter((id) => CHALLENGE_BY_ID.has(id) && !completedIds.includes(id));
-  return { activeIds: validActive, completedIds, seenIds };
-}
-
-function buildChallengeDeck(state) {
-  const completedSet = new Set(state.completedIds);
-  const seenSet = new Set(state.seenIds);
-  const activeSet = new Set(state.activeIds.filter((id) => !completedSet.has(id)));
-
-  const normalizedActiveIds = Array.from(activeSet).filter((id) => CHALLENGE_BY_ID.has(id));
-  const usedCategories = new Set(
-    normalizedActiveIds
-      .map((id) => CHALLENGE_BY_ID.get(id)?.category)
-      .filter(Boolean)
-  );
-
-  const slotsLeft = Math.max(0, MAX_ACTIVE_CHALLENGES - normalizedActiveIds.length);
-  if (slotsLeft > 0) {
-    for (const challenge of CHALLENGE_DATABASE) {
-      if (normalizedActiveIds.length >= MAX_ACTIVE_CHALLENGES) break;
-      if (completedSet.has(challenge.id) || activeSet.has(challenge.id) || seenSet.has(challenge.id)) continue;
-      if (usedCategories.has(challenge.category)) continue;
-      normalizedActiveIds.push(challenge.id);
-      activeSet.add(challenge.id);
-      seenSet.add(challenge.id);
-      usedCategories.add(challenge.category);
-    }
-  }
-
-  if (normalizedActiveIds.length < MAX_ACTIVE_CHALLENGES) {
-    for (const challenge of CHALLENGE_DATABASE) {
-      if (normalizedActiveIds.length >= MAX_ACTIVE_CHALLENGES) break;
-      if (completedSet.has(challenge.id) || activeSet.has(challenge.id) || seenSet.has(challenge.id)) continue;
-      normalizedActiveIds.push(challenge.id);
-      activeSet.add(challenge.id);
-      seenSet.add(challenge.id);
-    }
-  }
-
-  return {
-    activeIds: normalizedActiveIds.slice(0, MAX_ACTIVE_CHALLENGES),
-    completedIds: Array.from(completedSet),
-    seenIds: Array.from(seenSet)
-  };
-}
 
 function scrollViewportToTop() {
   window.scrollTo({ top: 0, left: 0, behavior: "auto" });
@@ -511,9 +354,7 @@ function renderActivityFeed() {
     `;
   }
 
-  const feedItems = firebaseOnline && realtimeActivity.length
-    ? realtimeActivity
-    : HOME_ACTIVITY_FEED.map((item) => ({ ...item, createdAt: new Date(Date.now() - item.minutesAgo * 60000) }));
+  const feedItems = firebaseOnline ? realtimeActivity : [];
   const latestItems = feedItems.slice(0, 10);
 
   if (!latestItems.length) {
@@ -587,104 +428,7 @@ function renderDictionary() {
     return `<article class="dictionary-row"><h4 class="card-title">${term}</h4><p class="card-text">${translation}</p></article>`;
   }).join("");
 
-  const phraseItems = (locale.usefulPhrases || []).map((entry) => {
-    const phrase = currentLanguage === "es" ? entry.es : entry.it;
-    const translation = currentLanguage === "es" ? entry.it : entry.es;
-    return `<article class="dictionary-row"><h4 class="card-title">${phrase}</h4><p class="card-text">${translation}</p></article>`;
-  }).join("");
-
   document.getElementById("false-friends-list").innerHTML = falseFriendItems;
-  document.getElementById("useful-phrases-list").innerHTML = phraseItems;
-}
-
-function getLocalizedChallenge(challengeId) {
-  const challenge = CHALLENGE_BY_ID.get(challengeId);
-  if (!challenge) return null;
-  return {
-    ...challenge,
-    label: challenge.text[currentLanguage] || challenge.text.es
-  };
-}
-
-function renderChallengeItem(challenge, { completed = false } = {}) {
-  if (!challenge) return "";
-  const category = getChallengeCategoryLabel(challenge.category);
-  const completeLabel = currentLanguage === "it" ? "Completa" : "Completar";
-  const completedLabel = currentLanguage === "it" ? "Completata" : "Completado";
-  return `
-    <article class="challenge-item ${completed ? "challenge-item--completed" : ""}">
-      <div class="challenge-item__content">
-        <span class="challenge-item__category">${category}</span>
-        <span class="challenge-item__text">${challenge.label}</span>
-      </div>
-      <label class="challenge-complete-btn">
-        <input type="checkbox" data-challenge-id="${challenge.id}" ${completed ? "checked" : ""} ${currentGuestId ? "" : "disabled"} />
-        <span class="challenge-complete-btn__chip">${completed ? "✓" : "○"}</span>
-        <span class="challenge-complete-btn__label">${completed ? completedLabel : completeLabel}</span>
-      </label>
-    </article>
-  `;
-}
-
-function getFallbackChallengeLists() {
-  const locale = getLocale();
-  const fallback = (locale.challenges || []).map((item, index) => {
-    const databaseItem = CHALLENGE_DATABASE[index];
-    if (!databaseItem) return null;
-    return {
-      ...databaseItem,
-      done: Boolean(item.done),
-      label: item.text || databaseItem.text[currentLanguage] || databaseItem.text.es
-    };
-  }).filter(Boolean);
-
-  return {
-    pending: fallback.filter((item) => !item.done).slice(0, MAX_ACTIVE_CHALLENGES),
-    completed: fallback.filter((item) => item.done)
-  };
-}
-
-function renderChallenges() {
-  const pendingContainer = document.getElementById("challenge-list-pending");
-  const completedContainer = document.getElementById("challenge-list-completed");
-  const labels = getLocale().labels;
-
-  if (!firebaseOnline || !currentGuestId) {
-    const fallbackLists = getFallbackChallengeLists();
-    pendingContainer.innerHTML = fallbackLists.pending.map((challenge) => renderChallengeItem(challenge)).join("");
-    completedContainer.innerHTML = fallbackLists.completed.map((challenge) => renderChallengeItem(challenge, { completed: true })).join("");
-  } else {
-    const currentState = getChallengeStateFromRealtime();
-    const deck = buildChallengeDeck(currentState);
-    const pendingItems = deck.activeIds.map((id) => getLocalizedChallenge(id)).filter(Boolean);
-    const completedItems = deck.completedIds.map((id) => getLocalizedChallenge(id)).filter(Boolean);
-    pendingContainer.innerHTML = pendingItems.map((challenge) => renderChallengeItem(challenge)).join("");
-    completedContainer.innerHTML = completedItems.length
-      ? completedItems.map((challenge) => renderChallengeItem(challenge, { completed: true })).join("")
-      : `<article class="challenge-item challenge-item--empty">${labels.noChallengesCompleted}</article>`;
-  }
-
-  if (!pendingContainer.innerHTML.trim()) {
-    pendingContainer.innerHTML = `<article class="challenge-item challenge-item--empty">${labels.noChallengesPending}</article>`;
-  }
-  if (!completedContainer.innerHTML.trim()) {
-    completedContainer.innerHTML = `<article class="challenge-item challenge-item--empty">${labels.noChallengesCompleted}</article>`;
-  }
-
-  const totalPoints = firebaseOnline && currentGuestId
-    ? (realtimeRanking.find((entry) => (entry.guestId || entry.id) === currentGuestId)?.points || 0)
-    : 0;
-  document.getElementById("txt-progress-title").textContent = labels.progressTitleDynamic.replace("{points}", String(totalPoints));
-}
-
-function renderRanking() {
-  const container = document.getElementById("ranking-list");
-  const source = firebaseOnline && realtimeRanking.length ? realtimeRanking : APP_DATA.ranking;
-  container.innerHTML = source.map((item) => {
-    const guest = findGuestById(item.guestId || item.id);
-    const name = guest ? guest.name : (item.guestId || item.id);
-    return `<li><span>${name}</span><strong>${item.points || 0} pts</strong></li>`;
-  }).join("");
 }
 
 function renderPhotos() {
@@ -804,20 +548,10 @@ async function setGuest(guestId) {
   if (isFirebaseConfigured()) {
     try {
       await linkGuestToAuth(guestId);
-      subscribeGuestStreams();
     } catch {
       alert(getHomeCopy().authError);
     }
   }
-}
-
-function subscribeGuestStreams() {
-  if (!currentGuestId || !isFirebaseConfigured()) return;
-  unsubscribeGuestChallenges();
-  unsubscribeGuestChallenges = subscribeGuestChallenges(currentGuestId, (docData) => {
-    realtimeChallenges = docData || {};
-    renderChallenges();
-  });
 }
 
 function activateView(viewName) {
@@ -859,16 +593,8 @@ function applyTranslations() {
   document.getElementById("txt-translator-title").textContent = labels.translatorTitle;
   document.getElementById("txt-translator-text").textContent = labels.translatorText;
   document.getElementById("txt-false-friends-label").textContent = labels.falseFriendsLabel;
-  document.getElementById("txt-useful-phrases-label").textContent = labels.usefulPhrasesLabel;
   document.getElementById("translator-input").placeholder = labels.translatorPlaceholder;
   document.getElementById("translator-btn").textContent = labels.translateBtn;
-  document.getElementById("txt-game-title").textContent = labels.gameTitle;
-  document.getElementById("txt-progress-label").textContent = labels.progressLabel;
-  document.getElementById("txt-progress-title").textContent = labels.progressTitleDynamic.replace("{points}", "0");
-  document.getElementById("txt-progress-text").textContent = labels.progressText;
-  document.getElementById("txt-challenges-pending-label").textContent = labels.pendingChallengesLabel;
-  document.getElementById("txt-challenges-completed-label").textContent = labels.completedChallengesLabel;
-  document.getElementById("txt-ranking-label").textContent = labels.rankingLabel;
   document.getElementById("txt-photos-title").textContent = labels.photosTitle;
   document.getElementById("txt-map-title").textContent = labels.mapTitle;
   document.getElementById("txt-map-text").textContent = labels.mapText;
@@ -878,7 +604,6 @@ function applyTranslations() {
   document.getElementById("nav-home").textContent = labels.navHome;
   document.getElementById("nav-guide").textContent = labels.navGuide;
   document.getElementById("nav-dictionary").textContent = labels.navDictionary;
-  document.getElementById("nav-game").textContent = labels.navGame;
   document.getElementById("nav-photos").textContent = labels.navPhotos;
   document.getElementById("nav-map").textContent = labels.navMap;
 }
@@ -945,8 +670,6 @@ function renderAllDynamicSections() {
   renderHomeDashboard();
   renderTimeline();
   renderDictionary();
-  renderChallenges();
-  renderRanking();
   renderPhotos();
 }
 
@@ -1015,7 +738,7 @@ function bindUIEvents() {
     }
   });
 
-  ["false-friends", "useful-phrases"].forEach((id) => {
+  ["false-friends"].forEach((id) => {
     const toggle = document.getElementById(`${id}-toggle`);
     const content = document.getElementById(`${id}-list`);
     toggle.addEventListener("click", () => {
@@ -1055,44 +778,6 @@ function bindUIEvents() {
       alert(getHomeCopy().deleteError);
     }
   });
-
-  const handleChallengeToggle = async (event) => {
-    const check = event.target;
-    if (!check.matches("input[data-challenge-id]") || !currentGuestId || !firebaseOnline) return;
-    const challengeId = check.dataset.challengeId;
-    const state = getChallengeStateFromRealtime();
-    const nextCompletedIds = check.checked
-      ? Array.from(new Set([...state.completedIds, challengeId]))
-      : state.completedIds.filter((id) => id !== challengeId);
-    const nextActiveIds = check.checked
-      ? state.activeIds.filter((id) => id !== challengeId)
-      : [challengeId, ...state.activeIds.filter((id) => id !== challengeId)].slice(0, MAX_ACTIVE_CHALLENGES);
-    const projectedState = {
-      activeIds: nextActiveIds,
-      completedIds: nextCompletedIds,
-      seenIds: Array.from(new Set([...state.seenIds, challengeId]))
-    };
-    const nextDeck = buildChallengeDeck(projectedState);
-    const challenge = CHALLENGE_BY_ID.get(check.dataset.challengeId);
-    try {
-      await setChallengeDone({
-        guestId: currentGuestId,
-        challengeId,
-        done: check.checked,
-        points: challenge?.points || 1,
-        activeIds: nextDeck.activeIds,
-        completedIds: nextDeck.completedIds,
-        seenIds: nextDeck.seenIds,
-        maxActiveChallenges: MAX_ACTIVE_CHALLENGES
-      });
-    } catch {
-      check.checked = !check.checked;
-      alert(getHomeCopy().challengeError);
-    }
-  };
-
-  document.getElementById("challenge-list-pending").addEventListener("change", handleChallengeToggle);
-  document.getElementById("challenge-list-completed").addEventListener("change", handleChallengeToggle);
 
   uploadPhotoBtn.addEventListener("click", handleUploadPhoto);
 
@@ -1153,13 +838,9 @@ async function initFirebaseListeners() {
 
   unsubscribeActivity();
   unsubscribePhotos();
-  unsubscribeRanking();
-  unsubscribeGuestChallenges();
   unsubscribeGuestPresence();
   unsubscribeActivity = () => {};
   unsubscribePhotos = () => {};
-  unsubscribeRanking = () => {};
-  unsubscribeGuestChallenges = () => {};
   unsubscribeGuestPresence = () => {};
 
   try {
@@ -1205,21 +886,10 @@ async function initFirebaseListeners() {
       renderPhotos();
     });
 
-    unsubscribeRanking = subscribeRanking((data) => {
-      realtimeRanking = data;
-      renderRanking();
-      renderChallenges();
-    }, () => {
-      firebaseOnline = false;
-      renderRanking();
-      renderChallenges();
-    });
-
     if (currentGuestId) {
       try {
         await lockGuestProfile(currentGuestId);
         hasActiveGuestLock = true;
-        subscribeGuestStreams();
       } catch {
         hasActiveGuestLock = false;
         localStorage.removeItem("wedding_guest");
