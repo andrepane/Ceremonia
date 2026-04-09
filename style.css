@@ -298,6 +298,16 @@ input {
   font-size: 0.95rem;
 }
 
+.text-btn--inline {
+  justify-self: start;
+  width: auto;
+  height: auto;
+  min-height: 34px;
+  padding: 0 12px;
+  border-radius: 999px;
+  margin: 0;
+}
+
 .guest-grid {
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
@@ -535,6 +545,10 @@ input {
   box-shadow: 0 16px 34px rgba(77, 51, 35, 0.16);
 }
 
+.hero-panel--urgent {
+  box-shadow: 0 18px 36px rgba(115, 47, 21, 0.38);
+}
+
 .hero-panel__label {
   margin: 0;
   opacity: 0.82;
@@ -551,10 +565,39 @@ input {
   line-height: 1;
 }
 
+.countdown--urgent {
+  color: #ffe8cc;
+}
+
 .hero-panel__text {
   margin: 10px 0 0;
   opacity: 0.88;
   line-height: 1.5;
+}
+
+.hero-panel__next-label {
+  margin: 14px 0 0;
+  opacity: 0.8;
+  font-size: 0.78rem;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+}
+
+.hero-panel__next-event {
+  margin: 6px 0 0;
+  font-weight: 600;
+}
+
+.hero-panel__urgency {
+  margin: 8px 0 0;
+  color: #ffe8cc;
+  font-size: 0.9rem;
+  font-weight: 600;
+  display: none;
+}
+
+.hero-panel__urgency.is-visible {
+  display: block;
 }
 
 .info-stack,
@@ -573,6 +616,18 @@ input {
 .home-card {
   display: grid;
   gap: 12px;
+}
+
+.status-banner {
+  border-radius: var(--radius-md);
+  padding: 10px 12px;
+  font-size: 0.88rem;
+}
+
+.status-banner--offline {
+  background: #f5ece3;
+  color: #6f5648;
+  border: 1px solid #ddc7b5;
 }
 
 .home-card .card-text {
@@ -624,8 +679,45 @@ input {
   white-space: nowrap;
 }
 
+.activity-item--placeholder,
+.activity-item--skeleton {
+  border-bottom-style: solid;
+}
+
+.activity-skeleton {
+  display: inline-block;
+  border-radius: 999px;
+  background: linear-gradient(90deg, rgba(200, 182, 169, 0.2), rgba(200, 182, 169, 0.45), rgba(200, 182, 169, 0.2));
+  background-size: 200% 100%;
+  animation: shimmer 1.6s infinite linear;
+}
+
+.activity-skeleton--line {
+  width: 70%;
+  height: 14px;
+}
+
+.activity-skeleton--chip {
+  width: 62px;
+  height: 12px;
+}
+
 .home-activity-hint {
   font-size: 0.9rem;
+}
+
+.app-shell--updating .view--active {
+  opacity: 0.72;
+  transition: opacity 140ms ease;
+}
+
+@keyframes shimmer {
+  from {
+    background-position: 200% 0;
+  }
+  to {
+    background-position: -200% 0;
+  }
 }
 
 .section-block {

@@ -35,7 +35,12 @@ const views = document.querySelectorAll(".view");
 
 const selectedGuestName = document.getElementById("selected-guest-name");
 const countdownElement = document.getElementById("countdown");
+const countdownHintElement = document.getElementById("txt-countdown-hint");
+const countdownNextEventLabelElement = document.getElementById("txt-next-event-label");
+const countdownNextEventElement = document.getElementById("countdown-next-event");
+const countdownUrgencyElement = document.getElementById("countdown-urgency");
 const homeInfoStack = document.getElementById("home-info-stack");
+const appShell = document.querySelector(".app-shell");
 
 let currentLanguage = "es";
 let currentGuestId = null;
@@ -53,8 +58,24 @@ let unsubscribeRanking = () => {};
 let unsubscribeGuestChallenges = () => {};
 let unsubscribeGuestPresence = () => {};
 const pendingPhotoLikes = new Set();
+let isWeekendFormatExpanded = false;
+let homeActivityLoading = true;
+let homePhotosLoading = true;
 
 const MAX_ACTIVE_CHALLENGES = 5;
+const WEEKEND_TIMELINE_STARTS = [
+  { dayOffset: -1, hour: 15, minute: 0 },
+  { dayOffset: -1, hour: 17, minute: 0 },
+  { dayOffset: -1, hour: 21, minute: 0 },
+  { dayOffset: 0, hour: 9, minute: 0 },
+  { dayOffset: 0, hour: 10, minute: 30 },
+  { dayOffset: 0, hour: 14, minute: 0 },
+  { dayOffset: 0, hour: 17, minute: 0 },
+  { dayOffset: 0, hour: 20, minute: 0 },
+  { dayOffset: 0, hour: 21, minute: 15 },
+  { dayOffset: 0, hour: 23, minute: 0 },
+  { dayOffset: 1, hour: 9, minute: 0 }
+];
 const CHALLENGE_DATABASE = [
   { id: "social_new_person", category: "social", points: 1, text: { es: "Hablar con alguien con quien aún no habías hablado", it: "Parlare con qualcuno con cui non avevi ancora parlato" } },
   { id: "social_other_family", category: "social", points: 1, text: { es: "Hablar con alguien de la otra familia", it: "Parlare con qualcuno dell'altra famiglia" } },
@@ -132,6 +153,8 @@ const HOME_DASHBOARD_COPY = {
       "Aquí la dinámica es fácil: si hace falta algo, se ayuda. Si suena buena música, se baila. Ven cómodo, ven a gusto, y sin complicarte más de la cuenta.",
       "La idea es simple: estar juntos."
     ],
+    weekendFormatShowMore: "Ver más",
+    weekendFormatShowLess: "Ver menos",
     nextStepLabel: "Tu próximo paso",
     nextStepTitlePre: "Revisa el plan del finde",
     nextStepTextPre: "Consulta horarios, ubicaciones y detalles para llegar sin prisas.",
@@ -162,9 +185,20 @@ const HOME_DASHBOARD_COPY = {
       react_photo: "{name} ha reaccionado a una foto"
     },
     activityEmpty: "Aún no hay actividad compartida.",
+    activityEmptyElegant: "Sé el primero en subir una foto.",
     activityFallback: "Mostrando datos demo por falta de conexión a Firebase.",
+    activityLoading: "Cargando actividad del grupo...",
+    offlineBanner: "Sin conexión en tiempo real. Mostrando contenido de respaldo.",
     minutesAgo: "hace {count} min",
     hoursAgo: "hace {count} h",
+    countdownUnits: {
+      days: "días",
+      hours: "horas",
+      minutes: "minutos"
+    },
+    nextEventLabel: "Siguiente evento",
+    nextEventFallback: "No quedan eventos pendientes en la guía.",
+    countdownUrgency: "⏰ Queda menos de 24 horas para la ceremonia.",
     moments: {
       pre: "Ahora estáis en preparación previa.",
       live: "Ya estáis dentro del fin de semana de boda.",
@@ -194,6 +228,8 @@ const HOME_DASHBOARD_COPY = {
       "Succede tutto nello stesso posto: piscina, cibo, preparazione, matrimonio e festa. A tratti sarà relax, a tratti servirà dare una mano e a tratti basterà lasciarsi andare.",
       "L'idea è semplice: stare bene, senza complicarsi."
     ],
+    weekendFormatShowMore: "Mostra di più",
+    weekendFormatShowLess: "Mostra meno",
     nextStepLabel: "Il tuo prossimo passo",
     nextStepTitlePre: "Controlla il piano del weekend",
     nextStepTextPre: "Guarda orari, luoghi e dettagli per arrivare senza fretta.",
@@ -224,9 +260,20 @@ const HOME_DASHBOARD_COPY = {
       react_photo: "{name} ha reagito a una foto"
     },
     activityEmpty: "Non ci sono ancora attività condivise.",
+    activityEmptyElegant: "Sii il primo a caricare una foto.",
     activityFallback: "Mostro dati demo perché Firebase non è disponibile.",
+    activityLoading: "Caricamento attività del gruppo...",
+    offlineBanner: "Senza connessione realtime. Mostro contenuti di fallback.",
     minutesAgo: "{count} min fa",
     hoursAgo: "{count} h fa",
+    countdownUnits: {
+      days: "giorni",
+      hours: "ore",
+      minutes: "minuti"
+    },
+    nextEventLabel: "Prossimo evento",
+    nextEventFallback: "Non ci sono altri eventi in programma.",
+    countdownUrgency: "⏰ Manca meno di 24 ore alla cerimonia.",
     moments: {
       pre: "Adesso siete nella fase di preparazione.",
       live: "Siete già nel weekend di matrimonio.",
@@ -362,6 +409,36 @@ function getHomePhase() {
   return "post";
 }
 
+function getGuestTimelineItems(locale = getLocale()) {
+  const fullTimeline = locale.timeline || [];
+  const withIndexes = fullTimeline.map((item, index) => ({ item, index }));
+  return SATURDAY_ONLY_GUEST_IDS.has(currentGuestId)
+    ? withIndexes.slice(FRIDAY_TIMELINE_ITEMS_TO_HIDE)
+    : withIndexes;
+}
+
+function getTimelineDateByIndex(index) {
+  const slot = WEEKEND_TIMELINE_STARTS[index];
+  if (!slot) return null;
+  const ceremonyDate = new Date(APP_DATA.ceremonyDate);
+  const eventDate = new Date(ceremonyDate);
+  eventDate.setDate(eventDate.getDate() + slot.dayOffset);
+  eventDate.setHours(slot.hour, slot.minute, 0, 0);
+  return eventDate;
+}
+
+function getNextTimelineEvent() {
+  const timelineWithIndexes = getGuestTimelineItems();
+  const now = new Date();
+  for (const entry of timelineWithIndexes) {
+    const eventDate = getTimelineDateByIndex(entry.index);
+    if (eventDate && eventDate.getTime() > now.getTime()) {
+      return entry.item;
+    }
+  }
+  return null;
+}
+
 function formatRelativeTimeFromDate(dateValue) {
   const copy = getHomeCopy();
   const d = dateValue?.toDate ? dateValue.toDate() : new Date(dateValue);
@@ -426,13 +503,21 @@ function renderGuestCards() {
 
 function renderActivityFeed() {
   const copy = getHomeCopy();
+  if (firebaseOnline && homeActivityLoading) {
+    return `
+      <li class="activity-item activity-item--placeholder"><span class="activity-item__text">${copy.activityLoading}</span></li>
+      <li class="activity-item activity-item--skeleton"><span class="activity-skeleton activity-skeleton--line"></span><span class="activity-skeleton activity-skeleton--chip"></span></li>
+      <li class="activity-item activity-item--skeleton"><span class="activity-skeleton activity-skeleton--line"></span><span class="activity-skeleton activity-skeleton--chip"></span></li>
+    `;
+  }
+
   const feedItems = firebaseOnline && realtimeActivity.length
     ? realtimeActivity
     : HOME_ACTIVITY_FEED.map((item) => ({ ...item, createdAt: new Date(Date.now() - item.minutesAgo * 60000) }));
   const latestItems = feedItems.slice(0, 10);
 
   if (!latestItems.length) {
-    return `<li class="activity-item"><span class="activity-item__text">${copy.activityEmpty}</span></li>`;
+    return `<li class="activity-item"><span class="activity-item__text">${copy.activityEmptyElegant || copy.activityEmpty}</span></li>`;
   }
 
   return latestItems.map((item) => {
@@ -451,15 +536,25 @@ function renderActivityFeed() {
 
 function renderHomeDashboard() {
   const copy = getHomeCopy();
-  const formatParagraphs = (copy.weekendFormatParagraphs || [])
+  const paragraphs = copy.weekendFormatParagraphs || [];
+  const visibleParagraphs = isWeekendFormatExpanded ? paragraphs : paragraphs.slice(0, 2);
+  const formatParagraphs = visibleParagraphs
     .map((paragraph) => `<p class="card-text">${paragraph}</p>`)
     .join("");
+  const formatToggle = paragraphs.length > 2
+    ? `<button class="text-btn text-btn--inline" type="button" data-home-toggle-details="${isWeekendFormatExpanded ? "collapse" : "expand"}">${isWeekendFormatExpanded ? copy.weekendFormatShowLess : copy.weekendFormatShowMore}</button>`
+    : "";
+  const offlineBanner = !firebaseOnline
+    ? `<div class="status-banner status-banner--offline">${copy.offlineBanner}</div>`
+    : "";
 
   homeInfoStack.innerHTML = `
+    ${offlineBanner}
     <article class="card home-card home-card--weekend-format">
       <p class="card-label">${copy.weekendFormatLabel}</p>
       <h3 class="card-title">${copy.weekendFormatTitle}</h3>
       ${formatParagraphs}
+      ${formatToggle}
     </article>
 
     <article class="card home-card home-card--activity"><p class="card-label">${copy.activityLabel}</p><ul class="activity-list">${renderActivityFeed()}</ul>
@@ -477,10 +572,7 @@ function updateWelcomeLabel() {
 
 function renderTimeline() {
   const locale = getLocale();
-  const isSaturdayOnlyGuest = SATURDAY_ONLY_GUEST_IDS.has(currentGuestId);
-  const timelineItems = isSaturdayOnlyGuest
-    ? locale.timeline.slice(FRIDAY_TIMELINE_ITEMS_TO_HIDE)
-    : locale.timeline;
+  const timelineItems = getGuestTimelineItems(locale).map(({ item }) => item);
 
   document.getElementById("timeline").innerHTML = timelineItems.map((item) => `
       <article class="timeline-item"><span class="timeline-day">${item.day}</span><h4 class="timeline-title">${item.title}</h4>
@@ -607,6 +699,11 @@ function renderPhotos() {
     return;
   }
 
+  if (homePhotosLoading) {
+    container.innerHTML = `<article class="card"><p class="card-text">${copy.photosLoading}</p></article>`;
+    return;
+  }
+
   if (!realtimePhotos.length) {
     container.innerHTML = `<article class="card"><p class="card-text">${getHomeCopy().photosEmpty}</p></article>`;
     return;
@@ -656,9 +753,12 @@ async function playLanguageSelectionAnimation(lang) {
 async function setLanguage(lang) {
   currentLanguage = lang;
   localStorage.setItem("wedding_lang", lang);
-  applyTranslations();
-  renderAllDynamicSections();
-  highlightSelectedLanguage();
+  await withAppUpdate(async () => {
+    applyTranslations();
+    renderAllDynamicSections();
+    highlightSelectedLanguage();
+    updateCountdown();
+  });
   await playLanguageSelectionAnimation(lang);
   showScreen(screenGuest);
 }
@@ -692,11 +792,14 @@ async function setGuest(guestId) {
   localStorage.setItem("wedding_guest", guestId);
   const guest = findGuestById(guestId);
   selectedGuestName.textContent = guest ? guest.name : "Invitado";
-  updateWelcomeLabel();
-  renderTimeline();
-  showScreen(screenApp);
-  renderHomeDashboard();
-  renderGuestCards();
+  await withAppUpdate(async () => {
+    updateWelcomeLabel();
+    renderTimeline();
+    showScreen(screenApp);
+    renderHomeDashboard();
+    renderGuestCards();
+    updateCountdown();
+  });
 
   if (isFirebaseConfigured()) {
     try {
@@ -748,7 +851,8 @@ function applyTranslations() {
   changeProfile.setAttribute("aria-label", labels.changeProfile);
   changeProfile.setAttribute("title", labels.changeProfile);
   document.getElementById("txt-countdown-label").textContent = labels.countdownLabel;
-  document.getElementById("txt-countdown-hint").textContent = labels.countdownHint;
+  countdownHintElement.textContent = labels.countdownHint;
+  countdownNextEventLabelElement.textContent = getHomeCopy().nextEventLabel;
   document.getElementById("txt-guide-title").textContent = labels.guideTitle;
   document.getElementById("txt-dictionary-title").textContent = labels.dictionaryTitle;
   document.getElementById("txt-translator-label").textContent = labels.translatorLabel;
@@ -779,6 +883,18 @@ function applyTranslations() {
   document.getElementById("nav-map").textContent = labels.navMap;
 }
 
+async function withAppUpdate(task) {
+  if (appShell) appShell.classList.add("app-shell--updating");
+  await new Promise((resolve) => window.requestAnimationFrame(resolve));
+  try {
+    await task();
+  } finally {
+    window.requestAnimationFrame(() => {
+      if (appShell) appShell.classList.remove("app-shell--updating");
+    });
+  }
+}
+
 function highlightSelectedLanguage() {
   const isEs = currentLanguage === "es";
   btnEs.classList.toggle("primary-btn", isEs);
@@ -791,17 +907,37 @@ function highlightSelectedLanguage() {
 
 function updateCountdown() {
   const ceremonyDate = new Date(APP_DATA.ceremonyDate);
-  const diff = ceremonyDate - new Date();
+  const now = new Date();
+  const diff = ceremonyDate - now;
   const locale = getLocale();
+  const copy = getHomeCopy();
+  const phase = getHomePhase();
+  countdownHintElement.textContent = copy.moments?.[phase] || locale.labels.countdownHint;
+  countdownNextEventLabelElement.textContent = copy.nextEventLabel;
+  const nextEvent = getNextTimelineEvent();
+  countdownNextEventElement.textContent = nextEvent
+    ? `${nextEvent.title} · ${nextEvent.day}`
+    : copy.nextEventFallback;
+
   if (diff <= 0) {
     countdownElement.textContent = locale.labels.countdownStarted;
+    countdownUrgencyElement.textContent = "";
+    countdownUrgencyElement.classList.remove("is-visible");
+    countdownElement.classList.remove("countdown--urgent");
+    document.querySelector(".hero-panel")?.classList.remove("hero-panel--urgent");
     return;
   }
   const totalMinutes = Math.floor(diff / 1000 / 60);
   const days = Math.floor(totalMinutes / (60 * 24));
   const hours = Math.floor((totalMinutes % (60 * 24)) / 60);
   const minutes = totalMinutes % 60;
-  countdownElement.textContent = `${String(days).padStart(2, "0")}d ${String(hours).padStart(2, "0")}h ${String(minutes).padStart(2, "0")}m`;
+  const units = copy.countdownUnits || { days: "d", hours: "h", minutes: "m" };
+  countdownElement.textContent = `${String(days).padStart(2, "0")} ${units.days} ${String(hours).padStart(2, "0")} ${units.hours} ${String(minutes).padStart(2, "0")} ${units.minutes}`;
+  const isUrgent = diff < 24 * 60 * 60 * 1000;
+  document.querySelector(".hero-panel")?.classList.toggle("hero-panel--urgent", isUrgent);
+  countdownElement.classList.toggle("countdown--urgent", isUrgent);
+  countdownUrgencyElement.classList.toggle("is-visible", isUrgent);
+  countdownUrgencyElement.textContent = isUrgent ? copy.countdownUrgency : "";
 }
 
 function renderAllDynamicSections() {
@@ -872,6 +1008,11 @@ function bindUIEvents() {
   homeInfoStack.addEventListener("click", (event) => {
     const targetButton = event.target.closest("[data-target-view]");
     if (targetButton) activateView(targetButton.dataset.targetView);
+    const detailToggle = event.target.closest("[data-home-toggle-details]");
+    if (detailToggle) {
+      isWeekendFormatExpanded = detailToggle.dataset.homeToggleDetails === "expand";
+      renderHomeDashboard();
+    }
   });
 
   ["false-friends", "useful-phrases"].forEach((id) => {
@@ -1003,6 +1144,10 @@ function restoreSession() {
 async function initFirebaseListeners() {
   if (!isFirebaseConfigured()) {
     firebaseOnline = false;
+    homeActivityLoading = false;
+    homePhotosLoading = false;
+    renderHomeDashboard();
+    renderPhotos();
     return;
   }
 
@@ -1021,12 +1166,18 @@ async function initFirebaseListeners() {
     await ensureAuth();
     authUid = getAuthUid();
     firebaseOnline = true;
+    homeActivityLoading = true;
+    homePhotosLoading = true;
+    renderHomeDashboard();
+    renderPhotos();
 
     unsubscribeActivity = subscribeActivity((data) => {
       realtimeActivity = data;
+      homeActivityLoading = false;
       renderHomeDashboard();
     }, () => {
       firebaseOnline = false;
+      homeActivityLoading = false;
       renderHomeDashboard();
     });
 
@@ -1046,9 +1197,11 @@ async function initFirebaseListeners() {
 
     unsubscribePhotos = subscribePhotos((data) => {
       realtimePhotos = data;
+      homePhotosLoading = false;
       renderPhotos();
     }, () => {
       firebaseOnline = false;
+      homePhotosLoading = false;
       renderPhotos();
     });
 
@@ -1077,6 +1230,10 @@ async function initFirebaseListeners() {
     }
   } catch {
     firebaseOnline = false;
+    homeActivityLoading = false;
+    homePhotosLoading = false;
+    renderHomeDashboard();
+    renderPhotos();
   }
 }
 
