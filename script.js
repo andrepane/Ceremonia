@@ -31,6 +31,7 @@ const navButtons = document.querySelectorAll(".nav-btn");
 const views = document.querySelectorAll(".view");
 
 const selectedGuestName = document.getElementById("selected-guest-name");
+const profileAvatarElement = document.getElementById("profile-avatar");
 const countdownElement = document.getElementById("countdown");
 const countdownHintElement = document.getElementById("txt-countdown-hint");
 const countdownNextEventLabelElement = document.getElementById("txt-next-event-label");
@@ -315,6 +316,27 @@ function renderGuestAvatar(guest) {
   return guest.avatar;
 }
 
+function updateProfileAvatar() {
+  if (!profileAvatarElement) return;
+  const guest = findGuestById(currentGuestId);
+  if (!guest) {
+    profileAvatarElement.innerHTML = "";
+    profileAvatarElement.hidden = true;
+    profileAvatarElement.classList.remove("header-profile-avatar--image");
+    return;
+  }
+
+  const avatarImage = getGuestAvatarImage(guest);
+  if (avatarImage) {
+    profileAvatarElement.innerHTML = `<img class="header-profile-avatar__image" src="${avatarImage}" alt="Avatar de ${guest.name}" loading="lazy" decoding="async" onerror="this.parentElement.classList.remove('header-profile-avatar--image');this.outerHTML='${guest.avatar}';">`;
+    profileAvatarElement.classList.add("header-profile-avatar--image");
+  } else {
+    profileAvatarElement.innerHTML = guest.avatar;
+    profileAvatarElement.classList.remove("header-profile-avatar--image");
+  }
+  profileAvatarElement.hidden = false;
+}
+
 function renderGuestCards() {
   const locale = getLocale();
   guestGrid.innerHTML = APP_DATA.guests.map((guest) => {
@@ -544,6 +566,7 @@ async function setGuest(guestId) {
   localStorage.setItem("wedding_guest", guestId);
   const guest = findGuestById(guestId);
   selectedGuestName.textContent = guest ? guest.name : "Invitado";
+  updateProfileAvatar();
   await withAppUpdate(async () => {
     updateWelcomeLabel();
     updateGuestHeaderMessage();
@@ -735,6 +758,7 @@ function bindUIEvents() {
     currentGuestId = null;
     updateWelcomeLabel();
     updateGuestHeaderMessage();
+    updateProfileAvatar();
     renderGuestCards();
     showScreen(screenGuest);
   });
@@ -830,11 +854,13 @@ function restoreSession() {
     selectedGuestName.textContent = findGuestById(savedGuestId).name;
     updateWelcomeLabel();
     updateGuestHeaderMessage();
+    updateProfileAvatar();
     renderTimeline();
     renderHomeDashboard();
     showScreen(screenApp);
     return;
   }
+  updateProfileAvatar();
   showScreen(savedLang ? screenGuest : screenLanguage);
 }
 
@@ -908,6 +934,7 @@ async function initFirebaseListeners() {
         currentGuestId = null;
         updateWelcomeLabel();
         updateGuestHeaderMessage();
+        updateProfileAvatar();
         showScreen(screenGuest);
       }
     }
