@@ -28,6 +28,25 @@ window.WEDDING_APP_DATA = {
     { id: "ana_amiga_novia", name: "Ana", avatar: "A", avatarImage: "images/ana-amiga.png", roleKey: "friend_bride_f", sex: "f" },
     { id: "tito", name: "Tito", avatar: "T", roleKey: "friend_bride_m", sex: "m" }
   ],
+  guestHeaders: {
+    cintia_novia: "Hoy es tu día, disfrútalo.",
+    andrea_novio: "Hoy es tu día, disfrútalo.",
+    manolo: "Serás quien la acompañe en algo muy importante.",
+    simona: "Sarai al suo fianco in uno dei giorni più importanti.",
+    gigi: "Tuo figlio si sposa, tanti auguri!",
+    ana_madre_novia: "Tu hija se casa, felicidades!",
+    jesus: "Tienes la palabra.",
+    irene: "Hai la parola.",
+    rachele: "Tuo fratello si sposa!!",
+    lisa: "Sei parte della famiglia, grazie per esserci davvero.",
+    rosa: "Tu música formará parte de algo muy especial.",
+    josefina: "Tu presencia lo hace aún más especial.",
+    marina: "La tua presenza lo rende ancora più speciale.",
+    alicia: "Eres parte de todo esto.",
+    gabri: "No sería lo mismo sin ti.",
+    ana_amiga_novia: "No sería lo mismo sin ti.",
+    tito: "No sería lo mismo sin ti."
+  },
   ranking: [
     { guestId: "cintia_novia", points: 7 },
     { guestId: "andrea_novio", points: 6 },

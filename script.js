@@ -36,6 +36,7 @@ const countdownHintElement = document.getElementById("txt-countdown-hint");
 const countdownNextEventLabelElement = document.getElementById("txt-next-event-label");
 const countdownNextEventElement = document.getElementById("countdown-next-event");
 const countdownUrgencyElement = document.getElementById("countdown-urgency");
+const guestHeaderMessageElement = document.getElementById("guest-header-message");
 const homeInfoStack = document.getElementById("home-info-stack");
 const appShell = document.querySelector(".app-shell");
 
@@ -411,6 +412,13 @@ function updateWelcomeLabel() {
   document.getElementById("txt-welcome").textContent = welcome;
 }
 
+function updateGuestHeaderMessage() {
+  if (!guestHeaderMessageElement) return;
+  const message = APP_DATA.guestHeaders?.[currentGuestId] || "";
+  guestHeaderMessageElement.textContent = message;
+  guestHeaderMessageElement.hidden = !message;
+}
+
 function renderTimeline() {
   const locale = getLocale();
   const timelineItems = getGuestTimelineItems(locale).map(({ item }) => item);
@@ -538,6 +546,7 @@ async function setGuest(guestId) {
   selectedGuestName.textContent = guest ? guest.name : "Invitado";
   await withAppUpdate(async () => {
     updateWelcomeLabel();
+    updateGuestHeaderMessage();
     renderTimeline();
     showScreen(screenApp);
     renderHomeDashboard();
@@ -581,6 +590,7 @@ function applyTranslations() {
   document.getElementById("txt-who-title").textContent = labels.whoAreYouTitle;
   document.getElementById("txt-who-subtitle").textContent = labels.whoAreYouText;
   updateWelcomeLabel();
+  updateGuestHeaderMessage();
   document.getElementById("txt-hello-prefix").textContent = labels.hello;
   changeProfile.setAttribute("aria-label", labels.changeProfile);
   changeProfile.setAttribute("title", labels.changeProfile);
@@ -724,6 +734,7 @@ function bindUIEvents() {
     localStorage.removeItem("wedding_guest");
     currentGuestId = null;
     updateWelcomeLabel();
+    updateGuestHeaderMessage();
     renderGuestCards();
     showScreen(screenGuest);
   });
@@ -818,6 +829,7 @@ function restoreSession() {
     currentGuestId = savedGuestId;
     selectedGuestName.textContent = findGuestById(savedGuestId).name;
     updateWelcomeLabel();
+    updateGuestHeaderMessage();
     renderTimeline();
     renderHomeDashboard();
     showScreen(screenApp);
@@ -895,6 +907,7 @@ async function initFirebaseListeners() {
         localStorage.removeItem("wedding_guest");
         currentGuestId = null;
         updateWelcomeLabel();
+        updateGuestHeaderMessage();
         showScreen(screenGuest);
       }
     }
