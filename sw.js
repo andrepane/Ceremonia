@@ -38,10 +38,10 @@ self.addEventListener("fetch", (event) => {
     return;
   }
 
-  if (request.destination === "image") {
-    event.respondWith(cacheFirst(request));
-    return;
-  }
+if (request.destination === "image") {
+  event.respondWith(networkFirst(request));
+  return;
+}
 
   event.respondWith(networkFirst(request));
 });
