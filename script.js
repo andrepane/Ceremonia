@@ -676,17 +676,7 @@ async function handleTranslatorRequest() {
   translatorButton.textContent = uiCopy.loading;
 
   try {
-    const response = await fetch(TRANSLATOR_LOOP_ENDPOINT, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({
-        text: sourceText,
-        targetLanguage
-      })
-    });
-
-    if (!response.ok) throw new Error("Translator endpoint error");
-    const data = await response.json();
+    const data = await callTranslatorEndpoint(sourceText, targetLanguage);
     const translatedText = data?.translation || data?.translatedText || data?.text || data?.result;
     translatorText.textContent = translatedText || uiCopy.error;
   } catch {
@@ -695,6 +685,51 @@ async function handleTranslatorRequest() {
     translatorButton.disabled = false;
     translatorButton.textContent = originalButtonText;
   }
+}
+
+async function callTranslatorEndpoint(sourceText, targetLanguage) {
+  const jsonPayload = JSON.stringify({
+    text: sourceText,
+    targetLanguage
+  });
+
+  const attempts = [
+    () =>
+      fetch(TRANSLATOR_LOOP_ENDPOINT, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: jsonPayload
+      }),
+    () =>
+      fetch(TRANSLATOR_LOOP_ENDPOINT, {
+        method: "POST",
+        body: jsonPayload
+      })
+  ];
+
+  let lastError = null;
+  for (const attempt of attempts) {
+    try {
+      const response = await attempt();
+      if (!response.ok) throw new Error(`Translator endpoint error (${response.status})`);
+
+      const contentType = response.headers.get("content-type") || "";
+      if (contentType.includes("application/json")) {
+        return await response.json();
+      }
+
+      const rawText = await response.text();
+      try {
+        return JSON.parse(rawText);
+      } catch {
+        return { translation: rawText };
+      }
+    } catch (error) {
+      lastError = error;
+    }
+  }
+
+  throw lastError || new Error("Translator endpoint error");
 }
 
 async function withAppUpdate(task) {
