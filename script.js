@@ -42,6 +42,7 @@ const homeInfoStack = document.getElementById("home-info-stack");
 const appShell = document.querySelector(".app-shell");
 const translatorInput = document.getElementById("translator-input");
 const translatorButton = document.getElementById("translator-btn");
+const translatorSpeakButton = document.getElementById("translator-speak-btn");
 const translatorText = document.getElementById("txt-translator-text");
 
 let currentLanguage = "es";
@@ -59,18 +60,25 @@ const pendingPhotoLikes = new Set();
 let isWeekendFormatExpanded = false;
 let homeActivityLoading = true;
 let homePhotosLoading = true;
+let lastTranslatedLanguage = "it";
 
 const TRANSLATOR_API_ENDPOINT = "/api/translate";
 const TRANSLATOR_UI_COPY = {
   es: {
     empty: "Escribe una frase para traducir.",
     loading: "Traduciendo...",
-    error: "No se pudo traducir ahora. Inténtalo de nuevo."
+    error: "No se pudo traducir ahora. Inténtalo de nuevo.",
+    noTranslation: "Primero traduce una frase para poder escucharla.",
+    speechNotSupported: "Tu navegador no permite reproducir audio de voz.",
+    speechError: "No se pudo reproducir la traducción."
   },
   it: {
     empty: "Scrivi una frase da tradurre.",
     loading: "Traduzione...",
-    error: "Impossibile tradurre adesso. Riprova."
+    error: "Impossibile tradurre adesso. Riprova.",
+    noTranslation: "Traduci prima una frase per poterla ascoltare.",
+    speechNotSupported: "Il tuo browser non supporta la riproduzione vocale.",
+    speechError: "Impossibile riprodurre la traduzione."
   }
 };
 
@@ -645,6 +653,7 @@ function applyTranslations() {
   document.getElementById("txt-false-friends-label").textContent = labels.falseFriendsLabel;
   translatorInput.placeholder = labels.translatorPlaceholder;
   translatorButton.textContent = labels.translateBtn;
+  translatorSpeakButton.textContent = labels.speakBtn;
   document.getElementById("txt-photos-title").textContent = labels.photosTitle;
   document.getElementById("txt-map-title").textContent = labels.mapTitle;
   document.getElementById("txt-map-text").textContent = labels.mapText;
@@ -697,12 +706,36 @@ async function handleTranslatorRequest() {
       console.log("[Translator] Proveedor de traducción no informado", data);
     }
 
+    lastTranslatedLanguage = targetLanguage;
     translatorText.textContent = translatedText || uiCopy.error;
   } catch {
     translatorText.textContent = uiCopy.error;
   } finally {
     translatorButton.disabled = false;
     translatorButton.textContent = originalButtonText;
+  }
+}
+
+function handleSpeakTranslation() {
+  const uiCopy = getTranslatorUiCopy();
+  const translatedText = translatorText.textContent.trim();
+  if (!translatedText || translatedText === uiCopy.error || translatedText === uiCopy.empty) {
+    translatorText.textContent = uiCopy.noTranslation;
+    return;
+  }
+
+  if (!("speechSynthesis" in window) || typeof window.SpeechSynthesisUtterance !== "function") {
+    translatorText.textContent = uiCopy.speechNotSupported;
+    return;
+  }
+
+  try {
+    const utterance = new window.SpeechSynthesisUtterance(translatedText);
+    utterance.lang = lastTranslatedLanguage === "es" ? "es-ES" : "it-IT";
+    window.speechSynthesis.cancel();
+    window.speechSynthesis.speak(utterance);
+  } catch {
+    translatorText.textContent = uiCopy.speechError;
   }
 }
 
@@ -926,6 +959,7 @@ function bindUIEvents() {
 
   uploadPhotoBtn.addEventListener("click", handleUploadPhoto);
   translatorButton.addEventListener("click", handleTranslatorRequest);
+  translatorSpeakButton.addEventListener("click", handleSpeakTranslation);
   translatorInput.addEventListener("keydown", (event) => {
     if (event.key !== "Enter") return;
     event.preventDefault();
