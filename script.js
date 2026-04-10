@@ -60,7 +60,7 @@ let isWeekendFormatExpanded = false;
 let homeActivityLoading = true;
 let homePhotosLoading = true;
 
-const TRANSLATOR_LOOP_ENDPOINT = "https://magicloops.dev/api/loop/1f32ffbd-1eb5-4e1c-ab57-f0a322e5a1c3/run";
+const TRANSLATOR_API_ENDPOINT = "/api/translate";
 const TRANSLATOR_UI_COPY = {
   es: {
     empty: "Escribe una frase para traducir.",
@@ -676,18 +676,19 @@ async function handleTranslatorRequest() {
   translatorButton.textContent = uiCopy.loading;
 
   try {
-    const response = await fetch(TRANSLATOR_LOOP_ENDPOINT, {
+    const response = await fetch(TRANSLATOR_API_ENDPOINT, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
         text: sourceText,
-        targetLanguage
+        targetLang: targetLanguage,
+        sourceLang: currentLanguage
       })
     });
 
     if (!response.ok) throw new Error("Translator endpoint error");
     const data = await response.json();
-    const translatedText = data?.translation || data?.translatedText || data?.text || data?.result;
+    const translatedText = data?.translatedText || data?.translation || data?.text || data?.result;
     translatorText.textContent = translatedText || uiCopy.error;
   } catch {
     translatorText.textContent = uiCopy.error;
