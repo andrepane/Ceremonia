@@ -440,7 +440,7 @@ input {
   width: 86px;
   height: 86px;
   border-radius: 14px;
-  background: transparent;
+  background: linear-gradient(145deg, rgba(255, 255, 255, 0.98), rgba(244, 235, 228, 0.96));
   -webkit-mask-image: -webkit-radial-gradient(white, black);
 }
 
@@ -457,6 +457,7 @@ input {
   -webkit-backface-visibility: hidden;
   -webkit-transform: translateZ(0);
   transform: translateZ(0);
+  mix-blend-mode: multiply;
 }
 
 .guest-name {
@@ -524,7 +525,7 @@ input {
 
 .header-profile-avatar--image {
   border-radius: 12px;
-  background: transparent;
+  background: linear-gradient(145deg, rgba(255, 255, 255, 0.98), rgba(244, 235, 228, 0.96));
 }
 
 .header-profile-avatar__image {
@@ -534,6 +535,7 @@ input {
   object-position: center;
   display: block;
   border-radius: inherit;
+  mix-blend-mode: multiply;
 }
 
 .app-title {
