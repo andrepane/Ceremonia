@@ -698,6 +698,51 @@ async function handleTranslatorRequest() {
   }
 }
 
+async function callTranslatorEndpoint(sourceText, targetLanguage) {
+  const jsonPayload = JSON.stringify({
+    text: sourceText,
+    targetLanguage
+  });
+
+  const attempts = [
+    () =>
+      fetch(TRANSLATOR_LOOP_ENDPOINT, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: jsonPayload
+      }),
+    () =>
+      fetch(TRANSLATOR_LOOP_ENDPOINT, {
+        method: "POST",
+        body: jsonPayload
+      })
+  ];
+
+  let lastError = null;
+  for (const attempt of attempts) {
+    try {
+      const response = await attempt();
+      if (!response.ok) throw new Error(`Translator endpoint error (${response.status})`);
+
+      const contentType = response.headers.get("content-type") || "";
+      if (contentType.includes("application/json")) {
+        return await response.json();
+      }
+
+      const rawText = await response.text();
+      try {
+        return JSON.parse(rawText);
+      } catch {
+        return { translation: rawText };
+      }
+    } catch (error) {
+      lastError = error;
+    }
+  }
+
+  throw lastError || new Error("Translator endpoint error");
+}
+
 async function withAppUpdate(task) {
   if (appShell) appShell.classList.add("app-shell--updating");
   await new Promise((resolve) => window.requestAnimationFrame(resolve));
