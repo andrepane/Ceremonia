@@ -40,6 +40,9 @@ const countdownUrgencyElement = document.getElementById("countdown-urgency");
 const guestHeaderMessageElement = document.getElementById("guest-header-message");
 const homeInfoStack = document.getElementById("home-info-stack");
 const appShell = document.querySelector(".app-shell");
+const translatorInput = document.getElementById("translator-input");
+const translatorButton = document.getElementById("translator-btn");
+const translatorText = document.getElementById("txt-translator-text");
 
 let currentLanguage = "es";
 let currentGuestId = null;
@@ -56,6 +59,20 @@ const pendingPhotoLikes = new Set();
 let isWeekendFormatExpanded = false;
 let homeActivityLoading = true;
 let homePhotosLoading = true;
+
+const TRANSLATOR_LOOP_ENDPOINT = "https://magicloops.dev/api/loop/1f32ffbd-1eb5-4e1c-ab57-f0a322e5a1c3/run";
+const TRANSLATOR_UI_COPY = {
+  es: {
+    empty: "Escribe una frase para traducir.",
+    loading: "Traduciendo...",
+    error: "No se pudo traducir ahora. Inténtalo de nuevo."
+  },
+  it: {
+    empty: "Scrivi una frase da tradurre.",
+    loading: "Traduzione...",
+    error: "Impossibile tradurre adesso. Riprova."
+  }
+};
 
 const WEEKEND_TIMELINE_STARTS = [
   { dayOffset: -1, hour: 15, minute: 0 },
@@ -624,10 +641,10 @@ function applyTranslations() {
   document.getElementById("txt-dictionary-title").textContent = labels.dictionaryTitle;
   document.getElementById("txt-translator-label").textContent = labels.translatorLabel;
   document.getElementById("txt-translator-title").textContent = labels.translatorTitle;
-  document.getElementById("txt-translator-text").textContent = labels.translatorText;
+  translatorText.textContent = labels.translatorText;
   document.getElementById("txt-false-friends-label").textContent = labels.falseFriendsLabel;
-  document.getElementById("translator-input").placeholder = labels.translatorPlaceholder;
-  document.getElementById("translator-btn").textContent = labels.translateBtn;
+  translatorInput.placeholder = labels.translatorPlaceholder;
+  translatorButton.textContent = labels.translateBtn;
   document.getElementById("txt-photos-title").textContent = labels.photosTitle;
   document.getElementById("txt-map-title").textContent = labels.mapTitle;
   document.getElementById("txt-map-text").textContent = labels.mapText;
@@ -639,6 +656,45 @@ function applyTranslations() {
   document.getElementById("nav-dictionary").textContent = labels.navDictionary;
   document.getElementById("nav-photos").textContent = labels.navPhotos;
   document.getElementById("nav-map").textContent = labels.navMap;
+}
+
+function getTranslatorUiCopy() {
+  return TRANSLATOR_UI_COPY[currentLanguage] || TRANSLATOR_UI_COPY.es;
+}
+
+async function handleTranslatorRequest() {
+  const sourceText = translatorInput.value.trim();
+  const uiCopy = getTranslatorUiCopy();
+  if (!sourceText) {
+    translatorText.textContent = uiCopy.empty;
+    return;
+  }
+
+  const originalButtonText = translatorButton.textContent;
+  const targetLanguage = currentLanguage === "es" ? "it" : "es";
+  translatorButton.disabled = true;
+  translatorButton.textContent = uiCopy.loading;
+
+  try {
+    const response = await fetch(TRANSLATOR_LOOP_ENDPOINT, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        text: sourceText,
+        targetLanguage
+      })
+    });
+
+    if (!response.ok) throw new Error("Translator endpoint error");
+    const data = await response.json();
+    const translatedText = data?.translation || data?.translatedText || data?.text || data?.result;
+    translatorText.textContent = translatedText || uiCopy.error;
+  } catch {
+    translatorText.textContent = uiCopy.error;
+  } finally {
+    translatorButton.disabled = false;
+    translatorButton.textContent = originalButtonText;
+  }
 }
 
 async function withAppUpdate(task) {
@@ -815,6 +871,12 @@ function bindUIEvents() {
   });
 
   uploadPhotoBtn.addEventListener("click", handleUploadPhoto);
+  translatorButton.addEventListener("click", handleTranslatorRequest);
+  translatorInput.addEventListener("keydown", (event) => {
+    if (event.key !== "Enter") return;
+    event.preventDefault();
+    handleTranslatorRequest();
+  });
 
   guestGrid.addEventListener("click", (event) => {
     const enterButton = event.target.closest("[data-guest-enter]");
