@@ -689,6 +689,14 @@ async function handleTranslatorRequest() {
     if (!response.ok) throw new Error("Translator endpoint error");
     const data = await response.json();
     const translatedText = data?.translatedText || data?.translation || data?.text || data?.result;
+    const provider = (data?.provider || "unknown").toString().toLowerCase();
+
+    if (provider === "deepl" || provider === "magicloops") {
+      console.log(`[Translator] Traducción realizada con: ${provider}`);
+    } else {
+      console.log("[Translator] Proveedor de traducción no informado", data);
+    }
+
     translatorText.textContent = translatedText || uiCopy.error;
   } catch {
     translatorText.textContent = uiCopy.error;

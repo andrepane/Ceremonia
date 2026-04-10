@@ -121,13 +121,19 @@ module.exports = async function handler(req, res) {
 
     try {
       const deeplResult = await translateWithDeepL({ text, targetLang });
+      console.log("[translate] provider=deepl");
       return json(res, 200, deeplResult);
     } catch (deepLError) {
+      console.warn("[translate] DeepL failed, switching to Magic Loops", {
+        status: deepLError?.status || null,
+        message: deepLError?.message || "Unknown DeepL error"
+      });
       const magicLoopsResult = await translateWithMagicLoops({
         text,
         targetLang,
         sourceLang
       });
+      console.log("[translate] provider=magicloops");
       return json(res, 200, magicLoopsResult);
     }
   } catch (error) {
