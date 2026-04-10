@@ -1,4 +1,4 @@
-const CACHE_NAME = "boda-cintia-andrea-v4";
+const CACHE_NAME = "boda-cintia-andrea-v5";
 
 const STATIC_ASSETS = [
   "./manifest.webmanifest",
@@ -27,6 +27,10 @@ self.addEventListener("fetch", (event) => {
 
   if (url.protocol !== "http:" && url.protocol !== "https:") return;
   if (request.headers.has("range")) return;
+
+  // Evita interceptar llamadas de terceros (p. ej., DeepL) para no provocar
+  // errores adicionales de CORS desde el Service Worker.
+  if (url.origin !== self.location.origin) return;
 
   if (request.destination === "document") {
     event.respondWith(networkFirst(request));
