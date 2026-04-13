@@ -177,16 +177,41 @@
           <section id="view-map" class="view">
             <div class="section-block">
               <h3 id="txt-map-title" class="section-title">Mapa</h3>
-              <article class="card">
+              <article class="card map-overview-card">
                 <p id="txt-map-text" class="card-text">
                   Aquí podrás ver la ubicación del sitio y las indicaciones.
                 </p>
+                <a
+                  id="map-open-link"
+                  class="primary-btn map-open-link"
+                  href="https://maps.app.goo.gl/ndFTyVVFdACXq7vQA"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
+                  Abrir en Google Maps
+                </a>
               </article>
-              <article class="card">
+              <article class="card map-route-card">
                 <p id="txt-map-card-label" class="card-label">Cómo llegar</p>
                 <p id="txt-map-placeholder" class="card-text">
-                  Añadiremos aquí la ubicación exacta y los detalles de acceso enviados por la casera.
+                  En la rotonda de la carretera A-352 (km 5), toma el camino de servicio y sigue las indicaciones de Puerto Rey - Playas de Vera.
                 </p>
+                <figure class="map-photo-frame">
+                  <img
+                    id="map-route-image"
+                    src="images/mapa-acceso-rotonda.svg"
+                    alt="Mapa con indicaciones de acceso desde la rotonda de la A-352, km 5."
+                    loading="lazy"
+                  />
+                </figure>
+                <div class="map-embed">
+                  <iframe
+                    title="Ubicación de la rotonda de entrada en Vera"
+                    src="https://www.google.com/maps?q=Carretera%20A-352%20km%205%20Vera%20Almeria&output=embed"
+                    loading="lazy"
+                    referrerpolicy="no-referrer-when-downgrade"
+                  ></iframe>
+                </div>
               </article>
             </div>
           </section>
