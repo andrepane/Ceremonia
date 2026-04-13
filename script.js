@@ -659,6 +659,8 @@ function applyTranslations() {
   document.getElementById("txt-map-text").textContent = labels.mapText;
   document.getElementById("txt-map-card-label").textContent = labels.mapHowToArrive;
   document.getElementById("txt-map-placeholder").textContent = labels.mapPlaceholder;
+  document.getElementById("map-open-link").textContent = labels.mapOpenMaps;
+  document.getElementById("map-route-image").alt = labels.mapImageAlt;
   uploadPhotoBtn.textContent = labels.uploadPhoto;
   document.getElementById("nav-home").textContent = labels.navHome;
   document.getElementById("nav-guide").textContent = labels.navGuide;
