@@ -14,8 +14,7 @@ import {
   limit,
   increment,
   runTransaction,
-  getDoc,
-  Timestamp
+  getDoc
 } from "https://www.gstatic.com/firebasejs/10.12.5/firebase-firestore.js";
 import {
   getStorage,
@@ -28,29 +27,6 @@ import {
 const APP_DATA = window.WEDDING_APP_DATA || {};
 const firebaseConfig = APP_DATA.firebaseConfig;
 const eventId = APP_DATA.eventId || "main";
-const GUEST_LOCK_TTL_MS = 90 * 1000;
-
-function buildLockTimestamps() {
-  const now = Date.now();
-  return {
-    lockExpiresAt: Timestamp.fromMillis(now + GUEST_LOCK_TTL_MS),
-    lastHeartbeatAt: Timestamp.fromMillis(now)
-  };
-}
-
-function getTimestampMillis(value) {
-  if (!value) return 0;
-  if (typeof value.toMillis === "function") return value.toMillis();
-  if (value instanceof Date) return value.getTime();
-  const parsed = Number(value);
-  return Number.isFinite(parsed) ? parsed : 0;
-}
-
-function isLockActiveForOtherUid(data, uid) {
-  const lockedByUid = data?.lockedByUid || null;
-  if (!lockedByUid || lockedByUid === uid) return false;
-  return getTimestampMillis(data?.lockExpiresAt) > Date.now();
-}
 
 function isFirebaseConfigured() {
   return Boolean(
@@ -193,8 +169,9 @@ async function lockGuestProfile(guestId) {
   const result = await runTransaction(db, async (tx) => {
     const snap = await tx.get(guestRef);
     const data = snap.exists() ? snap.data() : {};
-    if (isLockActiveForOtherUid(data, user.uid)) return false;
-    const lockTimestamps = buildLockTimestamps();
+    const lockedByUid = data?.lockedByUid || null;
+
+    if (lockedByUid && lockedByUid !== user.uid) return false;
 
     tx.set(
       guestRef,
@@ -202,8 +179,6 @@ async function lockGuestProfile(guestId) {
         id: guestId,
         locked: true,
         lockedByUid: user.uid,
-        lockExpiresAt: lockTimestamps.lockExpiresAt,
-        lastHeartbeatAt: lockTimestamps.lastHeartbeatAt,
         updatedAt: serverTimestamp(),
         updatedByUid: user.uid,
         lastAuthUid: user.uid
@@ -232,8 +207,9 @@ async function switchGuestProfileLock(fromGuestId, toGuestId) {
     const [fromSnap, toSnap] = await Promise.all([tx.get(fromRef), tx.get(toRef)]);
     const fromData = fromSnap.exists() ? fromSnap.data() : {};
     const toData = toSnap.exists() ? toSnap.data() : {};
-    if (isLockActiveForOtherUid(toData, user.uid)) return false;
-    const lockTimestamps = buildLockTimestamps();
+    const toLockedByUid = toData?.lockedByUid || null;
+
+    if (toLockedByUid && toLockedByUid !== user.uid) return false;
 
     if ((fromData?.lockedByUid || null) === user.uid) {
       tx.set(
@@ -242,8 +218,6 @@ async function switchGuestProfileLock(fromGuestId, toGuestId) {
           id: fromGuestId,
           locked: false,
           lockedByUid: null,
-          lockExpiresAt: null,
-          lastHeartbeatAt: null,
           updatedAt: serverTimestamp(),
           updatedByUid: user.uid,
           lastAuthUid: user.uid
@@ -258,8 +232,6 @@ async function switchGuestProfileLock(fromGuestId, toGuestId) {
         id: toGuestId,
         locked: true,
         lockedByUid: user.uid,
-        lockExpiresAt: lockTimestamps.lockExpiresAt,
-        lastHeartbeatAt: lockTimestamps.lastHeartbeatAt,
         updatedAt: serverTimestamp(),
         updatedByUid: user.uid,
         lastAuthUid: user.uid
@@ -290,8 +262,6 @@ async function releaseGuestProfileLock(guestId) {
         id: guestId,
         locked: false,
         lockedByUid: null,
-        lockExpiresAt: null,
-        lastHeartbeatAt: null,
         updatedAt: serverTimestamp(),
         updatedByUid: user.uid,
         lastAuthUid: user.uid
@@ -299,40 +269,6 @@ async function releaseGuestProfileLock(guestId) {
       { merge: true }
     );
   });
-}
-
-async function heartbeatGuestProfileLock(guestId) {
-  const user = await ensureAuth();
-  if (!db || !user || !guestId) throw new Error("auth_required");
-
-  const guestRef = eventDoc("guests", guestId);
-  const result = await runTransaction(db, async (tx) => {
-    const snap = await tx.get(guestRef);
-    if (!snap.exists()) return false;
-
-    const data = snap.data() || {};
-    if (data.lockedByUid !== user.uid) return false;
-    if (getTimestampMillis(data.lockExpiresAt) <= Date.now()) return false;
-    const lockTimestamps = buildLockTimestamps();
-
-    tx.set(
-      guestRef,
-      {
-        id: guestId,
-        locked: true,
-        lockedByUid: user.uid,
-        lockExpiresAt: lockTimestamps.lockExpiresAt,
-        lastHeartbeatAt: lockTimestamps.lastHeartbeatAt,
-        updatedAt: serverTimestamp(),
-        updatedByUid: user.uid,
-        lastAuthUid: user.uid
-      },
-      { merge: true }
-    );
-    return true;
-  });
-
-  if (!result) throw new Error("guest_lock_lost");
 }
 
 async function emitActivity(type, guestId, metadata = {}) {
@@ -521,7 +457,6 @@ export {
   subscribeRanking,
   subscribeGuestChallenges,
   lockGuestProfile,
-  heartbeatGuestProfileLock,
   switchGuestProfileLock,
   releaseGuestProfileLock,
   uploadPhoto,

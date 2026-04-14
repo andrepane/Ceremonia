@@ -1,6 +1,5 @@
 import {
   ensureAuth,
-  heartbeatGuestProfileLock,
   isFirebaseConfigured,
   linkGuestToAuth,
   lockGuestProfile,
@@ -14,14 +13,6 @@ import { handleSpeakTranslation, handleTranslatorRequest } from "./features/tran
 import { handlePhotoGridClick, handleUploadPhoto } from "./features/photos.js";
 import { renderTimeline, updateCountdown } from "./features/timeline.js";
 import { initFirebaseListeners } from "./integrations/firebase-sync.js";
-
-const GUEST_LOCK_HEARTBEAT_INTERVAL_MS = 25000;
-const GUEST_LOCK_HEARTBEAT_MAX_FAILURES = 3;
-let activeGuestHeartbeatTimer = null;
-let activeGuestHeartbeatId = null;
-let guestSelectionRequestId = 0;
-let heartbeatFailureCount = 0;
-let heartbeatWarningShown = false;
 
 function scrollViewportToTop() {
   window.scrollTo({ top: 0, left: 0, behavior: "auto" });
@@ -97,7 +88,6 @@ async function setLanguage(lang) {
 }
 
 async function setGuest(guestId) {
-  const requestId = ++guestSelectionRequestId;
   if (state.currentGuestId === guestId) {
     showScreen(refs.screenApp);
     return;
@@ -110,10 +100,6 @@ async function setGuest(guestId) {
         await switchGuestProfileLock(state.currentGuestId, guestId);
       } else {
         await lockGuestProfile(guestId);
-      }
-      if (requestId !== guestSelectionRequestId) {
-        await releaseGuestProfileLock(guestId).catch(() => {});
-        return;
       }
       setState({ hasActiveGuestLock: true });
     } catch (error) {
@@ -140,7 +126,6 @@ async function setGuest(guestId) {
     renderGuestCards();
     updateCountdown();
   });
-  if (isFirebaseConfigured()) startGuestLockHeartbeat(guestId);
 
   if (isFirebaseConfigured()) {
     try {
@@ -175,55 +160,12 @@ function restoreSession() {
   showScreen(savedLang ? refs.screenGuest : refs.screenLanguage);
 }
 
-async function runGuestLockHeartbeat() {
-  if (!activeGuestHeartbeatId || !isFirebaseConfigured()) return;
-  try {
-    await heartbeatGuestProfileLock(activeGuestHeartbeatId);
-    heartbeatFailureCount = 0;
-    heartbeatWarningShown = false;
-    if (!state.hasActiveGuestLock) {
-      setState({ hasActiveGuestLock: true });
-      renderGuestCards();
-    }
-  } catch (error) {
-    heartbeatFailureCount += 1;
-    console.warn("guest_lock_heartbeat_failed", { guestId: activeGuestHeartbeatId, heartbeatFailureCount, error });
-    if (heartbeatFailureCount < GUEST_LOCK_HEARTBEAT_MAX_FAILURES) return;
-    if (!heartbeatWarningShown) {
-      heartbeatWarningShown = true;
-      alert(state.currentLanguage === "it"
-        ? "Connessione instabile. Il profilo potrebbe liberarsi automaticamente."
-        : "Conexión inestable. El perfil podría liberarse automáticamente.");
-    }
-    setState({ hasActiveGuestLock: false });
-    renderGuestCards();
-  }
-}
-
-function stopGuestLockHeartbeat() {
-  if (activeGuestHeartbeatTimer) clearInterval(activeGuestHeartbeatTimer);
-  activeGuestHeartbeatTimer = null;
-  activeGuestHeartbeatId = null;
-  heartbeatFailureCount = 0;
-  heartbeatWarningShown = false;
-}
-
-function startGuestLockHeartbeat(guestId) {
-  stopGuestLockHeartbeat();
-  if (!guestId || !isFirebaseConfigured()) return;
-  activeGuestHeartbeatId = guestId;
-  void runGuestLockHeartbeat();
-  activeGuestHeartbeatTimer = setInterval(runGuestLockHeartbeat, GUEST_LOCK_HEARTBEAT_INTERVAL_MS);
-}
-
 function bindUIEvents() {
   refs.btnEs.addEventListener("click", () => setLanguage("es"));
   refs.btnIt.addEventListener("click", () => setLanguage("it"));
   refs.backToLanguage.addEventListener("click", () => showScreen(refs.screenLanguage));
   refs.changeProfile.addEventListener("click", async () => {
-    guestSelectionRequestId += 1;
     const previousGuestId = state.currentGuestId;
-    stopGuestLockHeartbeat();
     if (isFirebaseConfigured() && previousGuestId) {
       try { await releaseGuestProfileLock(previousGuestId); } catch {}
     }
@@ -293,7 +235,6 @@ function bindUIEvents() {
 }
 
 window.addEventListener("beforeunload", () => {
-  stopGuestLockHeartbeat();
   if (!isFirebaseConfigured() || !state.currentGuestId || !state.hasActiveGuestLock) return;
   releaseGuestProfileLock(state.currentGuestId).catch(() => {});
 });
@@ -303,10 +244,7 @@ restoreSession();
 activateView("home");
 updateCountdown();
 setInterval(updateCountdown, 60000);
-initFirebaseListeners(() => showScreen(refs.screenGuest), {
-  onGuestLockAcquired: (guestId) => startGuestLockHeartbeat(guestId),
-  onGuestLockLost: () => stopGuestLockHeartbeat()
-});
+initFirebaseListeners(() => showScreen(refs.screenGuest));
 
 if ("serviceWorker" in navigator) {
   window.addEventListener("load", () => {
