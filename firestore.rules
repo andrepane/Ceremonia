@@ -9,6 +9,23 @@ service cloud.firestore {
       return eventId is string && eventId.size() > 0;
     }
 
+    function lockFieldsChanged() {
+      return request.resource.data.diff(resource.data).changedKeys().hasAny([
+        'locked',
+        'lockedByUid',
+        'lockExpiresAt',
+        'lastHeartbeatAt'
+      ]);
+    }
+
+    function isActiveLockOwnedByAnotherUid() {
+      return resource.data.locked == true
+        && resource.data.lockedByUid is string
+        && resource.data.lockedByUid != request.auth.uid
+        && resource.data.lockExpiresAt is timestamp
+        && resource.data.lockExpiresAt > request.time;
+    }
+
     match /events/{eventId} {
       allow read: if inEvent(eventId);
 
@@ -21,7 +38,11 @@ service cloud.firestore {
         allow read: if true;
         allow create, update: if isAuth()
           && request.resource.data.id == guestId
-          && request.resource.data.updatedByUid == request.auth.uid;
+          && request.resource.data.updatedByUid == request.auth.uid
+          && (
+            !lockFieldsChanged()
+            || !isActiveLockOwnedByAnotherUid()
+          );
         allow delete: if false;
       }
 
