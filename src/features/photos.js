@@ -1,5 +1,6 @@
 import { deletePhoto, togglePhotoLike, uploadPhoto } from "../../firebase.js";
 import { refs, state, getHomeCopy } from "../state.js";
+import { showConfirmDialog, showPromptDialog, showToast } from "../ui/feedback.js";
 
 export async function handleUploadPhoto() {
   if (!state.currentGuestId) return;
@@ -10,12 +11,18 @@ export async function handleUploadPhoto() {
     const file = input.files?.[0];
     if (!file) return;
     if (file.size > 10 * 1024 * 1024) {
-      alert("Máximo 10MB");
+      showToast({ type: "error", message: "Máximo 10MB" });
       return;
     }
-    const caption = window.prompt(getHomeCopy().uploadPrompt, "") || "";
+    const caption = await showPromptDialog({
+      title: state.currentLanguage === "it" ? "Didascalia foto" : "Pie de foto",
+      message: getHomeCopy().uploadPrompt,
+      placeholder: getHomeCopy().uploadPrompt,
+      defaultValue: ""
+    });
+    if (caption === null) return;
     if (!state.firebaseOnline) {
-      alert(getHomeCopy().uploadError);
+      showToast({ type: "error", message: getHomeCopy().uploadError });
       return;
     }
 
@@ -25,7 +32,7 @@ export async function handleUploadPhoto() {
     try {
       await uploadPhoto({ file, guestId: state.currentGuestId, caption });
     } catch {
-      alert(getHomeCopy().uploadError);
+      showToast({ type: "error", message: getHomeCopy().uploadError });
     } finally {
       refs.uploadPhotoBtn.disabled = false;
       refs.uploadPhotoBtn.textContent = original;
@@ -46,7 +53,7 @@ export async function handlePhotoGridClick(event) {
     try {
       await togglePhotoLike(photoId, state.currentGuestId);
     } catch {
-      alert(getHomeCopy().likeError);
+      showToast({ type: "error", message: getHomeCopy().likeError });
     } finally {
       state.pendingPhotoLikes.delete(photoId);
       likeBtn.disabled = false;
@@ -57,10 +64,15 @@ export async function handlePhotoGridClick(event) {
 
   const deleteBtn = event.target.closest("[data-photo-delete]");
   if (!deleteBtn || !state.firebaseOnline) return;
-  if (!window.confirm(getHomeCopy().deletePhotoConfirm)) return;
+  const confirmed = await showConfirmDialog({
+    title: state.currentLanguage === "it" ? "Elimina foto" : "Eliminar foto",
+    message: getHomeCopy().deletePhotoConfirm,
+    confirmText: state.currentLanguage === "it" ? "Elimina" : "Eliminar"
+  });
+  if (!confirmed) return;
   try {
     await deletePhoto(deleteBtn.dataset.photoDelete);
   } catch {
-    alert(getHomeCopy().deleteError);
+    showToast({ type: "error", message: getHomeCopy().deleteError });
   }
 }

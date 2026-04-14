@@ -13,6 +13,7 @@ import { handleSpeakTranslation, handleTranslatorRequest } from "./features/tran
 import { handlePhotoGridClick, handleUploadPhoto } from "./features/photos.js";
 import { renderTimeline, updateCountdown } from "./features/timeline.js";
 import { initFirebaseListeners } from "./integrations/firebase-sync.js";
+import { showToast } from "./ui/feedback.js";
 
 function scrollViewportToTop() {
   window.scrollTo({ top: 0, left: 0, behavior: "auto" });
@@ -104,10 +105,13 @@ async function setGuest(guestId) {
       setState({ hasActiveGuestLock: true });
     } catch (error) {
       if (error?.message === "guest_locked") {
-        alert(state.currentLanguage === "it" ? "Questo profilo è già occupato." : "Este perfil ya está ocupado.");
+        showToast({
+          type: "error",
+          message: state.currentLanguage === "it" ? "Questo profilo è già occupato." : "Este perfil ya está ocupado."
+        });
         return;
       }
-      alert(getHomeCopy().authError);
+      showToast({ type: "error", message: getHomeCopy().authError });
       return;
     }
   }
@@ -131,7 +135,7 @@ async function setGuest(guestId) {
     try {
       await linkGuestToAuth(guestId);
     } catch {
-      alert(getHomeCopy().authError);
+      showToast({ type: "error", message: getHomeCopy().authError });
     }
   }
 }
