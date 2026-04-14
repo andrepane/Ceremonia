@@ -48,10 +48,15 @@ export function updateProfileAvatar() {
 
 export function renderGuestCards() {
   const locale = getLocale();
+  const now = Date.now();
   refs.guestGrid.innerHTML = APP_DATA.guests.map((guest) => {
     const avatarImage = getGuestAvatarImage(guest);
     const lockInfo = state.realtimeGuestLocks[guest.id] || {};
-    const lockedByOther = Boolean(lockInfo.lockedByUid && lockInfo.lockedByUid !== state.authUid);
+    const lockedByOther = Boolean(
+      lockInfo.lockedByUid &&
+      lockInfo.lockedByUid !== state.authUid &&
+      (lockInfo.lockExpiresAtMs || 0) > now
+    );
     const lockBadge = lockedByOther ? `<span class="guest-lock-badge">${state.currentLanguage === "it" ? "Occupato" : "Bloqueado"}</span>` : "";
     const enterLabel = lockedByOther ? (state.currentLanguage === "it" ? "Profilo occupato" : "Perfil ocupado") : locale.labels.enterCard;
     return `<article class="guest-card ${lockedByOther ? "guest-card--locked" : ""}" data-guest-id="${guest.id}" tabindex="0" role="button" aria-pressed="false" aria-label="${guest.name}"><div class="guest-card__inner"><div class="guest-card__face guest-card__face--front">${lockBadge}<div class="guest-avatar ${avatarImage ? "guest-avatar--image" : ""}">${renderGuestAvatar(guest)}</div><span class="guest-name">${guest.name}</span></div><div class="guest-card__face guest-card__face--back"><span class="guest-role">${locale.roles[guest.roleKey] || ""}</span><button class="guest-enter-btn primary-btn" type="button" data-guest-enter="${guest.id}" ${lockedByOther ? "disabled" : ""}>${enterLabel}</button></div></div></article>`;
