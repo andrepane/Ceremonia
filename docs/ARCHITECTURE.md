@@ -3,8 +3,8 @@
 ## Capas
 1. **Presentación** (`index.html`, `style.css`)
    - Estructura visual y estilos.
-2. **Estado y UI** (`script.js`)
-   - Navegación, sesión local, render y eventos.
+2. **Estado, UI y features** (`src/`)
+   - Módulos por responsabilidad: bootstrap, estado, render, eventos, traducción, fotos, timeline e integración realtime.
 3. **Datos/config** (`data.js`)
    - Idiomas, invitados, contenido demo y fecha del evento.
 
