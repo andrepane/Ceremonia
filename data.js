@@ -128,8 +128,8 @@ window.WEDDING_APP_DATA = {
         grandmother_bride: "Abuela de la novia",
         grandmother_groom: "Abuela del novio",
         aunt_bride: "Tía de la novia",
-        friend_bride_m: "Amigo de la novia",
-        friend_bride_f: "Amiga de la novia"
+        friend_bride_m: "Amigo",
+        friend_bride_f: "Amiga"
       },
       homeCards: [
         {
@@ -506,8 +506,8 @@ window.WEDDING_APP_DATA = {
         grandmother_bride: "Nonna della sposa",
         grandmother_groom: "Nonna dello sposo",
         aunt_bride: "Zia della sposa",
-        friend_bride_m: "Amico della sposa",
-        friend_bride_f: "Amica della sposa"
+        friend_bride_m: "Amico",
+        friend_bride_f: "Amica"
       },
       homeCards: [
         {
