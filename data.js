@@ -69,7 +69,7 @@ window.WEDDING_APP_DATA = {
         whoAreYouTitle: "¿Quién eres?",
         whoAreYouText: "Selecciona tu tarjeta para entrar.",
         enterCard: "Entrar",
-        welcome: "Bienvenido",
+        welcome: "Qué alegría verte",
         welcomeFemale: "Bienvenida",
         hello: "Hola",
         changeProfile: "Cambiar perfil",
