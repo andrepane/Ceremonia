@@ -99,7 +99,7 @@ export const HOME_DASHBOARD_COPY = {
     mapAction: "Abrir sección mapa",
     personalLabel: "Tu panel personal",
     personalNoGuest: "Selecciona un perfil para personalizar recomendaciones.",
-    personalWithGuest: "Hola, {name}. Recomendación: sube una foto del momento.",
+    personalWithGuest: "Que alegria verte, {name}",
     personalAction: "Ver fotos del finde",
     activityLabel: "Últimas acciones del grupo",
     activityTemplates: {
