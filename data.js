@@ -34,7 +34,7 @@ window.WEDDING_APP_DATA = {
     manolo: "Con todo el tiempo que llevas con Duolingo, cualquiera diría que te estabas preparando para este momento.",
     simona: "Sarai al suo fianco in uno dei giorni più importanti.",
     gigi: "Tuo figlio si sposa, tanti auguri!",
-    ana_madre_novia: "Tu hija se casa, felicidades!",
+    ana_madre_novia: "Nietos… ya veremos. Pero la boda, esa sí que no te la pierdes.",
     jesus: "Tienes la palabra.",
     irene: "Hai la parola.",
     rachele: "Tuo fratello si sposa!!",
