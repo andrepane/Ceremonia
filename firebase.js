@@ -284,17 +284,25 @@ async function emitActivity(type, guestId, metadata = {}) {
   });
 }
 
-async function uploadPhoto({ file, guestId, caption }) {
+async function uploadPhoto({ file, thumbnailFile, width, height, guestId, caption }) {
   const user = await ensureAuth();
   if (!db || !storage || !user) throw new Error("auth_required");
 
   const ext = file.name.includes(".") ? file.name.split(".").pop() : "jpg";
-  const safeExt = ext.toLowerCase().replace(/[^a-z0-9]/g, "");
-  const path = `events/${eventId}/photos/${Date.now()}_${user.uid}.${safeExt || "jpg"}`;
+  const safeExt = ext.toLowerCase().replace(/[^a-z0-9]/g, "") || "jpg";
+  const baseName = `${Date.now()}_${user.uid}`;
+  const path = `events/${eventId}/photos/${baseName}.${safeExt}`;
+  const thumbPath = `events/${eventId}/photos/${baseName}_thumb.jpg`;
 
   const storageRef = ref(storage, path);
   await uploadBytes(storageRef, file, { contentType: file.type || "image/jpeg" });
   const downloadURL = await getDownloadURL(storageRef);
+  let thumbnailURL = downloadURL;
+  if (thumbnailFile) {
+    const thumbRef = ref(storage, thumbPath);
+    await uploadBytes(thumbRef, thumbnailFile, { contentType: thumbnailFile.type || "image/jpeg" });
+    thumbnailURL = await getDownloadURL(thumbRef);
+  }
 
   const photoRef = await addDoc(eventCollection("photos"), {
     authorGuestId: guestId,
@@ -303,7 +311,11 @@ async function uploadPhoto({ file, guestId, caption }) {
     likesCount: 0,
     createdAt: serverTimestamp(),
     storagePath: path,
-    downloadURL
+    thumbnailPath: thumbnailFile ? thumbPath : null,
+    downloadURL,
+    thumbnailURL,
+    width: Number(width) || null,
+    height: Number(height) || null
   });
 
   await emitActivity("upload_photo", guestId, { photoId: photoRef.id });
@@ -438,6 +450,14 @@ async function deletePhoto(photoId) {
     const storageRef = ref(storage, photoData.storagePath);
     try {
       await deleteObject(storageRef);
+    } catch (error) {
+      if (error?.code !== "storage/object-not-found") throw error;
+    }
+  }
+  if (photoData.thumbnailPath) {
+    const thumbStorageRef = ref(storage, photoData.thumbnailPath);
+    try {
+      await deleteObject(thumbStorageRef);
     } catch (error) {
       if (error?.code !== "storage/object-not-found") throw error;
     }
