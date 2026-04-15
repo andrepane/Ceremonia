@@ -83,7 +83,7 @@ function getPhotoViewer() {
   photoViewerEl = document.createElement("div");
   photoViewerEl.className = "photo-viewer";
   photoViewerEl.hidden = true;
-  photoViewerEl.innerHTML = `<button type="button" class="photo-viewer__close" data-photo-viewer-close aria-label="Cerrar">×</button><img class="photo-viewer__img" alt="" /><p class="photo-viewer__caption"></p>`;
+  photoViewerEl.innerHTML = `<button type="button" class="photo-viewer__close" data-photo-viewer-close aria-label="Cerrar">×</button><img class="photo-viewer__img" alt="" />`;
   document.body.appendChild(photoViewerEl);
 
   photoViewerEl.addEventListener("click", (event) => {
@@ -97,15 +97,12 @@ function getPhotoViewer() {
   return photoViewerEl;
 }
 
-function openPhotoViewer(url, caption = "") {
+function openPhotoViewer(url) {
   if (!url) return;
   const viewer = getPhotoViewer();
   const image = viewer.querySelector(".photo-viewer__img");
-  const captionEl = viewer.querySelector(".photo-viewer__caption");
   image.src = url;
-  image.alt = caption || "Foto";
-  captionEl.textContent = caption || "";
-  captionEl.hidden = !caption;
+  image.alt = "Foto";
   viewer.hidden = false;
   document.body.classList.add("photo-viewer-open");
 }
@@ -130,7 +127,6 @@ export async function handleUploadPhoto() {
       alert("Máximo 10MB");
       return;
     }
-    const caption = window.prompt(getHomeCopy().uploadPrompt, "") || "";
     if (!state.firebaseOnline) {
       alert(getHomeCopy().uploadError);
       return;
@@ -146,8 +142,7 @@ export async function handleUploadPhoto() {
         thumbnailFile: optimizedPhotos.thumbFile,
         width: optimizedPhotos.width,
         height: optimizedPhotos.height,
-        guestId: state.currentGuestId,
-        caption
+        guestId: state.currentGuestId
       });
     } catch {
       alert(getHomeCopy().uploadError);
@@ -193,6 +188,6 @@ export async function handlePhotoGridClick(event) {
 
   const openPhotoEl = event.target.closest("[data-photo-open]");
   if (openPhotoEl) {
-    openPhotoViewer(openPhotoEl.dataset.photoOpen, openPhotoEl.dataset.photoCaption || "");
+    openPhotoViewer(openPhotoEl.dataset.photoOpen);
   }
 }

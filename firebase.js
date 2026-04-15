@@ -284,7 +284,7 @@ async function emitActivity(type, guestId, metadata = {}) {
   });
 }
 
-async function uploadPhoto({ file, thumbnailFile, width, height, guestId, caption }) {
+async function uploadPhoto({ file, thumbnailFile, width, height, guestId }) {
   const user = await ensureAuth();
   if (!db || !storage || !user) throw new Error("auth_required");
 
@@ -307,7 +307,6 @@ async function uploadPhoto({ file, thumbnailFile, width, height, guestId, captio
   const photoRef = await addDoc(eventCollection("photos"), {
     authorGuestId: guestId,
     authorUid: user.uid,
-    caption: caption || "",
     likesCount: 0,
     createdAt: serverTimestamp(),
     storagePath: path,
