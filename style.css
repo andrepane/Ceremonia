@@ -1055,16 +1055,17 @@ input {
   background: var(--surface);
   border: 1px solid var(--line);
   border-radius: var(--radius-lg);
-  padding: 12px;
+  padding: 8px;
   box-shadow: var(--shadow);
 }
 
 .photo-img {
   width: 100%;
-  aspect-ratio: 4 / 5;
+  aspect-ratio: 1 / 1;
   object-fit: cover;
-  border-radius: 14px;
+  border-radius: 12px;
   display: block;
+  cursor: zoom-in;
 }
 
 .photo-placeholder {
@@ -1082,8 +1083,8 @@ input {
   align-items: center;
   justify-content: space-between;
   gap: 10px;
-  margin-top: 10px;
-  font-size: 0.92rem;
+  margin-top: 8px;
+  font-size: 0.84rem;
   color: var(--muted);
 }
 
@@ -1148,6 +1149,57 @@ input {
 .photo-delete-btn {
   color: #8d2f3e;
   border-color: rgba(141, 47, 62, 0.25);
+}
+
+.photo-grid {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+.photo-viewer-open {
+  overflow: hidden;
+}
+
+.photo-viewer {
+  position: fixed;
+  inset: 0;
+  z-index: 70;
+  background: rgba(22, 16, 12, 0.92);
+  display: grid;
+  align-content: center;
+  justify-items: center;
+  gap: 10px;
+  padding: 52px 12px calc(24px + var(--safe-bottom));
+}
+
+.photo-viewer__img {
+  width: 100%;
+  max-width: 520px;
+  max-height: 78vh;
+  object-fit: contain;
+  border-radius: 14px;
+}
+
+.photo-viewer__caption {
+  margin: 0;
+  color: #f7f4ef;
+  text-align: center;
+  font-size: 0.95rem;
+}
+
+.photo-viewer__close {
+  position: absolute;
+  top: calc(10px + var(--safe-top));
+  right: 12px;
+  width: 44px;
+  height: 44px;
+  border-radius: 999px;
+  border: 1px solid rgba(255, 255, 255, 0.38);
+  background: rgba(0, 0, 0, 0.34);
+  color: #fff;
+  font-size: 1.6rem;
+  line-height: 1;
+  display: grid;
+  place-items: center;
 }
 
 .map-overview-card {
