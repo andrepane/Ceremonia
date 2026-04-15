@@ -1171,6 +1171,10 @@ input {
   padding: 52px 12px calc(24px + var(--safe-bottom));
 }
 
+.photo-viewer[hidden] {
+  display: none;
+}
+
 .photo-viewer__img {
   width: 100%;
   max-width: 520px;
