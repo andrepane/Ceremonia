@@ -31,7 +31,7 @@ window.WEDDING_APP_DATA = {
   guestHeaders: {
     cintia_novia: "Hoy es tu día, disfrútalo.",
     andrea_novio: "Hoy es tu día, disfrútalo.",
-    manolo: "Serás quien la acompañe en algo muy importante.",
+    manolo: "Con todo el tiempo que llevas con Duolingo, cualquiera diría que te estabas preparando para este momento.",
     simona: "Sarai al suo fianco in uno dei giorni più importanti.",
     gigi: "Tuo figlio si sposa, tanti auguri!",
     ana_madre_novia: "Tu hija se casa, felicidades!",
