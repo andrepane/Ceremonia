@@ -8,6 +8,9 @@
   --accent: #7f5f4d;
   --accent-soft: #e9ddd3;
   --accent-strong: #5f4435;
+  --champagne: #ecdfce;
+  --gold-soft: #d0b690;
+  --rose-dust: #d6a9ac;
   --shadow: 0 12px 30px rgba(56, 37, 23, 0.08);
   --radius-xl: 28px;
   --radius-lg: 20px;
@@ -230,7 +233,7 @@ input {
 #screen-language .hero-intro {
   opacity: 0;
   transform: translate3d(0, 18px, 0) scale(0.992);
-  filter: blur(5px);
+  filter: blur(4px);
   will-change: opacity, transform, filter;
 }
 
@@ -241,8 +244,69 @@ input {
 
 #screen-language .hero-intro--language {
   transform: translate3d(0, 34px, 0) scale(0.968);
-  filter: blur(6px);
+  filter: blur(5px);
   box-shadow: 0 16px 34px rgba(56, 37, 23, 0.16);
+}
+
+#screen-language {
+  position: relative;
+  overflow: hidden;
+  background:
+    radial-gradient(78% 56% at 52% 6%, rgba(255, 255, 255, 0.9), rgba(255, 255, 255, 0) 78%),
+    linear-gradient(180deg, #fbf8f3 0%, #f3ede4 100%);
+}
+
+#screen-language .screen__inner {
+  position: relative;
+  z-index: 2;
+}
+
+.language-stage {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  z-index: 1;
+  contain: strict;
+}
+
+.language-veil {
+  position: absolute;
+  inset: -8% -8% 42%;
+  background:
+    radial-gradient(58% 62% at 54% 26%, rgba(255, 255, 255, 0.82), rgba(255, 255, 255, 0) 72%),
+    linear-gradient(124deg, rgba(255, 255, 255, 0.7), rgba(236, 223, 206, 0.3) 52%, rgba(255, 255, 255, 0.08));
+  opacity: 0;
+  transform: translate3d(0, -36px, 0) scale(1.02);
+  filter: blur(14px);
+  will-change: opacity, transform, filter;
+}
+
+#screen-language.screen--active .language-veil {
+  animation: veilEntrance 1.08s cubic-bezier(0.16, 0.76, 0.2, 1) both;
+}
+
+.petal-layer {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  overflow: hidden;
+}
+
+.petal {
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: var(--petal-size, 14px);
+  height: calc(var(--petal-size, 14px) * 0.72);
+  opacity: var(--petal-opacity, 0.7);
+  filter: blur(var(--petal-blur, 0px));
+  border-radius: 74% 56% 66% 42% / 62% 56% 64% 46%;
+  box-shadow:
+    inset -1px -2px 3px rgba(122, 70, 60, 0.12),
+    inset 1px 1px 2px rgba(255, 255, 255, 0.42);
+  transform: translate3d(var(--petal-x-start), var(--petal-y-start), 0) rotate(var(--petal-r-start));
+  will-change: transform, opacity, filter;
+  animation: petalFall var(--petal-duration, 620ms) cubic-bezier(0.25, 0.72, 0.29, 1) var(--petal-delay, 0ms) forwards;
 }
 
 #screen-language.screen--active .hero-intro {
@@ -277,7 +341,7 @@ input {
   0% {
     opacity: 0;
     transform: translate3d(0, 18px, 0) scale(0.992);
-    filter: blur(5px);
+    filter: blur(4px);
   }
   100% {
     opacity: 1;
@@ -301,7 +365,7 @@ input {
   0% {
     opacity: 0;
     transform: translate3d(0, 34px, 0) scale(0.968);
-    filter: blur(6px);
+    filter: blur(5px);
     box-shadow: 0 16px 34px rgba(56, 37, 23, 0.16);
   }
   100% {
@@ -309,6 +373,46 @@ input {
     transform: translate3d(0, 0, 0) scale(1);
     filter: blur(0);
     box-shadow: var(--shadow);
+  }
+}
+
+@keyframes veilEntrance {
+  0% {
+    opacity: 0;
+    transform: translate3d(0, -36px, 0) scale(1.02);
+    filter: blur(14px);
+  }
+  100% {
+    opacity: 1;
+    transform: translate3d(0, 0, 0) scale(1);
+    filter: blur(0);
+  }
+}
+
+@keyframes petalFall {
+  0% {
+    transform: translate3d(var(--petal-x-start), var(--petal-y-start), 0) rotate(var(--petal-r-start));
+    opacity: calc(var(--petal-opacity) * 0.22);
+  }
+  22% {
+    transform: translate3d(
+      calc(var(--petal-x-start) + (var(--petal-turbulence) * 0.58)),
+      calc(var(--petal-y-start) + 26px),
+      0
+    ) rotate(calc(var(--petal-r-start) + 18deg));
+    opacity: var(--petal-opacity);
+  }
+  62% {
+    transform: translate3d(
+      calc(var(--petal-x-start) + (var(--petal-turbulence) * -0.62)),
+      calc(var(--petal-y-start) + 68px),
+      0
+    ) rotate(calc(var(--petal-r-start) + 58deg));
+    opacity: calc(var(--petal-opacity) * 0.84);
+  }
+  100% {
+    transform: translate3d(var(--petal-x-end), var(--petal-y-end), 0) rotate(var(--petal-r-end));
+    opacity: 0;
   }
 }
 
@@ -352,7 +456,7 @@ input {
 }
 
 .language-btn--selected {
-  animation: languagePop 0.55s cubic-bezier(.2, .9, .2, 1) forwards;
+  animation: languagePop 0.52s cubic-bezier(.2, .9, .2, 1) forwards;
 }
 
 @keyframes languagePop {
@@ -366,14 +470,25 @@ input {
     transform: scale(0.96);
   }
   100% {
-    transform: scale(1.02);
-    box-shadow: 0 0 0 14px rgba(0, 0, 0, 0), 0 10px 35px rgba(255, 78, 139, 0.35);
+    transform: scale(1.01);
+    box-shadow: 0 0 0 14px rgba(0, 0, 0, 0), 0 11px 28px rgba(198, 139, 122, 0.34);
   }
 }
 
 @media (prefers-reduced-motion: reduce) {
   .language-btn--selected {
     animation: none;
+  }
+
+  #screen-language.screen--active .language-veil,
+  .petal {
+    animation: none !important;
+  }
+
+  .language-veil {
+    opacity: 0.8;
+    transform: none;
+    filter: none;
   }
 
   #screen-language .hero-intro {
@@ -598,6 +713,10 @@ input {
   .language-buttons .secondary-btn {
     min-height: 56px;
     font-size: 1rem;
+  }
+
+  .petal {
+    opacity: calc(var(--petal-opacity) * 0.82);
   }
 }
 

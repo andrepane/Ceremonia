@@ -22,6 +22,7 @@ export const refs = {
   guestHeaderMessageElement: document.getElementById("guest-header-message"),
   homeInfoStack: document.getElementById("home-info-stack"),
   appShell: document.querySelector(".app-shell"),
+  petalLayer: document.getElementById("petal-layer"),
   translatorInput: document.getElementById("translator-input"),
   translatorButton: document.getElementById("translator-btn"),
   translatorSpeakButton: document.getElementById("translator-speak-btn"),

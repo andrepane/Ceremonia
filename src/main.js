@@ -13,6 +13,7 @@ import { handleSpeakTranslation, handleTranslatorRequest } from "./features/tran
 import { handlePhotoGridClick, handleUploadPhoto } from "./features/photos.js";
 import { renderTimeline, updateCountdown } from "./features/timeline.js";
 import { initFirebaseListeners } from "./integrations/firebase-sync.js";
+import { initLanguageAnimations, triggerPetalBurst } from "./ui/language-animations.js";
 
 function scrollViewportToTop() {
   window.scrollTo({ top: 0, left: 0, behavior: "auto" });
@@ -68,6 +69,7 @@ async function playLanguageSelectionAnimation(lang) {
   selectedButton.classList.remove("language-btn--selected");
   void selectedButton.offsetWidth;
   selectedButton.classList.add("language-btn--selected");
+  triggerPetalBurst(selectedButton);
   await delay(420);
   selectedButton.classList.remove("language-btn--selected");
   refs.btnEs.disabled = false;
@@ -240,6 +242,7 @@ window.addEventListener("beforeunload", () => {
 });
 
 bindUIEvents();
+initLanguageAnimations();
 restoreSession();
 activateView("home");
 updateCountdown();
