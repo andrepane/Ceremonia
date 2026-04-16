@@ -36,7 +36,7 @@ window.WEDDING_APP_DATA = {
     gigi: "Tuo figlio si sposa, tanti auguri!",
     ana_madre_novia: "Nietos… ya veremos. Pero la boda, esa sí que no te la pierdes.",
     jesus: "Misión cumplida: personaje “Cura” desbloqueado. Ahora estamos en tus manos.",
-    irene: "Hai la parola.",
+    irene: "Missione compiuta: personaggio “Prete” sbloccato. Ora siamo nelle tue mani.",
     rachele: "Tuo fratello si sposa!!",
     lisa: "Sei parte della famiglia, grazie per esserci davvero.",
     rosa: "Tu música formará parte de algo muy especial.",
