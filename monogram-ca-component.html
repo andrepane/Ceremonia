@@ -1,0 +1,81 @@
+<div style="display:block; width:320px; max-width:320px;">
+  <style>
+    .ca-monogram-wrap {
+      display: block;
+      width: 320px;
+      height: 220px;
+      line-height: 0;
+    }
+
+    .ca-monogram-svg {
+      display: block;
+      width: 320px;
+      height: 220px;
+      overflow: visible;
+    }
+
+    .ca-stroke-c,
+    .ca-stroke-a {
+      fill: none;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+      vector-effect: non-scaling-stroke;
+    }
+
+    .ca-stroke-c {
+      stroke-dasharray: 560;
+      stroke-dashoffset: 560;
+      animation: ca-write-c 650ms cubic-bezier(0.32, 0, 0.2, 1) 200ms forwards;
+    }
+
+    .ca-stroke-a {
+      stroke-dasharray: 500;
+      stroke-dashoffset: 500;
+      animation: ca-write-a 550ms cubic-bezier(0.35, 0.05, 0.2, 1) 850ms forwards;
+    }
+
+    @keyframes ca-write-c {
+      from { stroke-dashoffset: 560; }
+      to { stroke-dashoffset: 0; }
+    }
+
+    @keyframes ca-write-a {
+      from { stroke-dashoffset: 500; }
+      to { stroke-dashoffset: 0; }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      .ca-stroke-c,
+      .ca-stroke-a {
+        animation: none;
+        stroke-dasharray: none;
+        stroke-dashoffset: 0;
+      }
+    }
+  </style>
+
+  <div class="ca-monogram-wrap" aria-label="Monograma C y A entrelazadas">
+    <svg
+      class="ca-monogram-svg"
+      width="320"
+      height="220"
+      viewBox="0 0 320 220"
+      role="img"
+      aria-hidden="true"
+      xmlns="http://www.w3.org/2000/svg"
+    >
+      <path
+        class="ca-stroke-c"
+        d="M253 36C218 12 151 14 102 52C58 86 50 143 83 177C115 208 175 201 218 172"
+        stroke="#6b4a3a"
+        stroke-width="7"
+      />
+      <path
+        class="ca-stroke-a"
+        d="M132 175C142 136 154 99 172 63C185 98 198 137 212 177M154 127C171 115 189 114 205 123"
+        stroke="#6b4a3a"
+        stroke-width="6"
+      />
+    </svg>
+  </div>
+</div>
