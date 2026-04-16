@@ -115,7 +115,6 @@ input {
 }
 
 .hero-rotator {
-  position: relative;
   width: min(100%, 28ch);
   height: 1.2em;
   margin: 0 auto 8px;
@@ -123,63 +122,44 @@ input {
   text-align: center;
 }
 
-.hero-rotator__text {
-  position: absolute;
-  inset: 0;
-  display: block;
+.hero-rotator__track {
+  display: flex;
+  flex-direction: column;
   width: 100%;
-  line-height: 1.2;
-  animation-duration: 3.6s;
-  animation-timing-function: ease-in-out;
-  animation-iteration-count: infinite;
+  animation: heroRotatorTrack 6s cubic-bezier(0.45, 0.05, 0.55, 0.95) infinite;
   will-change: transform;
 }
 
-.hero-rotator__text--es {
-  animation-name: heroRotatorEs;
+.hero-rotator__item {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 1.2em;
+  line-height: 1.2;
 }
 
-.hero-rotator__text--it {
-  animation-name: heroRotatorIt;
-}
-
-@keyframes heroRotatorEs {
+@keyframes heroRotatorTrack {
   0%,
-  40% {
+  20% {
     transform: translate3d(0, 0, 0);
   }
-  50%,
-  90% {
-    transform: translate3d(0, -105%, 0);
+  30%,
+  50% {
+    transform: translate3d(0, -100%, 0);
   }
-  90.01%,
+  60%,
+  80% {
+    transform: translate3d(0, -200%, 0);
+  }
+  90%,
   100% {
-    transform: translate3d(0, 105%, 0);
-  }
-}
-
-@keyframes heroRotatorIt {
-  0%,
-  40% {
-    transform: translate3d(0, 105%, 0);
-  }
-  50%,
-  90% {
-    transform: translate3d(0, 0, 0);
-  }
-  90.01%,
-  100% {
-    transform: translate3d(0, -105%, 0);
+    transform: translate3d(0, -300%, 0);
   }
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .hero-rotator__text {
+  .hero-rotator__track {
     animation: none;
-  }
-
-  .hero-rotator__text--it {
-    display: none;
   }
 }
 
