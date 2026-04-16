@@ -33,7 +33,7 @@ window.WEDDING_APP_DATA = {
     andrea_novio: "Hoy es tu día, disfrútalo.",
     manolo: "Con todo el tiempo que llevas con Duolingo, cualquiera diría que te estabas preparando para este momento.",
     simona: "Nipoti… si vedrà. Ma il matrimonio, quello non te lo perdi.",
-    gigi: "Tuo figlio si sposa, tanti auguri!",
+    gigi: "Tutto pronto, ora vediamo se il vestito entra. L’importante è che tu ci sia.",
     ana_madre_novia: "Nietos… ya veremos. Pero la boda, esa sí que no te la pierdes.",
     jesus: "Misión cumplida: personaje “Cura” desbloqueado. Ahora estamos en tus manos.",
     irene: "Missione compiuta: personaggio “Prete” sbloccato. Ora siamo nelle tue mani.",
