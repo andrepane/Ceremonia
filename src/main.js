@@ -29,6 +29,84 @@ function delay(ms) {
   return new Promise((resolve) => setTimeout(resolve, ms));
 }
 
+function initHeroRotator() {
+  const rotator = document.querySelector(".hero-rotator");
+  const track = rotator?.querySelector(".hero-rotator__track");
+  if (!track) return;
+
+  const reducedMotionQuery = window.matchMedia("(prefers-reduced-motion: reduce)");
+  const transitionMs = 760;
+  const pauseMs = 1450;
+  let isRunning = false;
+  let pauseTimer = null;
+
+  function clearPauseTimer() {
+    if (!pauseTimer) return;
+    window.clearTimeout(pauseTimer);
+    pauseTimer = null;
+  }
+
+  function getStepHeight() {
+    const firstItem = track.firstElementChild;
+    if (!firstItem) return 0;
+    return firstItem.getBoundingClientRect().height;
+  }
+
+  function resetTrackPosition() {
+    track.style.transition = "none";
+    track.style.transform = "translateY(0)";
+  }
+
+  function queueNextMove() {
+    if (!isRunning) return;
+    clearPauseTimer();
+    pauseTimer = window.setTimeout(() => {
+      const stepHeight = getStepHeight();
+      if (!stepHeight) {
+        queueNextMove();
+        return;
+      }
+      track.style.transition = `transform ${transitionMs}ms cubic-bezier(0.33, 1, 0.68, 1)`;
+      track.style.transform = `translateY(-${stepHeight}px)`;
+    }, pauseMs);
+  }
+
+  function stop() {
+    isRunning = false;
+    clearPauseTimer();
+    resetTrackPosition();
+  }
+
+  function start() {
+    if (reducedMotionQuery.matches) {
+      stop();
+      return;
+    }
+    isRunning = true;
+    resetTrackPosition();
+    queueNextMove();
+  }
+
+  track.addEventListener("transitionend", (event) => {
+    if (event.propertyName !== "transform") return;
+    const firstItem = track.firstElementChild;
+    if (firstItem) track.append(firstItem);
+    resetTrackPosition();
+    void track.offsetHeight;
+    queueNextMove();
+  });
+
+  reducedMotionQuery.addEventListener("change", () => {
+    if (reducedMotionQuery.matches) {
+      stop();
+      return;
+    }
+    start();
+  });
+
+  start();
+}
+
 async function withAppUpdate(task) {
   if (refs.appShell) refs.appShell.classList.add("app-shell--updating");
   await new Promise((resolve) => window.requestAnimationFrame(resolve));
@@ -241,6 +319,7 @@ window.addEventListener("beforeunload", () => {
 
 bindUIEvents();
 restoreSession();
+initHeroRotator();
 activateView("home");
 updateCountdown();
 setInterval(updateCountdown, 60000);
