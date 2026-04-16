@@ -246,7 +246,7 @@ input {
 }
 
 #screen-language.screen--active .hero-intro {
-  animation: heroLayerIn 0.88s cubic-bezier(0.22, 0.66, 0.2, 1) both;
+  animation: heroLayerIn 1.4s cubic-bezier(0.22, 0.66, 0.2, 1) both;
 }
 
 #screen-language.screen--active .hero-intro--top {
@@ -258,7 +258,7 @@ input {
 }
 
 #screen-language.screen--active .hero-intro--divider {
-  animation: heroDividerReveal 0.72s cubic-bezier(0.2, 0.72, 0.2, 1) both;
+  animation: heroDividerReveal 1.15s cubic-bezier(0.2, 0.72, 0.2, 1) both;
   animation-delay: 0.38s;
   transform-origin: center;
   filter: none;
@@ -269,8 +269,8 @@ input {
 }
 
 #screen-language.screen--active .hero-intro--language {
-  animation: heroLanguageSettle 0.9s cubic-bezier(0.2, 0.76, 0.2, 1) both;
-  animation-delay: 0.72s;
+  animation: heroLanguageSettle 1.45s cubic-bezier(0.2, 0.76, 0.2, 1) both;
+  animation-delay: 2.72s;
 }
 
 @keyframes heroLayerIn {
@@ -352,7 +352,7 @@ input {
 }
 
 .language-btn--selected {
-  animation: languagePop 0.55s cubic-bezier(.2, .9, .2, 1) forwards;
+  animation: languagePop 0.9s cubic-bezier(.2, .9, .2, 1) forwards;
 }
 
 @keyframes languagePop {
