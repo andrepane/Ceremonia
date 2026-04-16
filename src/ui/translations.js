@@ -4,7 +4,6 @@ import { updateGuestHeaderMessage, updateWelcomeLabel } from "./render.js";
 export function applyTranslations() {
   const locale = getLocale();
   const labels = locale.labels;
-  const oppositeLabels = (state.currentLanguage === "es" ? APP_DATA.translations.it : APP_DATA.translations.es).labels;
   const spanishLabels = APP_DATA.translations.es.labels;
   const italianLabels = APP_DATA.translations.it.labels;
   document.documentElement.lang = state.currentLanguage;
@@ -12,8 +11,8 @@ export function applyTranslations() {
   document.getElementById("txt-weekend").textContent = spanishLabels.weekend;
   document.getElementById("txt-weekend-translation").textContent = italianLabels.weekend;
   document.getElementById("txt-hero-title").textContent = labels.heroTitle;
-  document.getElementById("txt-hero-subtitle").textContent = labels.heroSubtitle;
-  document.getElementById("txt-hero-subtitle-translation").textContent = oppositeLabels.heroSubtitle;
+  document.getElementById("txt-hero-month-es").textContent = "septiembre";
+  document.getElementById("txt-hero-month-it").textContent = "settembre";
   refs.backToLanguage.setAttribute("aria-label", labels.back);
   refs.backToLanguage.setAttribute("title", labels.back);
   document.getElementById("txt-access").textContent = labels.access;

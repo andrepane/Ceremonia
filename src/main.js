@@ -29,16 +29,29 @@ function delay(ms) {
   return new Promise((resolve) => setTimeout(resolve, ms));
 }
 
-function initHeroRotator() {
-  const rotator = document.querySelector(".hero-rotator");
-  const track = rotator?.querySelector(".hero-rotator__track");
+function initVerticalLoopRotator({
+  rootSelector,
+  trackSelector,
+  itemSelector,
+  transitionMs = 760,
+  pauseMs = 1450,
+  lockMaxItemWidth = false
+}) {
+  const rotator = document.querySelector(rootSelector);
+  const track = rotator?.querySelector(trackSelector);
   if (!track) return;
 
   const reducedMotionQuery = window.matchMedia("(prefers-reduced-motion: reduce)");
-  const transitionMs = 760;
-  const pauseMs = 1450;
   let isRunning = false;
   let pauseTimer = null;
+
+  function syncLockedWidth() {
+    if (!lockMaxItemWidth) return;
+    const items = track.querySelectorAll(itemSelector);
+    if (!items.length) return;
+    const maxWidth = Array.from(items).reduce((currentMax, item) => Math.max(currentMax, item.getBoundingClientRect().width), 0);
+    if (maxWidth > 0) rotator.style.width = `${Math.ceil(maxWidth)}px`;
+  }
 
   function clearPauseTimer() {
     if (!pauseTimer) return;
@@ -82,6 +95,7 @@ function initHeroRotator() {
       stop();
       return;
     }
+    syncLockedWidth();
     isRunning = true;
     resetTrackPosition();
     queueNextMove();
@@ -104,7 +118,27 @@ function initHeroRotator() {
     start();
   });
 
+  window.addEventListener("resize", syncLockedWidth);
+  syncLockedWidth();
   start();
+}
+
+function initHeroRotator() {
+  initVerticalLoopRotator({
+    rootSelector: ".hero-rotator",
+    trackSelector: ".hero-rotator__track",
+    itemSelector: ".hero-rotator__item"
+  });
+}
+
+function initHeroDateRotator() {
+  initVerticalLoopRotator({
+    rootSelector: ".hero-date-rotator",
+    trackSelector: ".hero-date-rotator__track",
+    itemSelector: ".hero-date-rotator__item",
+    pauseMs: 1600,
+    lockMaxItemWidth: true
+  });
 }
 
 async function withAppUpdate(task) {
@@ -320,6 +354,7 @@ window.addEventListener("beforeunload", () => {
 bindUIEvents();
 restoreSession();
 initHeroRotator();
+initHeroDateRotator();
 activateView("home");
 updateCountdown();
 setInterval(updateCountdown, 60000);
