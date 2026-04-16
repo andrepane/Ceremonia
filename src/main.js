@@ -14,6 +14,55 @@ import { handlePhotoGridClick, handleUploadPhoto } from "./features/photos.js";
 import { renderTimeline, updateCountdown } from "./features/timeline.js";
 import { initFirebaseListeners } from "./integrations/firebase-sync.js";
 
+const rotatorSyncGroups = new Map();
+
+function getRotatorSyncGroup(groupName, { pauseMs, transitionMs }) {
+  const existingGroup = rotatorSyncGroups.get(groupName);
+  if (existingGroup) return existingGroup;
+
+  const group = {
+    subscribers: new Set(),
+    firstTickTimer: null,
+    intervalTimer: null
+  };
+
+  function clearTimers() {
+    if (group.firstTickTimer) {
+      window.clearTimeout(group.firstTickTimer);
+      group.firstTickTimer = null;
+    }
+    if (group.intervalTimer) {
+      window.clearInterval(group.intervalTimer);
+      group.intervalTimer = null;
+    }
+  }
+
+  function tick() {
+    group.subscribers.forEach((subscriber) => subscriber.triggerMove());
+  }
+
+  group.start = () => {
+    if (group.firstTickTimer || group.intervalTimer) return;
+    group.firstTickTimer = window.setTimeout(() => {
+      tick();
+      group.intervalTimer = window.setInterval(tick, pauseMs + transitionMs);
+      group.firstTickTimer = null;
+    }, pauseMs);
+  };
+
+  group.stop = () => clearTimers();
+
+  group.subscribe = (subscriber) => group.subscribers.add(subscriber);
+
+  group.unsubscribe = (subscriber) => {
+    group.subscribers.delete(subscriber);
+    if (!group.subscribers.size) group.stop();
+  };
+
+  rotatorSyncGroups.set(groupName, group);
+  return group;
+}
+
 function scrollViewportToTop() {
   window.scrollTo({ top: 0, left: 0, behavior: "auto" });
 }
@@ -35,7 +84,8 @@ function initVerticalLoopRotator({
   itemSelector,
   transitionMs = 760,
   pauseMs = 1450,
-  lockMaxItemWidth = false
+  lockMaxItemWidth = false,
+  syncGroup = null
 }) {
   const rotator = document.querySelector(rootSelector);
   const track = rotator?.querySelector(trackSelector);
@@ -44,6 +94,9 @@ function initVerticalLoopRotator({
   const reducedMotionQuery = window.matchMedia("(prefers-reduced-motion: reduce)");
   let isRunning = false;
   let pauseTimer = null;
+  let isTransitioning = false;
+  let syncSubscription = null;
+  const syncController = syncGroup ? getRotatorSyncGroup(syncGroup, { pauseMs, transitionMs }) : null;
 
   function syncLockedWidth() {
     if (!lockMaxItemWidth) return;
@@ -72,22 +125,31 @@ function initVerticalLoopRotator({
 
   function queueNextMove() {
     if (!isRunning) return;
+    if (syncController) return;
     clearPauseTimer();
     pauseTimer = window.setTimeout(() => {
-      const stepHeight = getStepHeight();
-      if (!stepHeight) {
-        queueNextMove();
-        return;
-      }
-      track.style.transition = `transform ${transitionMs}ms cubic-bezier(0.33, 1, 0.68, 1)`;
-      track.style.transform = `translateY(-${stepHeight}px)`;
+      triggerMove();
     }, pauseMs);
   }
 
   function stop() {
     isRunning = false;
     clearPauseTimer();
+    isTransitioning = false;
+    if (syncController && syncSubscription) {
+      syncController.unsubscribe(syncSubscription);
+      syncSubscription = null;
+    }
     resetTrackPosition();
+  }
+
+  function triggerMove() {
+    if (!isRunning || isTransitioning) return;
+    const stepHeight = getStepHeight();
+    if (!stepHeight) return;
+    isTransitioning = true;
+    track.style.transition = `transform ${transitionMs}ms cubic-bezier(0.33, 1, 0.68, 1)`;
+    track.style.transform = `translateY(-${stepHeight}px)`;
   }
 
   function start() {
@@ -98,11 +160,17 @@ function initVerticalLoopRotator({
     syncLockedWidth();
     isRunning = true;
     resetTrackPosition();
+    if (syncController && !syncSubscription) {
+      syncSubscription = { triggerMove };
+      syncController.subscribe(syncSubscription);
+      syncController.start();
+    }
     queueNextMove();
   }
 
   track.addEventListener("transitionend", (event) => {
     if (event.propertyName !== "transform") return;
+    isTransitioning = false;
     const firstItem = track.firstElementChild;
     if (firstItem) track.append(firstItem);
     resetTrackPosition();
@@ -127,7 +195,9 @@ function initHeroRotator() {
   initVerticalLoopRotator({
     rootSelector: ".hero-rotator",
     trackSelector: ".hero-rotator__track",
-    itemSelector: ".hero-rotator__item"
+    itemSelector: ".hero-rotator__item",
+    pauseMs: 1600,
+    syncGroup: "language-hero"
   });
 }
 
@@ -137,7 +207,8 @@ function initHeroDateRotator() {
     trackSelector: ".hero-date-rotator__track",
     itemSelector: ".hero-date-rotator__item",
     pauseMs: 1600,
-    lockMaxItemWidth: true
+    lockMaxItemWidth: true,
+    syncGroup: "language-hero"
   });
 }
 
