@@ -1,0 +1,95 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Monograma C+A</title>
+  <style>
+    :root {
+      --mono-color: #6b4a3a;
+      --stroke: 2;
+      --draw-ease: cubic-bezier(0.35, 0.04, 0.2, 1);
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      min-height: 100vh;
+      background: transparent;
+      display: flex;
+      justify-content: center;
+    }
+
+    .monogram-wrap {
+      width: min(32vw, 110px);
+      min-width: 90px;
+      margin-top: clamp(24px, 6vh, 56px);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+
+    .monogram {
+      width: 100%;
+      height: auto;
+      overflow: visible;
+    }
+
+    .stroke {
+      fill: none;
+      stroke: var(--mono-color);
+      stroke-width: var(--stroke);
+      stroke-linecap: round;
+      stroke-linejoin: round;
+      vector-effect: non-scaling-stroke;
+      stroke-dasharray: 1;
+      stroke-dashoffset: 1;
+      animation-fill-mode: forwards;
+    }
+
+    .stroke-c {
+      animation: draw-c 680ms var(--draw-ease) 200ms forwards;
+    }
+
+    .stroke-a {
+      animation: draw-a 520ms var(--draw-ease) 880ms forwards;
+    }
+
+    @keyframes draw-c {
+      0% { stroke-dashoffset: 1; }
+      82% { stroke-dashoffset: 0.07; }
+      100% { stroke-dashoffset: 0; }
+    }
+
+    @keyframes draw-a {
+      0% { stroke-dashoffset: 1; }
+      86% { stroke-dashoffset: 0.06; }
+      100% { stroke-dashoffset: 0; }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      .stroke {
+        animation: none !important;
+        stroke-dashoffset: 0;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="monogram-wrap" aria-label="Monograma C y A entrelazadas">
+    <svg class="monogram" viewBox="0 0 120 120" role="img" aria-hidden="true">
+      <path
+        class="stroke stroke-c"
+        pathLength="1"
+        d="M99 30C91 18 72 12 53 18C30 25 18 46 19 66C20 86 33 100 52 103C72 106 92 96 101 80C104 74 102 66 94 64C84 61 71 67 64 79C58 88 62 99 73 102"
+      />
+      <path
+        class="stroke stroke-a"
+        pathLength="1"
+        d="M50 93C52 73 57 54 67 37C72 29 81 26 88 33C95 41 92 54 83 63C75 71 64 75 54 73M60 64C68 62 76 62 84 64"
+      />
+    </svg>
+  </div>
+</body>
+</html>
