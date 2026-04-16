@@ -210,6 +210,45 @@ input {
   letter-spacing: 0.02em;
 }
 
+@media (max-width: 699px) {
+  #screen-language .screen__inner--center {
+    justify-content: flex-start;
+    padding-top: clamp(56px, 13vh, 120px);
+  }
+
+  #screen-language .hero-translation-row:first-of-type {
+    margin-bottom: clamp(30px, 6vh, 64px);
+  }
+
+  #screen-language .hero-title {
+    margin-bottom: clamp(34px, 7vh, 72px);
+  }
+
+  #screen-language .hero-translation-row--subtitle {
+    margin-top: 0;
+  }
+
+  #screen-language .card--language {
+    margin-top: clamp(88px, 17vh, 190px);
+    width: min(62vw, 220px);
+    max-width: 220px;
+    padding: 10px 10px;
+    border-radius: 14px;
+    align-self: center;
+  }
+
+  #screen-language .language-buttons {
+    gap: 8px;
+  }
+
+  #screen-language .language-buttons .primary-btn,
+  #screen-language .language-buttons .secondary-btn {
+    min-height: 42px;
+    font-size: 0.9rem;
+    padding: 0 12px;
+  }
+}
+
 .primary-btn,
 .secondary-btn,
 .chip-btn {
