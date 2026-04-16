@@ -198,6 +198,7 @@ input {
 }
 
 .hero-title {
+  font-family: "Great Vibes", "Cormorant Garamond", serif;
   margin: 0;
   font-size: clamp(2.7rem, 8vw, 4.5rem);
   line-height: 0.95;
