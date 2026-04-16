@@ -127,6 +127,7 @@ input {
   margin: 0;
   font-size: clamp(2.7rem, 8vw, 4.5rem);
   line-height: 0.95;
+  text-align: center;
 }
 
 .hero-divider {
@@ -188,8 +189,9 @@ input {
 }
 
 .card--language {
-  margin: 24px auto 0;
-  width: min(100%, 360px);
+  margin: 52px auto 0;
+  width: min(100%, 316px);
+  padding: 14px;
 }
 
 .card-label {
@@ -220,8 +222,8 @@ input {
 
 .language-buttons .primary-btn,
 .language-buttons .secondary-btn {
-  min-height: 60px;
-  font-size: 1.02rem;
+  min-height: 52px;
+  font-size: 0.96rem;
   letter-spacing: 0.02em;
 }
 
