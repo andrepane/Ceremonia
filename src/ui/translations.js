@@ -11,6 +11,16 @@ export function applyTranslations() {
 
   document.getElementById("txt-weekend").textContent = spanishLabels.weekend;
   document.getElementById("txt-weekend-translation").textContent = italianLabels.weekend;
+  document
+    .querySelectorAll('.hero-rotator__item[data-rotator-lang="es"]')
+    .forEach((item) => {
+      item.textContent = spanishLabels.weekend;
+    });
+  document
+    .querySelectorAll('.hero-rotator__item[data-rotator-lang="it"]')
+    .forEach((item) => {
+      item.textContent = italianLabels.weekend;
+    });
   document.getElementById("txt-hero-title").textContent = labels.heroTitle;
   document.getElementById("txt-hero-subtitle").textContent = labels.heroSubtitle;
   document.getElementById("txt-hero-subtitle-translation").textContent = oppositeLabels.heroSubtitle;
