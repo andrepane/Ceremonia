@@ -289,23 +289,23 @@ input {
 }
 
 #screen-language.screen--active .hero-intro--title {
-  animation-delay: 0.22s;
+  animation-delay: 1.56s;
 }
 
 #screen-language.screen--active .hero-intro--divider {
   animation: heroDividerReveal 1.15s cubic-bezier(0.2, 0.72, 0.2, 1) both;
-  animation-delay: 0.38s;
+  animation-delay: 2.98s;
   transform-origin: center;
   filter: none;
 }
 
 #screen-language.screen--active .hero-intro--subtitle {
-  animation-delay: 0.46s;
+  animation-delay: 3.06s;
 }
 
 #screen-language.screen--active .hero-intro--language {
   animation: heroLanguageSettle 1.45s cubic-bezier(0.2, 0.76, 0.2, 1) both;
-  animation-delay: 2.72s;
+  animation-delay: 5.56s;
 }
 
 @keyframes heroLayerIn {
