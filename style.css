@@ -670,10 +670,34 @@ input {
 }
 
 @media (max-width: 480px) {
+  #screen-language .hero-rotator {
+    width: min(100%, 32ch);
+    font-size: 0.92rem;
+  }
+
+  #screen-language .hero-title {
+    font-size: clamp(3rem, 13vw, 3.55rem);
+  }
+
+  #screen-language .hero-subtitle {
+    font-size: 1.12rem;
+  }
+
+  #screen-language .card--language {
+    margin-top: 32px;
+    width: min(100%, 248px);
+    padding: 10px;
+  }
+
+  #screen-language .language-buttons {
+    gap: 8px;
+  }
+
   .language-buttons .primary-btn,
   .language-buttons .secondary-btn {
-    min-height: 56px;
-    font-size: 1rem;
+    min-height: 42px;
+    font-size: 0.9rem;
+    padding: 0 12px;
   }
 }
 
