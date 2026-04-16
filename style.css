@@ -123,62 +123,40 @@ input {
   text-align: center;
 }
 
-.hero-rotator__text {
-  position: absolute;
-  inset: 0;
-  display: block;
-  width: 100%;
-  line-height: 1.2;
-  animation-duration: 3.6s;
-  animation-timing-function: ease-in-out;
-  animation-iteration-count: infinite;
+.hero-rotator__track {
+  display: flex;
+  flex-direction: column;
+  animation: heroRotatorTrack 4.8s cubic-bezier(0.32, 0.72, 0.2, 1) infinite;
   will-change: transform;
 }
 
-.hero-rotator__text--es {
-  animation-name: heroRotatorEs;
+.hero-rotator__text {
+  display: block;
+  width: 100%;
+  min-height: 1.2em;
+  line-height: 1.2;
 }
 
-.hero-rotator__text--it {
-  animation-name: heroRotatorIt;
-}
-
-@keyframes heroRotatorEs {
+@keyframes heroRotatorTrack {
   0%,
-  40% {
+  35% {
     transform: translate3d(0, 0, 0);
   }
   50%,
-  90% {
-    transform: translate3d(0, -105%, 0);
+  85% {
+    transform: translate3d(0, -100%, 0);
   }
-  90.01%,
   100% {
-    transform: translate3d(0, 105%, 0);
-  }
-}
-
-@keyframes heroRotatorIt {
-  0%,
-  40% {
-    transform: translate3d(0, 105%, 0);
-  }
-  50%,
-  90% {
-    transform: translate3d(0, 0, 0);
-  }
-  90.01%,
-  100% {
-    transform: translate3d(0, -105%, 0);
+    transform: translate3d(0, -200%, 0);
   }
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .hero-rotator__text {
+  .hero-rotator__track {
     animation: none;
   }
 
-  .hero-rotator__text--it {
+  .hero-rotator__text:nth-child(n + 2) {
     display: none;
   }
 }
