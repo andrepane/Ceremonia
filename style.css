@@ -109,6 +109,44 @@ input {
   margin-top: 12px;
 }
 
+.language-monogram {
+  width: min(158px, 42vw);
+  margin: 30px auto 8px;
+  opacity: 0;
+}
+
+.language-monogram__svg {
+  width: 100%;
+  height: auto;
+  display: block;
+}
+
+.language-monogram__stroke {
+  fill: none;
+  stroke: rgba(95, 68, 53, 0.92);
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  vector-effect: non-scaling-stroke;
+}
+
+.language-monogram__stroke--c {
+  stroke-width: 4.7;
+  stroke-dasharray: 334;
+  stroke-dashoffset: 334;
+}
+
+.language-monogram__stroke--a {
+  stroke-width: 4.2;
+  stroke-dasharray: 286;
+  stroke-dashoffset: 286;
+}
+
+.language-monogram__stroke--a-cross {
+  stroke-width: 3.4;
+  stroke-dasharray: 74;
+  stroke-dashoffset: 74;
+}
+
 .eyebrow--translation,
 .hero-subtitle--translation {
   text-align: right;
@@ -257,6 +295,11 @@ input {
   animation-delay: 0.22s;
 }
 
+#screen-language.screen--active .hero-intro--monogram {
+  animation: heroLayerIn 0.7s cubic-bezier(0.22, 0.66, 0.2, 1) both;
+  animation-delay: 0.38s;
+}
+
 #screen-language.screen--active .hero-intro--divider {
   animation: heroDividerReveal 0.72s cubic-bezier(0.2, 0.72, 0.2, 1) both;
   animation-delay: 0.38s;
@@ -269,8 +312,23 @@ input {
 }
 
 #screen-language.screen--active .hero-intro--language {
-  animation: heroLanguageSettle 0.9s cubic-bezier(0.2, 0.76, 0.2, 1) both;
-  animation-delay: 0.72s;
+  animation: languageChoicesReveal 0.3s cubic-bezier(0.22, 0.8, 0.28, 1) both;
+  animation-delay: 1.72s;
+}
+
+#screen-language.screen--active .language-monogram__stroke--c {
+  animation: monogramWriteC 0.66s linear both;
+  animation-delay: 0.2s;
+}
+
+#screen-language.screen--active .language-monogram__stroke--a {
+  animation: monogramWriteA 0.58s linear both;
+  animation-delay: 0.84s;
+}
+
+#screen-language.screen--active .language-monogram__stroke--a-cross {
+  animation: monogramWriteCross 0.24s linear both;
+  animation-delay: 1.24s;
 }
 
 @keyframes heroLayerIn {
@@ -297,12 +355,11 @@ input {
   }
 }
 
-@keyframes heroLanguageSettle {
+@keyframes languageChoicesReveal {
   0% {
     opacity: 0;
-    transform: translate3d(0, 34px, 0) scale(0.968);
-    filter: blur(6px);
-    box-shadow: 0 16px 34px rgba(56, 37, 23, 0.16);
+    transform: translate3d(0, 18px, 0);
+    filter: blur(4px);
   }
   100% {
     opacity: 1;
@@ -310,6 +367,25 @@ input {
     filter: blur(0);
     box-shadow: var(--shadow);
   }
+}
+
+@keyframes monogramWriteC {
+  0% { stroke-dashoffset: 334; }
+  26% { stroke-dashoffset: 268; }
+  58% { stroke-dashoffset: 123; }
+  100% { stroke-dashoffset: 0; }
+}
+
+@keyframes monogramWriteA {
+  0% { stroke-dashoffset: 286; }
+  32% { stroke-dashoffset: 240; }
+  70% { stroke-dashoffset: 82; }
+  100% { stroke-dashoffset: 0; }
+}
+
+@keyframes monogramWriteCross {
+  0% { stroke-dashoffset: 74; }
+  100% { stroke-dashoffset: 0; }
 }
 
 .primary-btn,
@@ -376,6 +452,17 @@ input {
     animation: none;
   }
 
+  .language-monogram {
+    opacity: 1;
+  }
+
+  .language-monogram__stroke--c,
+  .language-monogram__stroke--a,
+  .language-monogram__stroke--a-cross {
+    stroke-dashoffset: 0;
+    animation: none !important;
+  }
+
   #screen-language .hero-intro {
     opacity: 1;
     transform: none;
@@ -386,7 +473,14 @@ input {
 
   #screen-language .hero-intro--language {
     box-shadow: var(--shadow);
+    animation: languageChoicesRevealReduced 0.22s ease-out both !important;
+    animation-delay: 0.12s !important;
   }
+}
+
+@keyframes languageChoicesRevealReduced {
+  from { opacity: 0; }
+  to { opacity: 1; }
 }
 
 .primary-btn--full {
