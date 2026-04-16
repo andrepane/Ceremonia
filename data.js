@@ -437,7 +437,7 @@ window.WEDDING_APP_DATA = {
     },
     it: {
       labels: {
-        weekend: "Weekend di matrimonio",
+        weekend: "Weekend di nozze",
         heroTitle: "Cintia & Andrea",
         heroSubtitle: "4-6 settembre - Vera",
         chooseLanguageTitle: "Scegli la lingua",
