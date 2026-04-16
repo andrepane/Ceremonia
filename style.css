@@ -181,6 +181,12 @@ input {
   .hero-rotator__text--it {
     display: none;
   }
+
+  .hero-signature__stroke,
+  .hero-signature__fill {
+    animation: none;
+    opacity: 1;
+  }
 }
 
 .eyebrow--translation,
@@ -202,6 +208,54 @@ input {
   font-size: clamp(2.7rem, 8vw, 4.5rem);
   line-height: 0.95;
   text-align: center;
+}
+
+.hero-signature {
+  width: min(100%, 540px);
+  height: auto;
+  display: block;
+  margin-inline: auto;
+  overflow: visible;
+}
+
+.hero-signature__stroke {
+  fill: none;
+  stroke: rgba(36, 24, 17, 0.95);
+  stroke-width: 1.45;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  opacity: 0;
+  animation: signatureStrokeDraw 4s ease forwards;
+}
+
+.hero-signature__fill {
+  fill: rgba(36, 24, 17, 0.92);
+  opacity: 0;
+  animation: signatureFillReveal 0.9s ease forwards;
+  animation-delay: 3.1s;
+}
+
+@keyframes signatureStrokeDraw {
+  0% {
+    opacity: 0;
+    stroke-dashoffset: var(--path-length);
+  }
+  1% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 1;
+    stroke-dashoffset: 0;
+  }
+}
+
+@keyframes signatureFillReveal {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
 }
 
 .hero-divider {

@@ -11,7 +11,7 @@ export function applyTranslations() {
 
   document.getElementById("txt-weekend").textContent = spanishLabels.weekend;
   document.getElementById("txt-weekend-translation").textContent = italianLabels.weekend;
-  document.getElementById("txt-hero-title").textContent = labels.heroTitle;
+  document.getElementById("txt-hero-title").setAttribute("aria-label", labels.heroTitle);
   document.getElementById("txt-hero-subtitle").textContent = labels.heroSubtitle;
   document.getElementById("txt-hero-subtitle-translation").textContent = oppositeLabels.heroSubtitle;
   refs.backToLanguage.setAttribute("aria-label", labels.back);

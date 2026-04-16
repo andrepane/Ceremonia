@@ -29,6 +29,15 @@ function delay(ms) {
   return new Promise((resolve) => setTimeout(resolve, ms));
 }
 
+function initHeroSignatureAnimation() {
+  const signaturePath = document.querySelector(".hero-signature__stroke");
+  if (!signaturePath) return;
+  const pathLength = signaturePath.getTotalLength();
+  signaturePath.style.strokeDasharray = `${pathLength}`;
+  signaturePath.style.strokeDashoffset = `${pathLength}`;
+  signaturePath.style.setProperty("--path-length", `${pathLength}`);
+}
+
 async function withAppUpdate(task) {
   if (refs.appShell) refs.appShell.classList.add("app-shell--updating");
   await new Promise((resolve) => window.requestAnimationFrame(resolve));
@@ -240,6 +249,7 @@ window.addEventListener("beforeunload", () => {
 });
 
 bindUIEvents();
+initHeroSignatureAnimation();
 restoreSession();
 activateView("home");
 updateCountdown();
