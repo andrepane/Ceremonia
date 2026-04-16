@@ -157,7 +157,7 @@ input {
 }
 
 .hero-title {
-  margin: 0.4em 0 0.3em;
+  margin: 0.6em 0 0.4em;
   font-size: clamp(2.8rem, 8vw, 4.6rem);
   line-height: 0.95;
   font-weight: 500;
