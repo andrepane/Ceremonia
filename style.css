@@ -109,6 +109,80 @@ input {
   margin-top: 12px;
 }
 
+.hero-translation-row--rotator {
+  display: flex;
+  justify-content: center;
+}
+
+.hero-rotator {
+  position: relative;
+  width: min(100%, 28ch);
+  height: 1.2em;
+  margin: 0 auto 8px;
+  overflow: hidden;
+  text-align: center;
+}
+
+.hero-rotator__text {
+  position: absolute;
+  inset: 0;
+  display: block;
+  width: 100%;
+  line-height: 1.2;
+  animation-duration: 3.6s;
+  animation-timing-function: ease-in-out;
+  animation-iteration-count: infinite;
+  will-change: transform;
+}
+
+.hero-rotator__text--es {
+  animation-name: heroRotatorEs;
+}
+
+.hero-rotator__text--it {
+  animation-name: heroRotatorIt;
+}
+
+@keyframes heroRotatorEs {
+  0%,
+  40% {
+    transform: translate3d(0, 0, 0);
+  }
+  50%,
+  90% {
+    transform: translate3d(0, -105%, 0);
+  }
+  90.01%,
+  100% {
+    transform: translate3d(0, 105%, 0);
+  }
+}
+
+@keyframes heroRotatorIt {
+  0%,
+  40% {
+    transform: translate3d(0, 105%, 0);
+  }
+  50%,
+  90% {
+    transform: translate3d(0, 0, 0);
+  }
+  90.01%,
+  100% {
+    transform: translate3d(0, -105%, 0);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .hero-rotator__text {
+    animation: none;
+  }
+
+  .hero-rotator__text--it {
+    display: none;
+  }
+}
+
 .eyebrow--translation,
 .hero-subtitle--translation {
   text-align: right;
