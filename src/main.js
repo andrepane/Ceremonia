@@ -15,6 +15,9 @@ import { renderTimeline, updateCountdown } from "./features/timeline.js";
 import { initFirebaseListeners } from "./integrations/firebase-sync.js";
 
 const rotatorSyncGroups = new Map();
+const ENTRY_TRANSITION_EASE = "cubic-bezier(0.2, 0.8, 0.2, 1)";
+const ENTRY_TRANSITION_DURATION_MS = 420;
+let isGuestEntryTransitionRunning = false;
 
 function getRotatorSyncGroup(groupName, { pauseMs, transitionMs }) {
   const existingGroup = rotatorSyncGroups.get(groupName);
@@ -76,6 +79,29 @@ function showScreen(screenToShow) {
 
 function delay(ms) {
   return new Promise((resolve) => setTimeout(resolve, ms));
+}
+
+function nextAnimationFrame() {
+  return new Promise((resolve) => window.requestAnimationFrame(resolve));
+}
+
+function waitForTransitionEnd(element, timeoutMs = ENTRY_TRANSITION_DURATION_MS + 80) {
+  return new Promise((resolve) => {
+    let resolved = false;
+    const finish = () => {
+      if (resolved) return;
+      resolved = true;
+      element.removeEventListener("transitionend", handleTransitionEnd);
+      window.clearTimeout(timeoutId);
+      resolve();
+    };
+    const handleTransitionEnd = (event) => {
+      if (event.target !== element) return;
+      finish();
+    };
+    const timeoutId = window.setTimeout(finish, timeoutMs);
+    element.addEventListener("transitionend", handleTransitionEnd);
+  });
 }
 
 function initVerticalLoopRotator({
@@ -273,7 +299,7 @@ async function setLanguage(lang) {
 async function setGuest(guestId) {
   if (state.currentGuestId === guestId) {
     showScreen(refs.screenApp);
-    return;
+    return true;
   }
 
   if (isFirebaseConfigured()) {
@@ -288,10 +314,10 @@ async function setGuest(guestId) {
     } catch (error) {
       if (error?.message === "guest_locked") {
         alert(state.currentLanguage === "it" ? "Questo profilo è già occupato." : "Este perfil ya está ocupado.");
-        return;
+        return false;
       }
       alert(getHomeCopy().authError);
-      return;
+      return false;
     }
   }
 
@@ -317,6 +343,97 @@ async function setGuest(guestId) {
       alert(getHomeCopy().authError);
     }
   }
+
+  return true;
+}
+
+async function animateGuestCardTransition(guestCard, guestId) {
+  if (!guestCard || isGuestEntryTransitionRunning) {
+    setGuest(guestId);
+    return;
+  }
+
+  const reducedMotionQuery = window.matchMedia("(prefers-reduced-motion: reduce)");
+  if (reducedMotionQuery.matches) {
+    await setGuest(guestId);
+    return;
+  }
+
+  const cardRect = guestCard.getBoundingClientRect();
+  if (!cardRect.width || !cardRect.height) {
+    await setGuest(guestId);
+    return;
+  }
+
+  isGuestEntryTransitionRunning = true;
+  const transitionLayer = document.createElement("div");
+  transitionLayer.className = "guest-card-shared-transition";
+  transitionLayer.setAttribute("aria-hidden", "true");
+
+  const clonedCard = guestCard.cloneNode(true);
+  clonedCard.classList.add("guest-card-shared-transition__card");
+  clonedCard.classList.remove("guest-card--flipped");
+  clonedCard.style.minHeight = `${Math.round(cardRect.height)}px`;
+  clonedCard.style.width = "100%";
+  clonedCard.style.height = "100%";
+  clonedCard.style.pointerEvents = "none";
+  transitionLayer.append(clonedCard);
+  document.body.append(transitionLayer);
+
+  guestCard.classList.add("guest-card--entering");
+  refs.screenApp.classList.add("screen--entry-transition-pending");
+
+  const viewportWidth = window.innerWidth;
+  const viewportHeight = window.innerHeight;
+  const sourceCenterX = cardRect.left + cardRect.width / 2;
+  const sourceCenterY = cardRect.top + cardRect.height / 2;
+  const targetCenterX = viewportWidth / 2;
+  const targetCenterY = viewportHeight / 2;
+  const translateX = sourceCenterX - targetCenterX;
+  const translateY = sourceCenterY - targetCenterY;
+  const scaleX = cardRect.width / viewportWidth;
+  const scaleY = cardRect.height / viewportHeight;
+
+  transitionLayer.style.setProperty("--entry-translate-x", `${translateX}px`);
+  transitionLayer.style.setProperty("--entry-translate-y", `${translateY}px`);
+  transitionLayer.style.setProperty("--entry-scale-x", `${scaleX}`);
+  transitionLayer.style.setProperty("--entry-scale-y", `${scaleY}`);
+  transitionLayer.style.setProperty("--entry-duration", `${ENTRY_TRANSITION_DURATION_MS}ms`);
+  transitionLayer.style.setProperty("--entry-ease", ENTRY_TRANSITION_EASE);
+
+  guestCard.style.visibility = "hidden";
+  document.body.classList.add("body--entry-transition");
+
+  await nextAnimationFrame();
+  transitionLayer.classList.add("guest-card-shared-transition--feedback");
+  await delay(90);
+
+  const setGuestPromise = setGuest(guestId);
+  transitionLayer.classList.remove("guest-card-shared-transition--feedback");
+  transitionLayer.classList.add("guest-card-shared-transition--expanding");
+  await waitForTransitionEnd(transitionLayer);
+  const wasGuestSet = await setGuestPromise;
+
+  const transitionSucceeded = Boolean(wasGuestSet && state.currentGuestId === guestId);
+  if (transitionSucceeded) {
+    refs.screenApp.classList.add("screen--entry-transition-active");
+    await nextAnimationFrame();
+    refs.screenApp.classList.remove("screen--entry-transition-pending");
+    await delay(190);
+  } else {
+    refs.screenApp.classList.remove("screen--entry-transition-pending");
+    refs.screenApp.classList.remove("screen--entry-transition-active");
+    guestCard.style.visibility = "";
+  }
+
+  transitionLayer.remove();
+  guestCard.classList.remove("guest-card--entering");
+  if (transitionSucceeded) {
+    guestCard.style.visibility = "";
+    window.setTimeout(() => refs.screenApp.classList.remove("screen--entry-transition-active"), 260);
+  }
+  document.body.classList.remove("body--entry-transition");
+  isGuestEntryTransitionRunning = false;
 }
 
 function restoreSession() {
@@ -407,7 +524,8 @@ function bindUIEvents() {
   refs.guestGrid.addEventListener("click", (event) => {
     const enterButton = event.target.closest("[data-guest-enter]");
     if (enterButton) {
-      setGuest(enterButton.dataset.guestEnter);
+      const card = enterButton.closest(".guest-card");
+      animateGuestCardTransition(card, enterButton.dataset.guestEnter);
       return;
     }
     const card = event.target.closest(".guest-card");
