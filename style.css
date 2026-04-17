@@ -648,7 +648,7 @@ input {
   width: 94px;
   height: 94px;
   border-radius: 14px;
-  background: linear-gradient(145deg, rgba(255, 255, 255, 0.98), rgba(244, 235, 228, 0.96));
+  background: transparent;
   -webkit-mask-image: -webkit-radial-gradient(white, black);
 }
 
@@ -665,7 +665,7 @@ input {
   -webkit-backface-visibility: hidden;
   -webkit-transform: translateZ(0);
   transform: translateZ(0);
-  mix-blend-mode: multiply;
+  mix-blend-mode: normal;
 }
 
 .guest-name {
