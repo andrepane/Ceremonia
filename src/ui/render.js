@@ -54,7 +54,12 @@ export function renderGuestCards() {
     const lockedByOther = Boolean(lockInfo.lockedByUid && lockInfo.lockedByUid !== state.authUid);
     const lockBadge = lockedByOther ? `<span class="guest-lock-badge">${state.currentLanguage === "it" ? "Occupato" : "Bloqueado"}</span>` : "";
     const enterLabel = lockedByOther ? (state.currentLanguage === "it" ? "Profilo occupato" : "Perfil ocupado") : locale.labels.enterCard;
-    return `<article class="guest-card ${lockedByOther ? "guest-card--locked" : ""}" data-guest-id="${guest.id}" tabindex="0" role="button" aria-pressed="false" aria-label="${guest.name}"><div class="guest-card__inner"><div class="guest-card__face guest-card__face--front">${lockBadge}<div class="guest-avatar ${avatarImage ? "guest-avatar--image" : ""}">${renderGuestAvatar(guest)}</div><span class="guest-name">${guest.name}</span></div><div class="guest-card__face guest-card__face--back"><span class="guest-role">${locale.roles[guest.roleKey] || ""}</span><button class="guest-enter-btn primary-btn" type="button" data-guest-enter="${guest.id}" ${lockedByOther ? "disabled" : ""}>${enterLabel}</button></div></div></article>`;
+    const avatarClasses = [
+      "guest-avatar",
+      avatarImage ? "guest-avatar--image" : "",
+      guest.id === "andrea_novio" ? "guest-avatar--andrea" : ""
+    ].filter(Boolean).join(" ");
+    return `<article class="guest-card ${lockedByOther ? "guest-card--locked" : ""}" data-guest-id="${guest.id}" tabindex="0" role="button" aria-pressed="false" aria-label="${guest.name}"><div class="guest-card__inner"><div class="guest-card__face guest-card__face--front">${lockBadge}<div class="${avatarClasses}">${renderGuestAvatar(guest)}</div><span class="guest-name">${guest.name}</span></div><div class="guest-card__face guest-card__face--back"><span class="guest-role">${locale.roles[guest.roleKey] || ""}</span><button class="guest-enter-btn primary-btn" type="button" data-guest-enter="${guest.id}" ${lockedByOther ? "disabled" : ""}>${enterLabel}</button></div></div></article>`;
   }).join("");
 }
 

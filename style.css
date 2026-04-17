@@ -652,6 +652,10 @@ input {
   -webkit-mask-image: -webkit-radial-gradient(white, black);
 }
 
+.guest-avatar--andrea {
+  background: transparent;
+}
+
 .guest-avatar__image {
   width: 100%;
   height: 100%;
