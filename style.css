@@ -626,6 +626,8 @@ input {
   transform: rotateY(180deg) translateZ(1px);
   -webkit-transform: rotateY(180deg) translateZ(1px);
   gap: 14px;
+  background:
+    linear-gradient(145deg, rgba(244, 233, 224, 0.98), rgba(231, 217, 206, 0.96));
 }
 
 .guest-avatar {
