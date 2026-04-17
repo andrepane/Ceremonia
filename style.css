@@ -625,7 +625,30 @@ input {
 .guest-card__face--back {
   transform: rotateY(180deg) translateZ(1px);
   -webkit-transform: rotateY(180deg) translateZ(1px);
-  gap: 14px;
+  justify-content: space-between;
+  gap: 16px;
+  padding: 14px 12px 16px;
+  background:
+    linear-gradient(155deg, rgba(245, 236, 228, 0.98), rgba(233, 220, 208, 0.98));
+}
+
+.guest-card__back-main,
+.guest-card__back-cta {
+  width: 100%;
+  display: flex;
+  align-items: center;
+}
+
+.guest-card__back-main {
+  flex: 1;
+  justify-content: center;
+  min-height: 0;
+}
+
+.guest-card__back-cta {
+  flex-direction: column;
+  justify-content: flex-end;
+  gap: 10px;
 }
 
 .guest-avatar {
@@ -652,6 +675,19 @@ input {
   -webkit-mask-image: -webkit-radial-gradient(white, black);
 }
 
+.guest-avatar--back {
+  width: 102px;
+  height: 102px;
+  transform: translateZ(32px);
+  -webkit-transform: translateZ(32px);
+}
+
+.guest-card__face--back .guest-avatar--image {
+  border-radius: 0;
+  -webkit-mask-image: none;
+  filter: drop-shadow(0 10px 16px rgba(95, 68, 53, 0.16));
+}
+
 .guest-avatar__image {
   width: 100%;
   height: 100%;
@@ -659,13 +695,16 @@ input {
   object-position: center;
   display: block;
   border-radius: inherit;
-  clip-path: inset(0 round 14px);
   transform: none;
   backface-visibility: hidden;
   -webkit-backface-visibility: hidden;
   -webkit-transform: translateZ(0);
   transform: translateZ(0);
   mix-blend-mode: normal;
+}
+
+.guest-card__face--back .guest-avatar__image {
+  clip-path: none;
 }
 
 .guest-name {
@@ -675,22 +714,31 @@ input {
   -webkit-transform: translateZ(22px);
 }
 
-.guest-role {
-  font-size: 0.95rem;
-  color: var(--muted);
-  text-align: center;
-  font-weight: 600;
-  transform: translateZ(22px);
-  -webkit-transform: translateZ(22px);
+.guest-name--back {
+  font-size: 1.02rem;
+  letter-spacing: 0.01em;
 }
 
 .guest-enter-btn {
-  min-height: 38px;
-  min-width: 96px;
-  padding: 0 14px;
-  font-size: 0.95rem;
+  min-height: 34px;
+  min-width: 108px;
+  padding: 0 16px;
+  border-radius: 999px;
+  border: 1px solid rgba(95, 68, 53, 0.32);
+  background: rgba(255, 255, 255, 0.42);
+  color: #533d30;
+  font-size: 0.87rem;
+  font-weight: 600;
+  letter-spacing: 0.03em;
+  text-transform: uppercase;
+  box-shadow: 0 6px 14px rgba(95, 68, 53, 0.11);
   transform: translateZ(30px);
   -webkit-transform: translateZ(30px);
+}
+
+.guest-enter-btn:disabled {
+  opacity: 0.55;
+  cursor: not-allowed;
 }
 
 @media (prefers-reduced-motion: reduce) {
