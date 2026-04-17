@@ -512,8 +512,11 @@ input {
   min-height: 196px;
   padding: 0;
   position: relative;
-  perspective: 1200px;
-  -webkit-perspective: 1200px;
+  perspective: 1600px;
+  -webkit-perspective: 1600px;
+  --guest-flip: 0deg;
+  --guest-tilt-x: 0deg;
+  --guest-tilt-y: 0deg;
   background: transparent;
   border: 0;
   border-radius: var(--radius-lg);
@@ -528,6 +531,8 @@ input {
 
 .guest-card:hover {
   transform: none;
+  --guest-tilt-x: -4deg;
+  --guest-tilt-y: 5deg;
 }
 
 .guest-card__inner {
@@ -541,13 +546,19 @@ input {
   transform-style: preserve-3d;
   -webkit-transform-style: preserve-3d;
   will-change: transform;
-  transition: transform 0.65s cubic-bezier(0.24, 0.82, 0.27, 1), box-shadow 0.2s ease;
-  transform: rotateY(0deg) translateZ(0);
-  -webkit-transform: rotateY(0deg) translateZ(0);
+  transition: transform 0.78s cubic-bezier(0.22, 0.61, 0.36, 1), box-shadow 0.28s ease;
+  transform:
+    rotateX(var(--guest-tilt-x))
+    rotateY(calc(var(--guest-flip) + var(--guest-tilt-y)))
+    translateZ(0);
+  -webkit-transform:
+    rotateX(var(--guest-tilt-x))
+    rotateY(calc(var(--guest-flip) + var(--guest-tilt-y)))
+    translateZ(0);
 }
 
 .guest-card:hover .guest-card__inner {
-  box-shadow: 0 22px 36px rgba(59, 37, 24, 0.18);
+  box-shadow: 0 28px 44px rgba(59, 37, 24, 0.2);
 }
 
 .guest-card--locked .guest-card__inner {
@@ -572,8 +583,7 @@ input {
 }
 
 .guest-card--flipped .guest-card__inner {
-  transform: rotateY(180deg) translateZ(0);
-  -webkit-transform: rotateY(180deg) translateZ(0);
+  --guest-flip: 180deg;
 }
 
 .guest-card__face {
@@ -602,6 +612,8 @@ input {
   inset: 8px;
   border-radius: calc(var(--radius-lg) - 8px);
   border: 1px solid rgba(255, 255, 255, 0.32);
+  transform: translateZ(2px);
+  -webkit-transform: translateZ(2px);
   pointer-events: none;
 }
 
@@ -628,6 +640,8 @@ input {
   font-size: 1.4rem;
   font-family: "Cormorant Garamond", serif;
   overflow: hidden;
+  transform: translateZ(28px);
+  -webkit-transform: translateZ(28px);
 }
 
 .guest-avatar--image {
@@ -657,6 +671,8 @@ input {
 .guest-name {
   font-weight: 700;
   text-align: center;
+  transform: translateZ(22px);
+  -webkit-transform: translateZ(22px);
 }
 
 .guest-role {
@@ -664,6 +680,8 @@ input {
   color: var(--muted);
   text-align: center;
   font-weight: 600;
+  transform: translateZ(22px);
+  -webkit-transform: translateZ(22px);
 }
 
 .guest-enter-btn {
@@ -671,6 +689,19 @@ input {
   min-width: 96px;
   padding: 0 14px;
   font-size: 0.95rem;
+  transform: translateZ(30px);
+  -webkit-transform: translateZ(30px);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .guest-card {
+    --guest-tilt-x: 0deg;
+    --guest-tilt-y: 0deg;
+  }
+
+  .guest-card__inner {
+    transition: none;
+  }
 }
 
 @media (max-width: 480px) {
