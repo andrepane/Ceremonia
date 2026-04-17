@@ -517,8 +517,6 @@ input {
   --guest-flip: 0deg;
   --guest-tilt-x: 0deg;
   --guest-tilt-y: 0deg;
-  --guest-glare-x: 50%;
-  --guest-glare-y: 28%;
   background: transparent;
   border: 0;
   border-radius: var(--radius-lg);
@@ -533,6 +531,8 @@ input {
 
 .guest-card:hover {
   transform: none;
+  --guest-tilt-x: -4deg;
+  --guest-tilt-y: 5deg;
 }
 
 .guest-card__inner {
@@ -546,7 +546,7 @@ input {
   transform-style: preserve-3d;
   -webkit-transform-style: preserve-3d;
   will-change: transform;
-  transition: transform 0.52s cubic-bezier(0.22, 0.61, 0.36, 1), box-shadow 0.28s ease;
+  transition: transform 0.78s cubic-bezier(0.22, 0.61, 0.36, 1), box-shadow 0.28s ease;
   transform:
     rotateX(var(--guest-tilt-x))
     rotateY(calc(var(--guest-flip) + var(--guest-tilt-y)))
@@ -558,7 +558,7 @@ input {
 }
 
 .guest-card:hover .guest-card__inner {
-  box-shadow: 0 36px 54px rgba(59, 37, 24, 0.28);
+  box-shadow: 0 28px 44px rgba(59, 37, 24, 0.2);
 }
 
 .guest-card--locked .guest-card__inner {
@@ -606,31 +606,6 @@ input {
   overflow: hidden;
 }
 
-.guest-card__spotlight {
-  position: absolute;
-  top: -28%;
-  left: -28%;
-  width: 156%;
-  height: 156%;
-  border-radius: 50%;
-  pointer-events: none;
-  opacity: 0;
-  background: radial-gradient(
-    circle at var(--guest-glare-x) var(--guest-glare-y),
-    rgba(255, 255, 255, 0.72) 0%,
-    rgba(255, 255, 255, 0.34) 20%,
-    rgba(255, 255, 255, 0.06) 42%,
-    rgba(255, 255, 255, 0) 68%
-  );
-  transform: translateZ(38px) scale(1);
-  transition: opacity 0.26s ease, transform 0.42s ease;
-}
-
-.guest-card:hover .guest-card__spotlight {
-  opacity: 0.95;
-  transform: translateZ(52px) scale(1.03);
-}
-
 .guest-card__face::after {
   content: "";
   position: absolute;
@@ -665,16 +640,8 @@ input {
   font-size: 1.4rem;
   font-family: "Cormorant Garamond", serif;
   overflow: hidden;
-  box-shadow: 0 12px 28px rgba(74, 46, 28, 0.22);
-  transform: translateZ(54px) scale(1.02);
-  -webkit-transform: translateZ(54px) scale(1.02);
-  transition: transform 0.48s cubic-bezier(0.2, 0.7, 0.2, 1), box-shadow 0.34s ease;
-}
-
-.guest-card:hover .guest-avatar {
-  transform: translateZ(86px) scale(1.11);
-  -webkit-transform: translateZ(86px) scale(1.11);
-  box-shadow: 0 22px 36px rgba(62, 37, 22, 0.33);
+  transform: translateZ(28px);
+  -webkit-transform: translateZ(28px);
 }
 
 .guest-avatar--image {
@@ -699,24 +666,13 @@ input {
   -webkit-transform: translateZ(0);
   transform: translateZ(0);
   mix-blend-mode: multiply;
-  transition: transform 0.45s ease;
-}
-
-.guest-card:hover .guest-avatar__image {
-  transform: scale(1.06) translateZ(0);
 }
 
 .guest-name {
   font-weight: 700;
   text-align: center;
-  transform: translateZ(36px);
-  -webkit-transform: translateZ(36px);
-  transition: transform 0.4s ease;
-}
-
-.guest-card:hover .guest-name {
-  transform: translateZ(50px);
-  -webkit-transform: translateZ(50px);
+  transform: translateZ(22px);
+  -webkit-transform: translateZ(22px);
 }
 
 .guest-role {
@@ -743,16 +699,8 @@ input {
     --guest-tilt-y: 0deg;
   }
 
-  .guest-card__inner,
-  .guest-avatar,
-  .guest-name,
-  .guest-card__spotlight,
-  .guest-avatar__image {
+  .guest-card__inner {
     transition: none;
-  }
-
-  .guest-card__spotlight {
-    opacity: 0;
   }
 }
 

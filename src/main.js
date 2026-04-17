@@ -415,38 +415,6 @@ function bindUIEvents() {
       card.setAttribute("aria-pressed", card.classList.contains("guest-card--flipped") ? "true" : "false");
     }
   });
-
-  let activeTiltCard = null;
-
-  refs.guestGrid.addEventListener("pointermove", (event) => {
-    const card = event.target.closest(".guest-card");
-    if (!card) return;
-    if (activeTiltCard && activeTiltCard !== card) {
-      activeTiltCard.style.setProperty("--guest-tilt-y", "0deg");
-      activeTiltCard.style.setProperty("--guest-tilt-x", "0deg");
-    }
-    activeTiltCard = card;
-    const rect = card.getBoundingClientRect();
-    const relX = (event.clientX - rect.left) / rect.width;
-    const relY = (event.clientY - rect.top) / rect.height;
-    const tiltY = (relX - 0.5) * 18;
-    const tiltX = (0.5 - relY) * 14;
-    card.style.setProperty("--guest-tilt-y", `${tiltY.toFixed(2)}deg`);
-    card.style.setProperty("--guest-tilt-x", `${tiltX.toFixed(2)}deg`);
-    card.style.setProperty("--guest-glare-x", `${(relX * 100).toFixed(2)}%`);
-    card.style.setProperty("--guest-glare-y", `${(relY * 100).toFixed(2)}%`);
-  });
-
-  refs.guestGrid.addEventListener("pointerleave", () => {
-    refs.guestGrid.querySelectorAll(".guest-card").forEach((card) => {
-      card.style.setProperty("--guest-tilt-y", "0deg");
-      card.style.setProperty("--guest-tilt-x", "0deg");
-      card.style.setProperty("--guest-glare-x", "50%");
-      card.style.setProperty("--guest-glare-y", "28%");
-    });
-    activeTiltCard = null;
-  });
-
 }
 
 window.addEventListener("beforeunload", () => {
