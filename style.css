@@ -546,7 +546,7 @@ input {
   transform-style: preserve-3d;
   -webkit-transform-style: preserve-3d;
   will-change: transform;
-  transition: transform 0.78s cubic-bezier(0.22, 0.61, 0.36, 1), box-shadow 0.28s ease;
+  transition: transform 1.12s cubic-bezier(0.22, 0.61, 0.36, 1), box-shadow 0.28s ease;
   transform:
     rotateX(var(--guest-tilt-x))
     rotateY(calc(var(--guest-flip) + var(--guest-tilt-y)))

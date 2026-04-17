@@ -393,6 +393,17 @@ function bindUIEvents() {
     handleTranslatorRequest();
   });
 
+  const toggleGuestCardFlip = (card) => {
+    const isCurrentlyFlipped = card.classList.contains("guest-card--flipped");
+    refs.guestGrid.querySelectorAll(".guest-card--flipped").forEach((flippedCard) => {
+      flippedCard.classList.remove("guest-card--flipped");
+      flippedCard.setAttribute("aria-pressed", "false");
+    });
+    if (isCurrentlyFlipped) return;
+    card.classList.add("guest-card--flipped");
+    card.setAttribute("aria-pressed", "true");
+  };
+
   refs.guestGrid.addEventListener("click", (event) => {
     const enterButton = event.target.closest("[data-guest-enter]");
     if (enterButton) {
@@ -401,8 +412,7 @@ function bindUIEvents() {
     }
     const card = event.target.closest(".guest-card");
     if (!card) return;
-    card.classList.toggle("guest-card--flipped");
-    card.setAttribute("aria-pressed", card.classList.contains("guest-card--flipped") ? "true" : "false");
+    toggleGuestCardFlip(card);
   });
 
   refs.guestGrid.addEventListener("keydown", (event) => {
@@ -411,8 +421,7 @@ function bindUIEvents() {
     if (!card) return;
     if (event.key === "Enter" || event.key === " ") {
       event.preventDefault();
-      card.classList.toggle("guest-card--flipped");
-      card.setAttribute("aria-pressed", card.classList.contains("guest-card--flipped") ? "true" : "false");
+      toggleGuestCardFlip(card);
     }
   });
 }
