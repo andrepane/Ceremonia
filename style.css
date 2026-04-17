@@ -626,6 +626,11 @@ input {
   transform: rotateY(180deg) translateZ(1px);
   -webkit-transform: rotateY(180deg) translateZ(1px);
   gap: 14px;
+  background: var(--accent-strong);
+}
+
+.guest-card__face--back .guest-role {
+  color: rgba(255, 255, 255, 0.88);
 }
 
 .guest-avatar {
@@ -689,6 +694,9 @@ input {
   min-width: 96px;
   padding: 0 14px;
   font-size: 0.95rem;
+  background: var(--surface);
+  color: var(--accent-strong);
+  border: 1px solid rgba(255, 255, 255, 0.45);
   transform: translateZ(30px);
   -webkit-transform: translateZ(30px);
 }
