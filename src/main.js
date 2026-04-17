@@ -15,6 +15,9 @@ import { renderTimeline, updateCountdown } from "./features/timeline.js";
 import { initFirebaseListeners } from "./integrations/firebase-sync.js";
 
 const rotatorSyncGroups = new Map();
+const SCREEN_TRANSITION_MS = 560;
+const VIEW_TRANSITION_MS = 420;
+const ENTER_BUTTON_FEEDBACK_MS = 220;
 
 function getRotatorSyncGroup(groupName, { pauseMs, transitionMs }) {
   const existingGroup = rotatorSyncGroups.get(groupName);
@@ -67,9 +70,18 @@ function scrollViewportToTop() {
   window.scrollTo({ top: 0, left: 0, behavior: "auto" });
 }
 
+function animateEntrance(element, animationClass, durationMs) {
+  if (!element) return;
+  element.classList.remove(animationClass);
+  void element.offsetWidth;
+  element.classList.add(animationClass);
+  window.setTimeout(() => element.classList.remove(animationClass), durationMs);
+}
+
 function showScreen(screenToShow) {
   [refs.screenLanguage, refs.screenGuest, refs.screenApp].forEach((screen) => screen.classList.remove("screen--active"));
   screenToShow.classList.add("screen--active");
+  animateEntrance(screenToShow, "screen--transition-in", SCREEN_TRANSITION_MS);
   document.body.classList.toggle("body--language-locked", screenToShow === refs.screenLanguage);
   scrollViewportToTop();
 }
@@ -239,7 +251,10 @@ function activateView(viewName) {
   refs.navButtons.forEach((button) => button.classList.remove("nav-btn--active"));
   const targetView = document.getElementById(`view-${viewName}`);
   const targetButton = document.querySelector(`[data-view="${viewName}"]`);
-  if (targetView) targetView.classList.add("view--active");
+  if (targetView) {
+    targetView.classList.add("view--active");
+    animateEntrance(targetView, "view--transition-in", VIEW_TRANSITION_MS);
+  }
   if (targetButton) targetButton.classList.add("nav-btn--active");
   scrollViewportToTop();
 }
@@ -404,10 +419,16 @@ function bindUIEvents() {
     card.setAttribute("aria-pressed", "true");
   };
 
-  refs.guestGrid.addEventListener("click", (event) => {
+  refs.guestGrid.addEventListener("click", async (event) => {
     const enterButton = event.target.closest("[data-guest-enter]");
     if (enterButton) {
-      setGuest(enterButton.dataset.guestEnter);
+      if (enterButton.disabled) return;
+      enterButton.classList.remove("guest-enter-btn--pressed");
+      void enterButton.offsetWidth;
+      enterButton.classList.add("guest-enter-btn--pressed");
+      await delay(ENTER_BUTTON_FEEDBACK_MS);
+      enterButton.classList.remove("guest-enter-btn--pressed");
+      await setGuest(enterButton.dataset.guestEnter);
       return;
     }
     const card = event.target.closest(".guest-card");
