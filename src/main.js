@@ -114,6 +114,7 @@ function initVerticalLoopRotator({
   let pauseTimer = null;
   let isTransitioning = false;
   let syncSubscription = null;
+  let pendingWidthSyncFrame = null;
   const syncController = syncGroup ? getRotatorSyncGroup(syncGroup, { pauseMs, transitionMs }) : null;
 
   function syncLockedWidth() {
@@ -121,7 +122,16 @@ function initVerticalLoopRotator({
     const items = track.querySelectorAll(itemSelector);
     if (!items.length) return;
     const maxWidth = Array.from(items).reduce((currentMax, item) => Math.max(currentMax, item.getBoundingClientRect().width), 0);
-    if (maxWidth > 0) rotator.style.width = `${Math.ceil(maxWidth)}px`;
+    if (maxWidth > 0) rotator.style.width = `${Math.ceil(maxWidth) + 2}px`;
+  }
+
+  function scheduleWidthSync() {
+    if (!lockMaxItemWidth) return;
+    if (pendingWidthSyncFrame) window.cancelAnimationFrame(pendingWidthSyncFrame);
+    pendingWidthSyncFrame = window.requestAnimationFrame(() => {
+      pendingWidthSyncFrame = null;
+      syncLockedWidth();
+    });
   }
 
   function clearPauseTimer() {
@@ -204,7 +214,17 @@ function initVerticalLoopRotator({
     start();
   });
 
-  window.addEventListener("resize", syncLockedWidth);
+  window.addEventListener("resize", scheduleWidthSync);
+  window.addEventListener("orientationchange", scheduleWidthSync);
+  window.addEventListener("pageshow", scheduleWidthSync);
+
+  if (document.fonts?.ready) {
+    document.fonts.ready.then(scheduleWidthSync);
+  }
+
+  window.setTimeout(scheduleWidthSync, 180);
+  window.setTimeout(scheduleWidthSync, 600);
+
   syncLockedWidth();
   start();
 }
