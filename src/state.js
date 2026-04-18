@@ -25,7 +25,9 @@ export const refs = {
   translatorInput: document.getElementById("translator-input"),
   translatorButton: document.getElementById("translator-btn"),
   translatorSpeakButton: document.getElementById("translator-speak-btn"),
-  translatorText: document.getElementById("txt-translator-text")
+  translatorText: document.getElementById("txt-translator-text"),
+  translatorHistoryTitle: document.getElementById("txt-translator-history-title"),
+  translatorHistoryList: document.getElementById("translator-history-list")
 };
 
 export const constants = {
@@ -229,7 +231,8 @@ export const state = {
   isWeekendFormatExpanded: false,
   homeActivityLoading: true,
   homePhotosLoading: true,
-  lastTranslatedLanguage: "it"
+  lastTranslatedLanguage: "it",
+  translationHistoryByGuest: {}
 };
 
 export const setState = (updates) => Object.assign(state, updates);

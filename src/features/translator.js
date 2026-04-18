@@ -1,5 +1,6 @@
 import { constants, refs, state, setState } from "../state.js";
 import { getTranslatorUiCopy } from "../ui/translations.js";
+import { renderDictionary } from "../ui/render.js";
 
 export async function handleTranslatorRequest() {
   const sourceText = refs.translatorInput.value.trim();
@@ -32,11 +33,27 @@ export async function handleTranslatorRequest() {
       console.log("[Translator] Proveedor de traducción no informado", data);
     }
 
-    setState({ lastTranslatedLanguage: targetLanguage });
-    refs.translatorText.textContent = translatedText || uiCopy.error;
+    if (!translatedText) throw new Error("Missing translation text");
+
+    const guestId = state.currentGuestId || "guest-anonymous";
+    const guestHistory = state.translationHistoryByGuest[guestId] || [];
+    const updatedHistory = [{ sourceText, translatedText }, ...guestHistory].slice(0, 5);
+
+    setState({
+      lastTranslatedLanguage: targetLanguage,
+      translationHistoryByGuest: {
+        ...state.translationHistoryByGuest,
+        [guestId]: updatedHistory
+      }
+    });
+    refs.translatorText.textContent = translatedText;
+    refs.translatorText.classList.add("translator-result--highlight");
+    renderDictionary();
   } catch {
     refs.translatorText.textContent = uiCopy.error;
+    refs.translatorText.classList.remove("translator-result--highlight");
   } finally {
+    refs.translatorInput.value = "";
     refs.translatorButton.disabled = false;
     refs.translatorButton.textContent = originalButtonText;
   }

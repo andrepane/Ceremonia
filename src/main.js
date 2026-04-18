@@ -8,7 +8,7 @@ import {
 } from "../firebase.js";
 import { APP_DATA, refs, state, setState, findGuestById, getHomeCopy } from "./state.js";
 import { applyTranslations } from "./ui/translations.js";
-import { renderAllDynamicSections, renderGuestCards, renderHomeDashboard, updateAppHeaderForView, updateGuestHeaderMessage, updateProfileAvatar, updateWelcomeLabel } from "./ui/render.js";
+import { renderAllDynamicSections, renderDictionary, renderGuestCards, renderHomeDashboard, updateAppHeaderForView, updateGuestHeaderMessage, updateProfileAvatar, updateWelcomeLabel } from "./ui/render.js";
 import { handleSpeakTranslation, handleTranslatorRequest } from "./features/translator.js";
 import { handlePhotoGridClick, handleUploadPhoto } from "./features/photos.js";
 import { renderTimeline, updateCountdown } from "./features/timeline.js";
@@ -323,6 +323,7 @@ async function setGuest(guestId) {
     showScreen(refs.screenApp);
     renderHomeDashboard();
     renderGuestCards();
+    renderDictionary();
     updateCountdown();
   });
 
@@ -351,6 +352,7 @@ function restoreSession() {
     updateProfileAvatar();
     renderTimeline();
     renderHomeDashboard();
+    renderDictionary();
     showScreen(refs.screenApp);
     return;
   }
