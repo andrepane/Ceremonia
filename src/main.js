@@ -8,7 +8,7 @@ import {
 } from "../firebase.js";
 import { APP_DATA, refs, state, setState, findGuestById, getHomeCopy } from "./state.js";
 import { applyTranslations } from "./ui/translations.js";
-import { renderAllDynamicSections, renderGuestCards, renderHomeDashboard, updateGuestHeaderMessage, updateProfileAvatar, updateWelcomeLabel } from "./ui/render.js";
+import { renderAllDynamicSections, renderGuestCards, renderHomeDashboard, updateAppHeaderForView, updateGuestHeaderMessage, updateProfileAvatar, updateWelcomeLabel } from "./ui/render.js";
 import { handleSpeakTranslation, handleTranslatorRequest } from "./features/translator.js";
 import { handlePhotoGridClick, handleUploadPhoto } from "./features/photos.js";
 import { renderTimeline, updateCountdown } from "./features/timeline.js";
@@ -256,6 +256,7 @@ function activateView(viewName) {
     animateEntrance(targetView, "view--transition-in", VIEW_TRANSITION_MS);
   }
   if (targetButton) targetButton.classList.add("nav-btn--active");
+  updateAppHeaderForView(viewName);
   scrollViewportToTop();
 }
 

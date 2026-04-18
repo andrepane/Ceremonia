@@ -1,6 +1,37 @@
 import { APP_DATA, refs, state, getLocale, getHomeCopy, findGuestById } from "../state.js";
 import { renderTimeline } from "../features/timeline.js";
 
+
+const appTitleElement = document.querySelector(".app-title");
+const appTitleSeparatorNode = Array.from(appTitleElement?.childNodes || []).find(
+  (node) => node.nodeType === Node.TEXT_NODE && node.textContent.includes(",")
+);
+const appTitleDefaultSeparator = appTitleSeparatorNode?.textContent || ", ";
+
+function getActiveViewName() {
+  const activeView = document.querySelector(".view--active");
+  return activeView?.id?.replace("view-", "") || "home";
+}
+
+const SECTION_HEADER_COPY_BY_VIEW = {
+  guide: {
+    titleKey: "guideHeaderTitle",
+    subtitleKey: "guideHeaderSubtitle"
+  },
+  dictionary: {
+    titleKey: "dictionaryHeaderTitle",
+    subtitleKey: "dictionaryHeaderSubtitle"
+  },
+  photos: {
+    titleKey: "photosHeaderTitle",
+    subtitleKey: "photosHeaderSubtitle"
+  },
+  map: {
+    titleKey: "mapHeaderTitle",
+    subtitleKey: "mapHeaderSubtitle"
+  }
+};
+
 function formatRelativeTimeFromDate(dateValue) {
   const copy = getHomeCopy();
   const d = dateValue?.toDate ? dateValue.toDate() : new Date(dateValue);
@@ -95,6 +126,44 @@ export function updateGuestHeaderMessage() {
   const message = APP_DATA.guestHeaders?.[state.currentGuestId] || "";
   refs.guestHeaderMessageElement.textContent = message;
   refs.guestHeaderMessageElement.hidden = !message;
+}
+
+export function updateAppHeaderForView(viewName = getActiveViewName()) {
+  const labels = getLocale().labels;
+  const welcomeElement = document.getElementById("txt-welcome");
+  const helloPrefixElement = document.getElementById("txt-hello-prefix");
+
+  if (viewName === "home") {
+    updateWelcomeLabel();
+    if (welcomeElement) welcomeElement.hidden = false;
+    if (helloPrefixElement) helloPrefixElement.textContent = labels.hello;
+    if (refs.selectedGuestName) {
+      const guest = findGuestById(state.currentGuestId);
+      refs.selectedGuestName.textContent = guest ? guest.name : "Invitado";
+      refs.selectedGuestName.hidden = false;
+    }
+    if (appTitleSeparatorNode) appTitleSeparatorNode.textContent = appTitleDefaultSeparator;
+    updateGuestHeaderMessage();
+    return;
+  }
+
+  const sectionHeaderCopy = SECTION_HEADER_COPY_BY_VIEW[viewName];
+  if (!sectionHeaderCopy) return;
+
+  if (welcomeElement) {
+    welcomeElement.textContent = "";
+    welcomeElement.hidden = true;
+  }
+  if (helloPrefixElement) helloPrefixElement.textContent = labels[sectionHeaderCopy.titleKey] || "";
+  if (refs.selectedGuestName) {
+    refs.selectedGuestName.textContent = "";
+    refs.selectedGuestName.hidden = true;
+  }
+  if (appTitleSeparatorNode) appTitleSeparatorNode.textContent = "";
+  if (refs.guestHeaderMessageElement) {
+    refs.guestHeaderMessageElement.textContent = labels[sectionHeaderCopy.subtitleKey] || "";
+    refs.guestHeaderMessageElement.hidden = false;
+  }
 }
 
 export function renderDictionary() {
