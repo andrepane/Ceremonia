@@ -1,6 +1,7 @@
 import { constants, refs, state, setState } from "../state.js";
 import { getTranslatorUiCopy } from "../ui/translations.js";
 import { renderDictionary } from "../ui/render.js";
+import { saveGuestDictionaryState } from "./dictionary-store.js";
 
 export async function handleTranslatorRequest() {
   const sourceText = refs.translatorInput.value.trim();
@@ -37,15 +38,20 @@ export async function handleTranslatorRequest() {
 
     const guestId = state.currentGuestId || "guest-anonymous";
     const guestHistory = state.translationHistoryByGuest[guestId] || [];
-    const updatedHistory = [{ sourceText, translatedText }, ...guestHistory].slice(0, 5);
+    const updatedAt = Date.now();
+    const updatedHistory = [{ sourceText, translatedText, updatedAt }, ...guestHistory].slice(0, 5);
+    const currentTranslation = {
+      sourceText,
+      translatedText,
+      sourceLang: state.currentLanguage,
+      targetLang: targetLanguage,
+      updatedAt
+    };
 
     setState({
-      lastTranslatedLanguage: targetLanguage,
-      translationHistoryByGuest: {
-        ...state.translationHistoryByGuest,
-        [guestId]: updatedHistory
-      }
+      lastTranslatedLanguage: targetLanguage
     });
+    await saveGuestDictionaryState({ guestId, history: updatedHistory, currentTranslation });
     refs.translatorText.textContent = translatedText;
     refs.translatorText.classList.add("translator-result--highlight");
     renderDictionary();
