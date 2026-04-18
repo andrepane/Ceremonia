@@ -1099,6 +1099,45 @@ input {
   margin-top: 4px;
 }
 
+.translator-result {
+  margin-top: 12px;
+}
+
+.translator-result--highlight {
+  margin-top: 14px;
+  padding: 14px 16px;
+  border-radius: 14px;
+  border: 1px solid rgba(127, 95, 77, 0.2);
+  background: linear-gradient(145deg, rgba(255, 255, 255, 0.95), rgba(233, 221, 211, 0.6));
+  color: var(--accent-strong);
+  font-size: 1.08rem;
+  font-weight: 600;
+  line-height: 1.4;
+}
+
+.translator-history-card {
+  margin-top: 12px;
+}
+
+.translator-history-list {
+  display: grid;
+  gap: 12px;
+}
+
+.translator-history-row__source {
+  margin: 0;
+  font-weight: 600;
+  line-height: 1.4;
+}
+
+.translator-history-row__target {
+  margin-top: 4px;
+}
+
+.translator-history-empty {
+  margin-top: 0;
+}
+
 
 .accordion-card {
   gap: 0;

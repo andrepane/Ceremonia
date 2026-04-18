@@ -174,6 +174,10 @@ export function renderDictionary() {
     return `<article class="dictionary-row"><h4 class="card-title">${term}</h4><p class="card-text">${translation}</p></article>`;
   }).join("");
   document.getElementById("false-friends-list").innerHTML = falseFriendItems;
+
+  const history = state.translationHistoryByGuest[state.currentGuestId] || [];
+  const historyItems = history.map((item) => `<article class="dictionary-row"><p class="translator-history-row__source">${item.sourceText}</p><p class="card-text translator-history-row__target">${item.translatedText}</p></article>`).join("");
+  refs.translatorHistoryList.innerHTML = historyItems || `<p class="card-text translator-history-empty">${locale.labels.translatorHistoryEmpty}</p>`;
 }
 
 export function renderPhotos() {

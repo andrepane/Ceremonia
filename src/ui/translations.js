@@ -29,6 +29,8 @@ export function applyTranslations() {
   document.getElementById("txt-translator-label").textContent = labels.translatorLabel;
   document.getElementById("txt-translator-title").textContent = labels.translatorTitle || "";
   refs.translatorText.textContent = labels.translatorText;
+  refs.translatorText.classList.remove("translator-result--highlight");
+  refs.translatorHistoryTitle.textContent = labels.translatorHistoryTitle;
   document.getElementById("txt-false-friends-label").textContent = labels.falseFriendsLabel;
   refs.translatorInput.placeholder = labels.translatorPlaceholder;
   refs.translatorButton.textContent = labels.translateBtn;
