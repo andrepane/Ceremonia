@@ -232,7 +232,9 @@ export const state = {
   homeActivityLoading: true,
   homePhotosLoading: true,
   lastTranslatedLanguage: "it",
-  translationHistoryByGuest: {}
+  translationHistoryByGuest: {},
+  currentTranslationByGuest: {},
+  unsubscribeDictionary: () => {}
 };
 
 export const setState = (updates) => Object.assign(state, updates);

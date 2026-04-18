@@ -178,6 +178,15 @@ export function renderDictionary() {
   const history = state.translationHistoryByGuest[state.currentGuestId] || [];
   const historyItems = history.map((item) => `<article class="dictionary-row"><p class="translator-history-row__source">${item.sourceText}</p><p class="card-text translator-history-row__target">${item.translatedText}</p></article>`).join("");
   refs.translatorHistoryList.innerHTML = historyItems || `<p class="card-text translator-history-empty">${locale.labels.translatorHistoryEmpty}</p>`;
+
+  const currentTranslation = state.currentTranslationByGuest[state.currentGuestId] || null;
+  if (currentTranslation?.translatedText) {
+    refs.translatorText.textContent = currentTranslation.translatedText;
+    refs.translatorText.classList.add("translator-result--highlight");
+  } else {
+    refs.translatorText.textContent = locale.labels.translatorText;
+    refs.translatorText.classList.remove("translator-result--highlight");
+  }
 }
 
 export function renderPhotos() {

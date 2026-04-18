@@ -9,6 +9,7 @@ import {
 } from "../../firebase.js";
 import { refs, state, setState } from "../state.js";
 import { renderGuestCards, renderHomeDashboard, renderPhotos, updateGuestHeaderMessage, updateProfileAvatar, updateWelcomeLabel } from "../ui/render.js";
+import { stopGuestDictionarySync } from "../features/dictionary-store.js";
 
 export async function initFirebaseListeners(showScreenGuest) {
   if (!isFirebaseConfigured()) {
@@ -21,7 +22,8 @@ export async function initFirebaseListeners(showScreenGuest) {
   state.unsubscribeActivity();
   state.unsubscribePhotos();
   state.unsubscribeGuestPresence();
-  setState({ unsubscribeActivity: () => {}, unsubscribePhotos: () => {}, unsubscribeGuestPresence: () => {} });
+  state.unsubscribeDictionary();
+  setState({ unsubscribeActivity: () => {}, unsubscribePhotos: () => {}, unsubscribeGuestPresence: () => {}, unsubscribeDictionary: () => {} });
 
   try {
     await ensureAuth();
@@ -70,6 +72,7 @@ export async function initFirebaseListeners(showScreenGuest) {
       } catch {
         setState({ hasActiveGuestLock: false, currentGuestId: null });
         localStorage.removeItem("wedding_guest");
+        stopGuestDictionarySync();
         updateWelcomeLabel();
         updateGuestHeaderMessage();
         updateProfileAvatar();

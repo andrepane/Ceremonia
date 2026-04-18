@@ -161,6 +161,33 @@ function subscribeGuestPresence(onData, onError) {
   );
 }
 
+function subscribeGuestDictionary(guestId, onData, onError) {
+  if (!db || !guestId) return () => {};
+
+  return onSnapshot(
+    eventDoc("guestDictionary", guestId),
+    (snapshot) => onData(snapshot.exists() ? snapshot.data() : null),
+    onError
+  );
+}
+
+async function upsertGuestDictionary(guestId, payload = {}) {
+  const user = await ensureAuth();
+  if (!db || !user || !guestId) throw new Error("auth_required");
+
+  await setDoc(
+    eventDoc("guestDictionary", guestId),
+    {
+      guestId,
+      history: Array.isArray(payload.history) ? payload.history : [],
+      currentTranslation: payload.currentTranslation || null,
+      updatedAt: serverTimestamp(),
+      updatedByUid: user.uid
+    },
+    { merge: true }
+  );
+}
+
 async function lockGuestProfile(guestId) {
   const user = await ensureAuth();
   if (!db || !user || !guestId) throw new Error("auth_required");
@@ -471,6 +498,7 @@ export {
   getAuthUid,
   linkGuestToAuth,
   subscribeGuestPresence,
+  subscribeGuestDictionary,
   subscribeActivity,
   subscribePhotos,
   subscribeRanking,
@@ -481,5 +509,6 @@ export {
   uploadPhoto,
   deletePhoto,
   togglePhotoLike,
-  setChallengeDone
+  setChallengeDone,
+  upsertGuestDictionary
 };

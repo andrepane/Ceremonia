@@ -13,6 +13,12 @@ import { handleSpeakTranslation, handleTranslatorRequest } from "./features/tran
 import { handlePhotoGridClick, handleUploadPhoto } from "./features/photos.js";
 import { renderTimeline, updateCountdown } from "./features/timeline.js";
 import { initFirebaseListeners } from "./integrations/firebase-sync.js";
+import {
+  renderCurrentTranslationForGuest,
+  restoreDictionaryCache,
+  startGuestDictionarySync,
+  stopGuestDictionarySync
+} from "./features/dictionary-store.js";
 
 const rotatorSyncGroups = new Map();
 const SCREEN_TRANSITION_MS = 560;
@@ -313,6 +319,7 @@ async function setGuest(guestId) {
 
   setState({ currentGuestId: guestId });
   localStorage.setItem("wedding_guest", guestId);
+  startGuestDictionarySync(guestId);
   const guest = findGuestById(guestId);
   refs.selectedGuestName.textContent = guest ? guest.name : "Invitado";
   updateProfileAvatar();
@@ -337,6 +344,7 @@ async function setGuest(guestId) {
 }
 
 function restoreSession() {
+  restoreDictionaryCache();
   const savedLang = localStorage.getItem("wedding_lang");
   const savedGuestId = localStorage.getItem("wedding_guest");
   if (savedLang && APP_DATA.translations[savedLang]) setState({ currentLanguage: savedLang });
@@ -346,6 +354,7 @@ function restoreSession() {
 
   if (savedGuestId && findGuestById(savedGuestId)) {
     setState({ currentGuestId: savedGuestId });
+    startGuestDictionarySync(savedGuestId);
     refs.selectedGuestName.textContent = findGuestById(savedGuestId).name;
     updateWelcomeLabel();
     updateGuestHeaderMessage();
@@ -358,6 +367,7 @@ function restoreSession() {
   }
 
   updateProfileAvatar();
+  renderCurrentTranslationForGuest(null);
   showScreen(savedLang ? refs.screenGuest : refs.screenLanguage);
 }
 
@@ -372,6 +382,7 @@ function bindUIEvents() {
     }
     setState({ hasActiveGuestLock: false, currentGuestId: null });
     localStorage.removeItem("wedding_guest");
+    stopGuestDictionarySync();
     updateWelcomeLabel();
     updateGuestHeaderMessage();
     updateProfileAvatar();
