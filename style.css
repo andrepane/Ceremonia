@@ -624,6 +624,8 @@ input {
 .guest-card__face--front {
   transform: rotateY(0deg) translateZ(1px);
   -webkit-transform: rotateY(0deg) translateZ(1px);
+  overflow: visible;
+  padding-top: 26px;
 }
 
 .guest-card__face--back {
@@ -649,8 +651,9 @@ input {
   font-size: 1.4rem;
   font-family: "Cormorant Garamond", serif;
   overflow: hidden;
-  transform: translateZ(28px);
-  -webkit-transform: translateZ(28px);
+  transform: translateY(-18px) translateZ(52px);
+  -webkit-transform: translateY(-18px) translateZ(52px);
+  box-shadow: 0 12px 24px rgba(60, 36, 22, 0.24);
 }
 
 .guest-avatar--image {
@@ -659,6 +662,16 @@ input {
   border-radius: 14px;
   background: transparent;
   -webkit-mask-image: -webkit-radial-gradient(white, black);
+}
+
+.guest-card__face--front .guest-name {
+  margin-top: -6px;
+}
+
+.guest-card:hover .guest-card__face--front .guest-avatar,
+.guest-card:focus-visible .guest-card__face--front .guest-avatar {
+  transform: translateY(-22px) translateZ(64px) scale(1.03);
+  -webkit-transform: translateY(-22px) translateZ(64px) scale(1.03);
 }
 
 .guest-avatar__image {
