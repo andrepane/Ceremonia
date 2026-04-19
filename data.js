@@ -29,7 +29,7 @@ window.WEDDING_APP_DATA = {
     { id: "tito", name: "Tito", avatar: "T", roleKey: "friend_bride_m", sex: "m" }
   ],
   guestHeaders: {
-    cintia_novia: "Hoy es tu día, disfrútalo.",
+    cintia_novia: "Va a ser nuestro día, hecho a medida para nosotros. Te quiero, meloncita.",
     andrea_novio: "Hoy es tu día, disfrútalo.",
     manolo: "Con todo el tiempo que llevas con Duolingo, cualquiera diría que te estabas preparando para este momento.",
     simona: "Nipoti… si vedrà. Ma il matrimonio, quello non te lo perdi.",
@@ -42,10 +42,10 @@ window.WEDDING_APP_DATA = {
     rosa: "Tu música formará parte de algo muy especial.",
     josefina: "Tu presencia lo hace aún más especial.",
     marina: "La tua presenza lo rende ancora più speciale.",
-    alicia: "Eres parte de todo esto.",
+    alicia: "Esto es muy de tu rollo: calma, buen ambiente y sin prisas.",
     gabri: "No sería lo mismo sin ti.",
     ana_amiga_novia: "No sería lo mismo sin ti.",
-    tito: "No sería lo mismo sin ti."
+    tito: "¡Vas a acabar hecho un trapico!"
   },
   ranking: [
     { guestId: "cintia_novia", points: 7 },
