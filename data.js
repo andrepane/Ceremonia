@@ -42,7 +42,7 @@ window.WEDDING_APP_DATA = {
     rosa: "Tu música formará parte de algo muy especial.",
     josefina: "Tu presencia lo hace aún más especial.",
     marina: "La tua presenza lo rende ancora più speciale.",
-    alicia: "Esto es muy de tu rollo: calma, buen ambiente y sin prisas.",
+    alicia: "Esto va a ser muy de tu rollo: calma, buen ambiente y sin prisas.",
     gabri: "No será una boda religiosa, pero el Jesucristo lo tenemos cubierto.",
     ana_amiga_novia: "No sería lo mismo sin ti.",
     tito: "¡Vas a acabar hecho un trapico!"
