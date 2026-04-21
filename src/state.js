@@ -106,7 +106,6 @@ export const HOME_DASHBOARD_COPY = {
     activityLabel: "Últimas acciones del grupo",
     activityTemplates: {
       upload_photo: "{name} ha subido una foto",
-      complete_challenge: "{name} ha compartido un momento",
       react_photo: "{name} ha reaccionado a una foto"
     },
     activityEmpty: "Aún no hay actividad compartida.",
@@ -178,7 +177,6 @@ export const HOME_DASHBOARD_COPY = {
     activityLabel: "Ultime azioni del gruppo",
     activityTemplates: {
       upload_photo: "{name} ha caricato una foto",
-      complete_challenge: "{name} ha condiviso un momento",
       react_photo: "{name} ha reagito a una foto"
     },
     activityEmpty: "Non ci sono ancora attività condivise.",

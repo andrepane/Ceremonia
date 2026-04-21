@@ -125,29 +125,6 @@ function subscribePhotos(onData, onError) {
   );
 }
 
-function subscribeRanking(onData, onError) {
-  if (!db) return () => {};
-
-  const q = query(eventCollection("ranking"), orderBy("points", "desc"), limit(50));
-  return onSnapshot(
-    q,
-    (snapshot) => {
-      onData(snapshot.docs.map((d) => ({ id: d.id, ...d.data() })));
-    },
-    onError
-  );
-}
-
-function subscribeGuestChallenges(guestId, onData, onError) {
-  if (!db || !guestId) return () => {};
-
-  return onSnapshot(
-    eventDoc("challenges", guestId),
-    (snapshot) => onData(snapshot.exists() ? snapshot.data() : null),
-    onError
-  );
-}
-
 function subscribeGuestPresence(onData, onError) {
   if (!db) return () => {};
 
@@ -396,71 +373,6 @@ async function togglePhotoLike(photoId, guestId) {
   return changed;
 }
 
-async function setChallengeDone({
-  guestId,
-  challengeId,
-  done,
-  points,
-  activeIds = [],
-  completedIds = [],
-  seenIds = [],
-  maxActiveChallenges = 5
-}) {
-  const user = await ensureAuth();
-  if (!db || !user) throw new Error("auth_required");
-
-  const challengeRef = eventDoc("challenges", guestId);
-  const rankingRef = eventDoc("ranking", guestId);
-
-  const shouldEmit = await runTransaction(db, async (tx) => {
-    const challengeSnap = await tx.get(challengeRef);
-    const rankingSnap = await tx.get(rankingRef);
-    const existing = challengeSnap.exists() ? challengeSnap.data() : { completed: {} };
-    const prevDone = Boolean(existing.completed?.[challengeId]);
-
-    if (prevDone === done) return false;
-
-    const nextCompleted = { ...(existing.completed || {}), [challengeId]: done };
-    const nextCompletedIds = Array.from(new Set(completedIds.filter((id) => Boolean(id))));
-    const nextSeenIds = Array.from(new Set(seenIds.filter((id) => Boolean(id))));
-    const normalizedActiveIds = Array.from(new Set(activeIds.filter((id) => Boolean(id)))).slice(0, maxActiveChallenges);
-    tx.set(
-      challengeRef,
-      {
-        guestId,
-        completed: nextCompleted,
-        completedIds: nextCompletedIds,
-        seenIds: nextSeenIds,
-        activeIds: normalizedActiveIds,
-        updatedAt: serverTimestamp(),
-        updatedByUid: user.uid
-      },
-      { merge: true }
-    );
-
-    const currentPoints = rankingSnap.exists() ? Number(rankingSnap.data().points || 0) : 0;
-    const delta = done ? points : -points;
-    const newPoints = Math.max(0, currentPoints + delta);
-
-    tx.set(
-      rankingRef,
-      {
-        guestId,
-        points: newPoints,
-        updatedAt: serverTimestamp(),
-        updatedByUid: user.uid
-      },
-      { merge: true }
-    );
-
-    return done;
-  });
-
-  if (shouldEmit) {
-    await emitActivity("complete_challenge", guestId, { challengeId });
-  }
-}
-
 async function deletePhoto(photoId) {
   const user = await ensureAuth();
   if (!db || !storage || !user) throw new Error("auth_required");
@@ -501,14 +413,11 @@ export {
   subscribeGuestDictionary,
   subscribeActivity,
   subscribePhotos,
-  subscribeRanking,
-  subscribeGuestChallenges,
   lockGuestProfile,
   switchGuestProfileLock,
   releaseGuestProfileLock,
   uploadPhoto,
   deletePhoto,
   togglePhotoLike,
-  setChallengeDone,
   upsertGuestDictionary
 };

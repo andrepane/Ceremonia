@@ -28,7 +28,7 @@ service cloud.firestore {
       match /activity/{activityId} {
         allow read: if true;
         allow create: if isAuth()
-          && request.resource.data.type in ['upload_photo', 'react_photo', 'complete_challenge']
+          && request.resource.data.type in ['upload_photo', 'react_photo']
           && request.resource.data.guestId is string
           && request.resource.data.createdByUid == request.auth.uid;
         allow update, delete: if false;
@@ -68,24 +68,6 @@ service cloud.firestore {
         }
       }
 
-      match /challenges/{guestId} {
-        allow read: if true;
-        allow create, update: if isAuth()
-          && request.resource.data.guestId == guestId
-          && request.resource.data.updatedByUid == request.auth.uid
-          && request.resource.data.completed is map;
-        allow delete: if false;
-      }
-
-      match /ranking/{guestId} {
-        allow read: if true;
-        allow create, update: if isAuth()
-          && request.resource.data.guestId == guestId
-          && request.resource.data.points is int
-          && request.resource.data.points >= 0
-          && request.resource.data.updatedByUid == request.auth.uid;
-        allow delete: if false;
-      }
     }
   }
 }

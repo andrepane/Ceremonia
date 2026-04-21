@@ -3,7 +3,7 @@
 ## Fase 1 · Demo sólida (actual)
 - Flujo idioma → invitado → app con navegación funcional.
 - Textos externalizados por idioma (ES/IT).
-- Datos demo centralizados para invitados, ranking, retos y fotos.
+- Datos demo centralizados para invitados, traducciones y fotos.
 
 ## Fase 2 · Beta privada
 - Conectar API para invitados reales y sesiones.
