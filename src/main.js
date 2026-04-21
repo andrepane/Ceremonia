@@ -492,7 +492,7 @@ initHeroRotator();
 initHeroDateRotator();
 activateView("home");
 updateCountdown();
-setInterval(updateCountdown, 60000);
+setInterval(updateCountdown, 1000);
 initFirebaseListeners(() => showScreen(refs.screenGuest));
 
 if ("serviceWorker" in navigator) {
