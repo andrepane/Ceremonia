@@ -1,5 +1,20 @@
 import { APP_DATA, constants, refs, state, getLocale, getHomeCopy } from "../state.js";
 
+function updateFlipUnit(unitName, value, label) {
+  const unitElement = refs.countdownElement.querySelector(`[data-unit="${unitName}"]`);
+  if (!unitElement) return;
+  const digitElement = unitElement.querySelector(".flip-clock__digit");
+  const labelElement = unitElement.querySelector(".flip-clock__label");
+  const nextValue = String(value).padStart(2, "0");
+  if (labelElement && label) labelElement.textContent = String(label).toUpperCase();
+  if (!digitElement) return;
+  if (digitElement.textContent === nextValue) return;
+  digitElement.textContent = nextValue;
+  unitElement.classList.remove("is-flipping");
+  void unitElement.offsetWidth;
+  unitElement.classList.add("is-flipping");
+}
+
 export function getHomePhase() {
   const ceremonyDate = new Date(APP_DATA.ceremonyDate);
   const weekendStart = new Date(ceremonyDate);
@@ -67,16 +82,22 @@ export function updateCountdown() {
     refs.countdownUrgencyElement.textContent = "";
     refs.countdownUrgencyElement.classList.remove("is-visible");
     refs.countdownElement.classList.remove("countdown--urgent");
+    refs.countdownElement.classList.add("countdown--finished");
     document.querySelector(".hero-panel")?.classList.remove("hero-panel--urgent");
     return;
   }
 
-  const totalMinutes = Math.floor(diff / 1000 / 60);
-  const days = Math.floor(totalMinutes / (60 * 24));
-  const hours = Math.floor((totalMinutes % (60 * 24)) / 60);
-  const minutes = totalMinutes % 60;
-  const units = copy.countdownUnits || { days: "d", hours: "h", minutes: "m" };
-  refs.countdownElement.textContent = `${String(days).padStart(2, "0")} ${units.days} ${String(hours).padStart(2, "0")} ${units.hours} ${String(minutes).padStart(2, "0")} ${units.minutes}`;
+  const totalSeconds = Math.floor(diff / 1000);
+  const days = Math.floor(totalSeconds / (60 * 60 * 24));
+  const hours = Math.floor((totalSeconds % (60 * 60 * 24)) / (60 * 60));
+  const minutes = Math.floor((totalSeconds % (60 * 60)) / 60);
+  const seconds = totalSeconds % 60;
+  const units = copy.countdownUnits || { days: "días", hours: "horas", minutes: "minutos", seconds: "segundos" };
+  refs.countdownElement.classList.remove("countdown--finished");
+  updateFlipUnit("days", days, units.days);
+  updateFlipUnit("hours", hours, units.hours);
+  updateFlipUnit("minutes", minutes, units.minutes);
+  updateFlipUnit("seconds", seconds, units.seconds);
   const isUrgent = diff < 24 * 60 * 60 * 1000;
   document.querySelector(".hero-panel")?.classList.toggle("hero-panel--urgent", isUrgent);
   refs.countdownElement.classList.toggle("countdown--urgent", isUrgent);

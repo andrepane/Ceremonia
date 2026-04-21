@@ -116,7 +116,34 @@
           <section id="view-home" class="view view--active">
             <div class="hero-panel">
               <p id="txt-countdown-label" class="hero-panel__label">Cuenta atrás para la ceremonia</p>
-              <div id="countdown" class="countdown">00d 00h 00m</div>
+              <div id="countdown" class="countdown" aria-live="polite">
+                <div class="flip-clock">
+                  <div class="flip-clock__unit" data-unit="days">
+                    <div class="flip-clock__card">
+                      <span class="flip-clock__digit">00</span>
+                    </div>
+                    <span class="flip-clock__label">DÍAS</span>
+                  </div>
+                  <div class="flip-clock__unit" data-unit="hours">
+                    <div class="flip-clock__card">
+                      <span class="flip-clock__digit">00</span>
+                    </div>
+                    <span class="flip-clock__label">HORAS</span>
+                  </div>
+                  <div class="flip-clock__unit" data-unit="minutes">
+                    <div class="flip-clock__card">
+                      <span class="flip-clock__digit">00</span>
+                    </div>
+                    <span class="flip-clock__label">MINUTOS</span>
+                  </div>
+                  <div class="flip-clock__unit" data-unit="seconds">
+                    <div class="flip-clock__card">
+                      <span class="flip-clock__digit">00</span>
+                    </div>
+                    <span class="flip-clock__label">SEGUNDOS</span>
+                  </div>
+                </div>
+              </div>
               <p id="txt-countdown-hint" class="hero-panel__text">
                 Sábado 5 · 20:00 · A esa hora empieza la ceremonia.
               </p>
