@@ -116,7 +116,24 @@
           <section id="view-home" class="view view--active">
             <div class="hero-panel">
               <p id="txt-countdown-label" class="hero-panel__label">Cuenta atrás para la ceremonia</p>
-              <div id="countdown" class="countdown">00d 00h 00m</div>
+              <div id="countdown" class="countdown" aria-live="polite">
+                <div class="countdown__unit">
+                  <span class="countdown__value">00</span>
+                  <span class="countdown__label">días</span>
+                </div>
+                <div class="countdown__unit">
+                  <span class="countdown__value">00</span>
+                  <span class="countdown__label">horas</span>
+                </div>
+                <div class="countdown__unit">
+                  <span class="countdown__value">00</span>
+                  <span class="countdown__label">minutos</span>
+                </div>
+                <div class="countdown__unit">
+                  <span class="countdown__value">00</span>
+                  <span class="countdown__label">segundos</span>
+                </div>
+              </div>
               <p id="txt-countdown-hint" class="hero-panel__text">
                 Sábado 5 · 20:00 · A esa hora empieza la ceremonia.
               </p>
