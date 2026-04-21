@@ -118,7 +118,8 @@ export const HOME_DASHBOARD_COPY = {
     countdownUnits: {
       days: "días",
       hours: "horas",
-      minutes: "minutos"
+      minutes: "minutos",
+      seconds: "segundos"
     },
     nextEventLabel: "Siguiente evento",
     nextEventFallback: "No quedan eventos pendientes en la guía.",
@@ -189,7 +190,8 @@ export const HOME_DASHBOARD_COPY = {
     countdownUnits: {
       days: "giorni",
       hours: "ore",
-      minutes: "minuti"
+      minutes: "minuti",
+      seconds: "secondi"
     },
     nextEventLabel: "Prossimo evento",
     nextEventFallback: "Non ci sono altri eventi in programma.",

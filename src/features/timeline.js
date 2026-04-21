@@ -71,12 +71,30 @@ export function updateCountdown() {
     return;
   }
 
-  const totalMinutes = Math.floor(diff / 1000 / 60);
-  const days = Math.floor(totalMinutes / (60 * 24));
-  const hours = Math.floor((totalMinutes % (60 * 24)) / 60);
-  const minutes = totalMinutes % 60;
-  const units = copy.countdownUnits || { days: "d", hours: "h", minutes: "m" };
-  refs.countdownElement.textContent = `${String(days).padStart(2, "0")} ${units.days} ${String(hours).padStart(2, "0")} ${units.hours} ${String(minutes).padStart(2, "0")} ${units.minutes}`;
+  const totalSeconds = Math.floor(diff / 1000);
+  const days = Math.floor(totalSeconds / (60 * 60 * 24));
+  const hours = Math.floor((totalSeconds % (60 * 60 * 24)) / (60 * 60));
+  const minutes = Math.floor((totalSeconds % (60 * 60)) / 60);
+  const seconds = totalSeconds % 60;
+  const units = copy.countdownUnits || { days: "d", hours: "h", minutes: "m", seconds: "s" };
+  refs.countdownElement.innerHTML = `
+    <div class="countdown__unit">
+      <span class="countdown__value">${String(days).padStart(2, "0")}</span>
+      <span class="countdown__label">${units.days}</span>
+    </div>
+    <div class="countdown__unit">
+      <span class="countdown__value">${String(hours).padStart(2, "0")}</span>
+      <span class="countdown__label">${units.hours}</span>
+    </div>
+    <div class="countdown__unit">
+      <span class="countdown__value">${String(minutes).padStart(2, "0")}</span>
+      <span class="countdown__label">${units.minutes}</span>
+    </div>
+    <div class="countdown__unit">
+      <span class="countdown__value">${String(seconds).padStart(2, "0")}</span>
+      <span class="countdown__label">${units.seconds}</span>
+    </div>
+  `;
   const isUrgent = diff < 24 * 60 * 60 * 1000;
   document.querySelector(".hero-panel")?.classList.toggle("hero-panel--urgent", isUrgent);
   refs.countdownElement.classList.toggle("countdown--urgent", isUrgent);
