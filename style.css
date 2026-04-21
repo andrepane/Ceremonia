@@ -882,7 +882,7 @@ input {
 .countdown__unit {
   display: grid;
   justify-items: center;
-  gap: 2px;
+  gap: 5px;
   padding: 8px 6px;
   border-radius: 12px;
   background: rgba(255, 255, 255, 0.15);
@@ -900,10 +900,12 @@ input {
 }
 
 .countdown__label {
-  font-size: 0.68rem;
-  letter-spacing: 0.06em;
+  font-size: clamp(0.58rem, 2.3vw, 0.68rem);
+  letter-spacing: 0.045em;
   text-transform: uppercase;
   opacity: 0.85;
+  line-height: 1;
+  white-space: nowrap;
 }
 
 .countdown--urgent {
