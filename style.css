@@ -624,6 +624,7 @@ input {
 .guest-card__face--front {
   transform: rotateY(0deg) translateZ(1px);
   -webkit-transform: rotateY(0deg) translateZ(1px);
+  border: 0.5px solid var(--accent-strong);
 }
 
 .guest-card__face--back {
