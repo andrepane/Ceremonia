@@ -164,7 +164,8 @@ input {
   margin: 0.5em 0 0.5em;
   font-size: clamp(2.8rem, 8vw, 4.6rem);
   line-height: 0.95;
-  font-weight: 500;
+  font-weight: 400;
+  font-family: "Alex Brush", cursive;
   text-align: center;
 }
 
