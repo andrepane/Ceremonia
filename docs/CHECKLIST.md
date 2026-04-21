@@ -7,7 +7,7 @@
 - [x] Cuenta atrás centralizada con fecha única.
 
 ## Contenido
-- [x] Secciones navegables (Inicio, Guía, Diccionario, Retos, Fotos).
+- [x] Secciones navegables (Inicio, Guía, Diccionario, Fotos, Mapa).
 - [x] Datos demo desacoplados del HTML.
 - [ ] Textos revisados por copy final de la boda.
 
@@ -15,7 +15,6 @@
 - [ ] API de autenticación/invitados.
 - [ ] API de traducción.
 - [ ] API de subida/galería de fotos.
-- [ ] API de puntuaciones y ranking.
 
 ## Calidad
 - [ ] Accesibilidad (focus visibles, labels y navegación teclado).

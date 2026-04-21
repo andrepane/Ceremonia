@@ -47,13 +47,6 @@ window.WEDDING_APP_DATA = {
     ana_amiga_novia: "No sería lo mismo sin ti.",
     tito: "¡Vas a acabar hecho un trapico!"
   },
-  ranking: [
-    { guestId: "cintia_novia", points: 7 },
-    { guestId: "andrea_novio", points: 6 },
-    { guestId: "manolo", points: 5 },
-    { guestId: "ana_madre_novia", points: 4 },
-    { guestId: "simona", points: 3 }
-  ],
   translations: {
     es: {
       labels: {
@@ -97,15 +90,6 @@ window.WEDDING_APP_DATA = {
         translatorPlaceholder: "Escribe una frase...",
         translateBtn: "Traducir",
         speakBtn: "Escuchar",
-        gameTitle: "Retos del finde",
-        progressLabel: "Tu progreso",
-        progressTitleDynamic: "{points} puntos",
-        progressText: "Completa retos para desbloquear nuevos. Siempre tendrás hasta 5 pendientes, de categorías distintas.",
-        pendingChallengesLabel: "Retos pendientes",
-        completedChallengesLabel: "Retos conseguidos",
-        noChallengesPending: "No quedan retos pendientes.",
-        noChallengesCompleted: "Todavía no has conseguido retos.",
-        rankingLabel: "Clasificación",
         photosTitle: "",
         mapTitle: "",
         mapText: "Aquí podrás ver la ubicación del sitio y las indicaciones.",
@@ -117,7 +101,6 @@ window.WEDDING_APP_DATA = {
         navHome: "Inicio",
         navGuide: "Guía",
         navDictionary: "Diccionario",
-        navGame: "Retos",
         navPhotos: "Fotos",
         navMap: "Mapa",
         photoLabel: "Foto",
@@ -432,13 +415,6 @@ window.WEDDING_APP_DATA = {
           it: "Hai già fatto Duolingo?"
         }
       ],
-      challenges: [
-        { text: "Hablar con alguien con quien aún no habías hablado", done: true },
-        { text: "Decir una frase en el otro idioma", done: true },
-        { text: "Subir una foto con 3 o más personas", done: true },
-        { text: "Aplaudir sin motivo aparente", done: false },
-        { text: "Estar en la pista cuando empieza una canción", done: false }
-      ],
       photos: [
         { caption: "Viernes · bienvenida", likes: 4 },
         { caption: "Sábado · previa", likes: 7 },
@@ -484,15 +460,6 @@ window.WEDDING_APP_DATA = {
         translatorPlaceholder: "Scrivi una frase...",
         translateBtn: "Traduci",
         speakBtn: "Ascolta",
-        gameTitle: "Sfide del weekend",
-        progressLabel: "Il tuo progresso",
-        progressTitleDynamic: "{points} punti",
-        progressText: "Completa le sfide per sbloccarne di nuove. Vedrai sempre fino a 5 sfide pendenti di categorie diverse.",
-        pendingChallengesLabel: "Sfide pendenti",
-        completedChallengesLabel: "Sfide completate",
-        noChallengesPending: "Non ci sono più sfide pendenti.",
-        noChallengesCompleted: "Non hai ancora completato sfide.",
-        rankingLabel: "Classifica",
         photosTitle: "",
         mapTitle: "",
         mapText: "Qui potrai vedere la posizione del posto e alcune indicazioni.",
@@ -504,7 +471,6 @@ window.WEDDING_APP_DATA = {
         navHome: "Home",
         navGuide: "Guida",
         navDictionary: "Dizionario",
-        navGame: "Sfide",
         navPhotos: "Foto",
         navMap: "Mappa",
         photoLabel: "Foto",
@@ -834,13 +800,6 @@ window.WEDDING_APP_DATA = {
           es: "Has hecho ya Duolingo?",
           it: "Hai già fatto Duolingo?"
         }
-      ],
-      challenges: [
-        { text: "Parlare con qualcuno con cui non avevi ancora parlato", done: true },
-        { text: "Dire una frase nell'altra lingua", done: true },
-        { text: "Caricare una foto con 3 o più persone", done: true },
-        { text: "Applaudire senza motivo apparente", done: false },
-        { text: "Essere in pista quando inizia una canzone", done: false }
       ],
       photos: [
         { caption: "Venerdì · benvenuto", likes: 4 },
