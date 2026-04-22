@@ -79,11 +79,15 @@ export function handleSpeakTranslation() {
   }
 
   try {
-    const utterance = new window.SpeechSynthesisUtterance(translatedText);
-    utterance.lang = state.lastTranslatedLanguage === "es" ? "es-ES" : "it-IT";
-    window.speechSynthesis.cancel();
-    window.speechSynthesis.speak(utterance);
+    speakText(translatedText, state.lastTranslatedLanguage);
   } catch {
     refs.translatorText.textContent = uiCopy.speechError;
   }
+}
+
+export function speakText(text, language) {
+  const utterance = new window.SpeechSynthesisUtterance(text);
+  utterance.lang = language === "es" ? "es-ES" : "it-IT";
+  window.speechSynthesis.cancel();
+  window.speechSynthesis.speak(utterance);
 }

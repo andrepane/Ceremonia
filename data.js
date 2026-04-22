@@ -407,12 +407,32 @@ window.WEDDING_APP_DATA = {
       ],
       usefulPhrases: [
         {
-          es: "Hola, que tal?",
-          it: "Ciao, come stai?"
+          es: "Hola, ¿qué tal?",
+          it: "Ciao, come va?"
         },
         {
-          es: "Has hecho ya Duolingo?",
-          it: "Hai già fatto Duolingo?"
+          es: "Encantado/a de conocerte",
+          it: "Piacere di conoscerti"
+        },
+        {
+          es: "¿Te apetece algo de beber?",
+          it: "Ti va qualcosa da bere?"
+        },
+        {
+          es: "Qué casa tan bonita",
+          it: "Che bella casa"
+        },
+        {
+          es: "¡Qué bien se está aquí!",
+          it: "Si sta benissimo qui!"
+        },
+        {
+          es: "¿Bailamos?",
+          it: "Balliamo?"
+        },
+        {
+          es: "El dj es buenísimo!",
+          it: "Il dj è bravissimo"
         }
       ],
       photos: [
@@ -793,12 +813,32 @@ window.WEDDING_APP_DATA = {
       ],
       usefulPhrases: [
         {
-          es: "Hola, que tal?",
-          it: "Ciao, come stai?"
+          es: "Hola, ¿qué tal?",
+          it: "Ciao, come va?"
         },
         {
-          es: "Has hecho ya Duolingo?",
-          it: "Hai già fatto Duolingo?"
+          es: "Encantado/a de conocerte",
+          it: "Piacere di conoscerti"
+        },
+        {
+          es: "¿Te apetece algo de beber?",
+          it: "Ti va qualcosa da bere?"
+        },
+        {
+          es: "Qué casa tan bonita",
+          it: "Che bella casa"
+        },
+        {
+          es: "¡Qué bien se está aquí!",
+          it: "Si sta benissimo qui!"
+        },
+        {
+          es: "¿Bailamos?",
+          it: "Balliamo?"
+        },
+        {
+          es: "El dj es buenísimo!",
+          it: "Il dj è bravissimo"
         }
       ],
       photos: [
