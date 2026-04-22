@@ -1,5 +1,6 @@
 import { APP_DATA, refs, state, getLocale, getHomeCopy, findGuestById } from "../state.js";
 import { renderTimeline } from "../features/timeline.js";
+import { speakText } from "../features/translator.js";
 
 
 const appTitleElement = document.querySelector(".app-title");
@@ -168,6 +169,14 @@ export function updateAppHeaderForView(viewName = getActiveViewName()) {
 
 export function renderDictionary() {
   const locale = getLocale();
+  const usefulPhraseItems = (locale.usefulPhrases || []).map((entry) => {
+    const sourceText = state.currentLanguage === "es" ? entry.es : entry.it;
+    const translatedText = state.currentLanguage === "es" ? entry.it : entry.es;
+    const translatedLanguage = state.currentLanguage === "es" ? "it" : "es";
+    return `<article class="dictionary-row useful-phrase-row"><p class="translator-history-row__source">${sourceText}</p><p class="card-text useful-phrase-row__target"><span class="translator-result--highlight useful-phrase-row__target-text">${translatedText}</span><button type="button" class="useful-phrase-speak-btn" data-useful-phrase-speak="${translatedLanguage}" data-useful-phrase-text="${encodeURIComponent(translatedText)}" aria-label="${state.currentLanguage === "es" ? "Escuchar frase traducida" : "Ascolta frase tradotta"}" title="${state.currentLanguage === "es" ? "Escuchar frase traducida" : "Ascolta frase tradotta"}">🔊</button></p></article>`;
+  }).join("");
+  document.getElementById("useful-phrases-list").innerHTML = usefulPhraseItems;
+
   const falseFriendItems = (locale.falseFriends || []).map((entry) => {
     const term = entry.term ?? (state.currentLanguage === "es" ? entry.it : entry.es);
     const translation = entry.translation ?? (state.currentLanguage === "es" ? entry.es : entry.it);
@@ -187,6 +196,16 @@ export function renderDictionary() {
     refs.translatorText.textContent = locale.labels.translatorText;
     refs.translatorText.classList.remove("translator-result--highlight");
   }
+}
+
+export function handleUsefulPhraseSpeakClick(event) {
+  const button = event.target.closest("[data-useful-phrase-speak]");
+  if (!button) return;
+  const text = decodeURIComponent(button.dataset.usefulPhraseText || "");
+  const language = button.dataset.usefulPhraseSpeak || "it";
+  if (!text) return;
+  if (!("speechSynthesis" in window) || typeof window.SpeechSynthesisUtterance !== "function") return;
+  speakText(text, language);
 }
 
 export function renderPhotos() {

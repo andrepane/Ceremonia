@@ -8,7 +8,7 @@ import {
 } from "../firebase.js";
 import { APP_DATA, refs, state, setState, findGuestById, getHomeCopy } from "./state.js";
 import { applyTranslations } from "./ui/translations.js";
-import { renderAllDynamicSections, renderDictionary, renderGuestCards, renderHomeDashboard, updateAppHeaderForView, updateGuestHeaderMessage, updateProfileAvatar, updateWelcomeLabel } from "./ui/render.js";
+import { handleUsefulPhraseSpeakClick, renderAllDynamicSections, renderDictionary, renderGuestCards, renderHomeDashboard, updateAppHeaderForView, updateGuestHeaderMessage, updateProfileAvatar, updateWelcomeLabel } from "./ui/render.js";
 import { handleSpeakTranslation, handleTranslatorRequest } from "./features/translator.js";
 import { handlePhotoGridClick, handleUploadPhoto } from "./features/photos.js";
 import { renderTimeline, updateCountdown } from "./features/timeline.js";
@@ -422,7 +422,7 @@ function bindUIEvents() {
     }
   });
 
-  ["false-friends"].forEach((id) => {
+  ["useful-phrases", "false-friends"].forEach((id) => {
     const toggle = document.getElementById(`${id}-toggle`);
     const content = document.getElementById(`${id}-list`);
     toggle.addEventListener("click", () => {
@@ -431,6 +431,7 @@ function bindUIEvents() {
       content.hidden = isExpanded;
     });
   });
+  document.getElementById("useful-phrases-list").addEventListener("click", handleUsefulPhraseSpeakClick);
 
   document.getElementById("photo-grid").addEventListener("click", handlePhotoGridClick);
   refs.uploadPhotoBtn.addEventListener("click", handleUploadPhoto);
