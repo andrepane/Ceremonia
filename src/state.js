@@ -10,6 +10,8 @@ export const refs = {
   changeProfile: document.getElementById("change-profile"),
   uploadPhotoBtn: document.getElementById("upload-photo-btn"),
   guestGrid: document.getElementById("guest-grid"),
+  bottomNav: document.querySelector(".bottom-nav"),
+  navLiquidIndicator: document.querySelector(".nav-liquid-indicator"),
   navButtons: document.querySelectorAll(".nav-btn"),
   views: document.querySelectorAll(".view"),
   selectedGuestName: document.getElementById("selected-guest-name"),
