@@ -272,16 +272,32 @@ function highlightSelectedLanguage() {
   refs.btnIt.classList.toggle("language-btn--active", !isEs);
 }
 
+function syncBottomNavIndicator(activeButton) {
+  if (!refs.bottomNav || !refs.navLiquidIndicator || !activeButton) return;
+  const navRect = refs.bottomNav.getBoundingClientRect();
+  const buttonRect = activeButton.getBoundingClientRect();
+  const offsetX = buttonRect.left - navRect.left;
+  refs.navLiquidIndicator.style.width = `${buttonRect.width}px`;
+  refs.navLiquidIndicator.style.transform = `translate3d(${offsetX}px, 0, 0)`;
+}
+
 function activateView(viewName) {
   refs.views.forEach((view) => view.classList.remove("view--active"));
-  refs.navButtons.forEach((button) => button.classList.remove("nav-btn--active"));
+  refs.navButtons.forEach((button) => {
+    button.classList.remove("nav-btn--active");
+    button.removeAttribute("aria-current");
+  });
   const targetView = document.getElementById(`view-${viewName}`);
   const targetButton = document.querySelector(`[data-view="${viewName}"]`);
   if (targetView) {
     targetView.classList.add("view--active");
     animateEntrance(targetView, "view--transition-in", VIEW_TRANSITION_MS);
   }
-  if (targetButton) targetButton.classList.add("nav-btn--active");
+  if (targetButton) {
+    targetButton.classList.add("nav-btn--active");
+    targetButton.setAttribute("aria-current", "page");
+    syncBottomNavIndicator(targetButton);
+  }
   updateAppHeaderForView(viewName);
   scrollViewportToTop();
 }
@@ -492,6 +508,10 @@ restoreSession();
 initHeroRotator();
 initHeroDateRotator();
 activateView("home");
+window.addEventListener("resize", () => {
+  const activeButton = document.querySelector(".nav-btn--active");
+  if (activeButton) syncBottomNavIndicator(activeButton);
+});
 updateCountdown();
 setInterval(updateCountdown, 1000);
 initFirebaseListeners(() => showScreen(refs.screenGuest));
