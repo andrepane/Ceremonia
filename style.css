@@ -166,6 +166,7 @@ input {
   line-height: 0.95;
   font-weight: 400;
   font-family: "Alex Brush", cursive;
+  color: var(--accent-strong);
   text-align: center;
 }
 
