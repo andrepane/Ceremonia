@@ -272,12 +272,38 @@ function highlightSelectedLanguage() {
   refs.btnIt.classList.toggle("language-btn--active", !isEs);
 }
 
+function syncActiveBottomNavIndicator() {
+  const activeButton = document.querySelector(".nav-btn--active");
+  if (activeButton) syncBottomNavIndicator(activeButton);
+}
+
 function syncBottomNavIndicator(activeButton) {
   if (!refs.bottomNav || !refs.navLiquidIndicator || !activeButton) return;
   const navRect = refs.bottomNav.getBoundingClientRect();
   const buttonRect = activeButton.getBoundingClientRect();
-  const offsetX = buttonRect.left - navRect.left;
-  refs.navLiquidIndicator.style.width = `${buttonRect.width}px`;
+  const label = activeButton.querySelector(".nav-btn__label");
+
+  let indicatorWidth = buttonRect.width;
+  let indicatorCenterX = buttonRect.left + (buttonRect.width / 2) - navRect.left;
+
+  if (label) {
+    const labelRect = label.getBoundingClientRect();
+    const minIndicatorWidth = 46;
+    const extraPadding = 26;
+    const maxIndicatorWidth = buttonRect.width - 12;
+    indicatorWidth = Math.min(
+      maxIndicatorWidth,
+      Math.max(minIndicatorWidth, labelRect.width + extraPadding)
+    );
+    indicatorCenterX = labelRect.left + (labelRect.width / 2) - navRect.left;
+  }
+
+  const navHorizontalInset = 8;
+  const maxOffsetX = navRect.width - navHorizontalInset - indicatorWidth;
+  const rawOffsetX = indicatorCenterX - (indicatorWidth / 2);
+  const offsetX = Math.min(maxOffsetX, Math.max(navHorizontalInset, rawOffsetX));
+
+  refs.navLiquidIndicator.style.width = `${indicatorWidth}px`;
   refs.navLiquidIndicator.style.transform = `translate3d(${offsetX}px, 0, 0)`;
 }
 
@@ -323,6 +349,7 @@ async function setLanguage(lang) {
     renderAllDynamicSections();
     highlightSelectedLanguage();
     updateCountdown();
+    window.requestAnimationFrame(syncActiveBottomNavIndicator);
   });
   await playLanguageSelectionAnimation(lang);
   showScreen(refs.screenGuest);
@@ -509,8 +536,7 @@ initHeroRotator();
 initHeroDateRotator();
 activateView("home");
 window.addEventListener("resize", () => {
-  const activeButton = document.querySelector(".nav-btn--active");
-  if (activeButton) syncBottomNavIndicator(activeButton);
+  syncActiveBottomNavIndicator();
 });
 updateCountdown();
 setInterval(updateCountdown, 1000);
