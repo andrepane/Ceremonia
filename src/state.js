@@ -124,6 +124,22 @@ export const HOME_DASHBOARD_COPY = {
     nextEventLabel: "Siguiente evento",
     nextEventFallback: "No quedan eventos pendientes en la guía.",
     countdownUrgency: "⏰ Queda menos de 24 horas para la ceremonia.",
+    momentVariants: {
+      pre: [
+        "Queda muy poco: estamos ultimando los preparativos.",
+        "Vamos calentando motores para un finde inolvidable.",
+        "Modo preparación activado: se acerca el gran momento.",
+        "Se viene un fin de semana muy especial… ¡ya casi!",
+        "Cada detalle cuenta: estamos en los últimos preparativos."
+      ],
+      live: [
+        "Estamos en pleno finde de boda: ¡a vivirlo!",
+        "Llegó el momento: toca disfrutar, compartir y celebrar.",
+        "Bienvenidos al corazón del fin de semana de boda.",
+        "Ahora sí: estamos dentro del gran fin de semana.",
+        "Todo en marcha: seguid el ritmo y disfrutadlo juntos."
+      ]
+    },
     moments: {
       pre: "Ahora estáis en preparación previa.",
       live: "Ya estáis dentro del fin de semana de boda.",
