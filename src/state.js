@@ -69,14 +69,13 @@ export const constants = {
 
 export const HOME_DASHBOARD_COPY = {
   es: {
-    weekendFormatLabel: "Qué tipo de boda será",
-    weekendFormatTitle: "Esto no es una boda típica.",
+    weekendFormatLabel: "que tipo de boda será",
+    weekendFormatTitle: "entre nosotros",
     weekendFormatParagraphs: [
-      "Es un fin de semana juntos en una casa, con tiempo para estar, comer, hablar y celebrar sin prisas.",
-      "No hay protocolos rígidos ni horarios militares. Habrá momentos importantes —como la ceremonia—, pero la mayor parte del tiempo es simplemente para disfrutar juntos.",
-      "Todo ocurre en el mismo sitio: piscina, comida, preparación, boda y fiesta. A ratos será relax, a ratos hará falta echar una mano y a ratos simplemente dejarse llevar.",
-      "Aquí la dinámica es fácil: si hace falta algo, se ayuda. Si suena buena música, se baila. Ven cómodo, ven a gusto, y sin complicarte más de la cuenta.",
-      "La idea es simple: estar juntos."
+      "Es un fin de semana en familia para estar a gusto, sin estrés y pasarlo bien.",
+      "La idea es sencilla: buen ambiente, música, piscina y todo preparado para que no tengamos que preocuparnos por nada. Vamos a disfrutar.",
+      "El sábado por la tarde, como estamos entre los nuestros, iremos montando todo poco a poco entre todos, sin líos.",
+      "Y el resto… pues eso: comer, reírnos, escuchar buena música y alargar el plan todo lo que se pueda."
     ],
     weekendFormatShowMore: "Ver más",
     weekendFormatShowLess: "Ver menos",
@@ -158,13 +157,13 @@ export const HOME_DASHBOARD_COPY = {
     authError: "No se pudo autenticar."
   },
   it: {
-    weekendFormatLabel: "Che tipo di matrimonio sarà",
-    weekendFormatTitle: "Un matrimonio da vivere nel weekend",
+    weekendFormatLabel: "che tipo di matrimonio sará",
+    weekendFormatTitle: "tra di noi",
     weekendFormatParagraphs: [
-      "Non è un evento tipico: è un fine settimana insieme in una casa, con tempo per stare, mangiare, parlare e festeggiare.",
-      "Niente fretta e niente protocolli rigidi. Ci saranno momenti importanti (come la cerimonia), ma la maggior parte del tempo sarà per godersela insieme.",
-      "Succede tutto nello stesso posto: piscina, cibo, preparazione, matrimonio e festa. A tratti sarà relax, a tratti servirà dare una mano e a tratti basterà lasciarsi andare.",
-      "L'idea è semplice: stare bene, senza complicarsi."
+      "È un fine settimana in famiglia per stare bene, senza stress e divertirsi.",
+      "L’idea è semplice: buon ambiente, musica, piscina e tutto pronto per non doverci preoccupare di nulla. Andiamo a godercela.",
+      "Il sabato pomeriggio, essendo tra di noi, prepareremo tutto insieme poco a poco, senza complicazioni.",
+      "E il resto… beh: mangiare, ridere, ascoltare buona musica e tirarla lunga il più possibile."
     ],
     weekendFormatShowMore: "Mostra di più",
     weekendFormatShowLess: "Mostra meno",
