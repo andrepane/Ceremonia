@@ -465,6 +465,10 @@ input {
   will-change: opacity, transform, filter;
 }
 
+#screen-language {
+  --language-intro-delay-base: 1s;
+}
+
 #screen-language .hero-intro--top {
   transform: translate3d(0, 14px, 0) scale(0.994);
   filter: blur(4px);
@@ -478,30 +482,31 @@ input {
 
 #screen-language.screen--active .hero-intro {
   animation: heroLayerIn 1.4s cubic-bezier(0.22, 0.66, 0.2, 1) both;
+  animation-delay: var(--language-intro-delay-base);
 }
 
 #screen-language.screen--active .hero-intro--top {
-  animation-delay: 0.06s;
+  animation-delay: calc(var(--language-intro-delay-base) + 0.06s);
 }
 
 #screen-language.screen--active .hero-intro--title {
-  animation-delay: 1.56s;
+  animation-delay: calc(var(--language-intro-delay-base) + 1.56s);
 }
 
 #screen-language.screen--active .hero-intro--divider {
   animation: heroDividerReveal 1.15s cubic-bezier(0.2, 0.72, 0.2, 1) both;
-  animation-delay: 2.98s;
+  animation-delay: calc(var(--language-intro-delay-base) + 2.98s);
   transform-origin: center;
   filter: none;
 }
 
 #screen-language.screen--active .hero-intro--subtitle {
-  animation-delay: 3.06s;
+  animation-delay: calc(var(--language-intro-delay-base) + 3.06s);
 }
 
 #screen-language.screen--active .hero-intro--language {
   animation: heroLanguageSettle 1.45s cubic-bezier(0.2, 0.76, 0.2, 1) both;
-  animation-delay: 5.56s;
+  animation-delay: calc(var(--language-intro-delay-base) + 5.56s);
 }
 
 @keyframes heroLayerIn {
