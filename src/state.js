@@ -76,7 +76,7 @@ export const HOME_DASHBOARD_COPY = {
     weekendFormatParagraphs: [
       "Es un fin de semana en familia para estar a gusto, sin estrés y pasarlo bien.",
       "La idea es sencilla: buen ambiente, música, piscina y todo preparado para que no tengamos que preocuparnos por nada. Vamos a disfrutar.",
-      "El sábado por la tarde, como estamos entre los nuestros, iremos montando todo poco a poco entre todos, sin líos.",
+      "El sábado por la tarde, como estamos en familia, iremos montando todo poco a poco entre todos, sin líos.",
       "Y el resto… pues eso: comer, reírnos, escuchar buena música y alargar el plan todo lo que se pueda."
     ],
     weekendFormatShowMore: "Ver más",
