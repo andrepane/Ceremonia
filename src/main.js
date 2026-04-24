@@ -24,6 +24,88 @@ const rotatorSyncGroups = new Map();
 const SCREEN_TRANSITION_MS = 560;
 const VIEW_TRANSITION_MS = 420;
 const ENTER_BUTTON_FEEDBACK_MS = 220;
+const SATURDAY_MENU_MODAL_ID = "saturday-menu-modal";
+
+function getSaturdayMenuModal() {
+  return document.getElementById(SATURDAY_MENU_MODAL_ID);
+}
+
+function ensureSaturdayMenuModal() {
+  const existingModal = getSaturdayMenuModal();
+  if (existingModal) return existingModal;
+
+  const modal = document.createElement("div");
+  modal.id = SATURDAY_MENU_MODAL_ID;
+  modal.className = "menu-modal";
+  modal.setAttribute("hidden", "");
+  modal.setAttribute("aria-hidden", "true");
+  modal.innerHTML = `
+    <div class="menu-modal__backdrop" data-close-saturday-menu="true"></div>
+    <section class="menu-modal__dialog" role="dialog" aria-modal="true" aria-labelledby="menu-modal-title">
+      <button class="menu-modal__close-btn" type="button" aria-label="Cerrar menú" data-close-saturday-menu="true">×</button>
+      <p class="menu-modal__subtitle">SÁBADO · 14:00</p>
+      <h3 id="menu-modal-title" class="menu-modal__title">Almuerzo del sábado</h3>
+      <div class="menu-modal__blocks">
+        <article class="menu-modal__block">
+          <h4 class="menu-modal__block-title"><span aria-hidden="true">🥣</span> Entrantes al centro</h4>
+          <ul class="menu-modal__list">
+            <li>Salmorejo</li>
+            <li>Ensaladilla rusa</li>
+          </ul>
+        </article>
+        <article class="menu-modal__block">
+          <h4 class="menu-modal__block-title"><span aria-hidden="true">🥘</span> Principal</h4>
+          <ul class="menu-modal__list">
+            <li>Paella de marisco</li>
+          </ul>
+        </article>
+        <article class="menu-modal__block">
+          <h4 class="menu-modal__block-title"><span aria-hidden="true">🍰</span> Postre</h4>
+          <ul class="menu-modal__list">
+            <li>Postre de la casa</li>
+          </ul>
+        </article>
+        <article class="menu-modal__block">
+          <h4 class="menu-modal__block-title"><span aria-hidden="true">☕</span> Café</h4>
+          <ul class="menu-modal__list">
+            <li>Café</li>
+          </ul>
+        </article>
+        <article class="menu-modal__block">
+          <h4 class="menu-modal__block-title"><span aria-hidden="true">🍷</span> Bebidas</h4>
+          <ul class="menu-modal__list">
+            <li>Vino</li>
+            <li>Cerveza</li>
+            <li>Agua</li>
+            <li>Refrescos</li>
+            <li>Tinto de verano</li>
+            <li>Vermút</li>
+          </ul>
+        </article>
+      </div>
+    </section>
+  `;
+
+  document.body.append(modal);
+  return modal;
+}
+
+function openSaturdayMenuModal() {
+  const modal = ensureSaturdayMenuModal();
+  modal.removeAttribute("hidden");
+  modal.setAttribute("aria-hidden", "false");
+  document.body.classList.add("body--menu-modal-open");
+  refs.bottomNav?.classList.add("bottom-nav--hidden");
+}
+
+function closeSaturdayMenuModal() {
+  const modal = getSaturdayMenuModal();
+  if (!modal || modal.hasAttribute("hidden")) return;
+  modal.setAttribute("hidden", "");
+  modal.setAttribute("aria-hidden", "true");
+  document.body.classList.remove("body--menu-modal-open");
+  refs.bottomNav?.classList.remove("bottom-nav--hidden");
+}
 
 function getRotatorSyncGroup(groupName, { pauseMs, transitionMs }) {
   const existingGroup = rotatorSyncGroups.get(groupName);
@@ -440,6 +522,20 @@ function bindUIEvents() {
       setState({ isWeekendFormatExpanded: detailToggle.dataset.homeToggleDetails === "expand" });
       renderHomeDashboard();
     }
+  });
+
+  document.addEventListener("click", (event) => {
+    const openButton = event.target.closest("[data-open-saturday-menu]");
+    if (openButton) {
+      openSaturdayMenuModal();
+      return;
+    }
+    const closeButton = event.target.closest("[data-close-saturday-menu]");
+    if (closeButton) closeSaturdayMenuModal();
+  });
+
+  document.addEventListener("keydown", (event) => {
+    if (event.key === "Escape") closeSaturdayMenuModal();
   });
 
   ["useful-phrases", "false-friends"].forEach((id) => {

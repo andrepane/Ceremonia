@@ -95,9 +95,12 @@ export function getNextTimelineEvent() {
 
 export function renderTimeline() {
   const locale = getLocale();
-  const timelineItems = getGuestTimelineItems(locale).map(({ item }) => item);
+  const timelineItems = getGuestTimelineItems(locale);
   document.getElementById("timeline").innerHTML = timelineItems
-    .map((item) => `<article class="timeline-item"><span class="timeline-day">${item.day}</span><h4 class="timeline-title">${item.title}</h4><p class="timeline-text">${item.text}</p><span class="status-tag status-tag--${item.tone}">${item.status}</span></article>`)
+    .map(({ item, index }) => {
+      const isSaturdayLunch = index === 5;
+      return `<article class="timeline-item"><span class="timeline-day">${item.day}</span><h4 class="timeline-title">${item.title}</h4><p class="timeline-text">${item.text}</p>${isSaturdayLunch ? `<button class="timeline-menu-btn" type="button" data-open-saturday-menu="true">Ver menú</button>` : ""}<span class="status-tag status-tag--${item.tone}">${item.status}</span></article>`;
+    })
     .join("");
 }
 
