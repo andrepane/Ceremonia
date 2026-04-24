@@ -42,11 +42,17 @@ export function applyTranslations() {
   document.getElementById("map-open-link").textContent = labels.mapOpenMaps;
   document.getElementById("map-route-image").alt = labels.mapImageAlt;
   refs.uploadPhotoBtn.textContent = labels.uploadPhoto;
-  document.getElementById("nav-home").textContent = labels.navHome;
-  document.getElementById("nav-guide").textContent = labels.navGuide;
-  document.getElementById("nav-dictionary").textContent = labels.navDictionary;
-  document.getElementById("nav-photos").textContent = labels.navPhotos;
-  document.getElementById("nav-map").textContent = labels.navMap;
+  const navLabelsById = {
+    "nav-home": labels.navHome,
+    "nav-guide": labels.navGuide,
+    "nav-dictionary": labels.navDictionary,
+    "nav-photos": labels.navPhotos,
+    "nav-map": labels.navMap
+  };
+  Object.entries(navLabelsById).forEach(([id, text]) => {
+    const labelElement = document.querySelector(`#${id} .nav-btn__label`);
+    if (labelElement) labelElement.textContent = text;
+  });
   updateAppHeaderForView();
 }
 
