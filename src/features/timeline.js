@@ -98,9 +98,10 @@ export function renderTimeline() {
   const timelineItems = getGuestTimelineItems(locale);
   document.getElementById("timeline").innerHTML = timelineItems
     .map(({ item, index }) => {
+      const isFridayDinner = index === 2;
       const isSaturdayLunch = index === 5;
       const isSaturdayPrivateDinner = index === 8;
-      return `<article class="timeline-item"><span class="timeline-day">${item.day}</span><h4 class="timeline-title">${item.title}</h4><p class="timeline-text">${item.text}</p><div class="timeline-item__meta"><span class="status-tag status-tag--${item.tone}">${item.status}</span>${isSaturdayLunch ? `<button class="timeline-menu-btn" type="button" data-open-saturday-menu="true">${locale.labels.viewMenuBtn || "Ver menú"}</button>` : ""}${isSaturdayPrivateDinner ? `<button class="timeline-menu-btn" type="button" data-open-private-dinner-surprise="true">${locale.labels.viewMenuBtn || "Ver menú"}</button>` : ""}</div></article>`;
+      return `<article class="timeline-item"><span class="timeline-day">${item.day}</span><h4 class="timeline-title">${item.title}</h4><p class="timeline-text">${item.text}</p><div class="timeline-item__meta"><span class="status-tag status-tag--${item.tone}">${item.status}</span>${isFridayDinner ? `<button class="timeline-menu-btn" type="button" data-open-friday-dinner-menu="true">${locale.labels.viewMenuBtn || "Ver menú"}</button>` : ""}${isSaturdayLunch ? `<button class="timeline-menu-btn" type="button" data-open-saturday-menu="true">${locale.labels.viewMenuBtn || "Ver menú"}</button>` : ""}${isSaturdayPrivateDinner ? `<button class="timeline-menu-btn" type="button" data-open-private-dinner-surprise="true">${locale.labels.viewMenuBtn || "Ver menú"}</button>` : ""}</div></article>`;
     })
     .join("");
 }

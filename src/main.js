@@ -24,8 +24,111 @@ const rotatorSyncGroups = new Map();
 const SCREEN_TRANSITION_MS = 560;
 const VIEW_TRANSITION_MS = 420;
 const ENTER_BUTTON_FEEDBACK_MS = 220;
+const FRIDAY_DINNER_MENU_MODAL_ID = "friday-dinner-menu-modal";
 const SATURDAY_MENU_MODAL_ID = "saturday-menu-modal";
 const PRIVATE_DINNER_SURPRISE_MODAL_ID = "private-dinner-surprise-modal";
+
+function getFridayDinnerMenuModal() {
+  return document.getElementById(FRIDAY_DINNER_MENU_MODAL_ID);
+}
+
+function ensureFridayDinnerMenuModal() {
+  const locale = getLocale();
+  const labels = locale.labels || {};
+  const existingModal = getFridayDinnerMenuModal();
+  if (existingModal) {
+    const closeButton = existingModal.querySelector(".menu-modal__close-btn");
+    const subtitle = existingModal.querySelector(".menu-modal__subtitle");
+    const title = existingModal.querySelector(".menu-modal__title");
+    const sectionTitles = existingModal.querySelectorAll(".menu-modal__block-title-text");
+    const itemLabels = existingModal.querySelectorAll(".menu-modal__item-text");
+
+    if (closeButton) closeButton.setAttribute("aria-label", labels.closeMenuBtn || "Cerrar menú");
+    if (subtitle) subtitle.textContent = labels.fridayDinnerMenuSubtitle || "VIERNES · 21:00";
+    if (title) title.textContent = labels.fridayDinnerMenuTitle || "Cena del viernes";
+    if (sectionTitles[0]) sectionTitles[0].textContent = labels.fridayDinnerMenuStarter || "Entrante";
+    if (sectionTitles[1]) sectionTitles[1].textContent = labels.fridayDinnerMenuMain || "Plato principal";
+    if (sectionTitles[2]) sectionTitles[2].textContent = labels.fridayDinnerMenuDessert || "Postre";
+    if (sectionTitles[3]) sectionTitles[3].textContent = labels.fridayDinnerMenuDrinks || "Bebidas";
+    if (itemLabels[0]) itemLabels[0].textContent = labels.fridayDinnerMenuStarter1 || "Sopa fría de melón con menta";
+    if (itemLabels[1]) itemLabels[1].textContent = labels.fridayDinnerMenuMain1 || "Noche de pescadito frito con limón y hierbas aromáticas";
+    if (itemLabels[2]) itemLabels[2].textContent = labels.fridayDinnerMenuMain2 || "Pequeños pescados frescos fritos al punto, acompañados de un toque refrescante de limón y hierbas aromáticas que resaltan su sabor natural, ofreciendo una experiencia ligera y deliciosa.";
+    if (itemLabels[3]) itemLabels[3].textContent = labels.fridayDinnerMenuDessert1 || "Postre de la casa";
+    if (itemLabels[4]) itemLabels[4].textContent = labels.fridayDinnerMenuDrink1 || "Vino";
+    if (itemLabels[5]) itemLabels[5].textContent = labels.fridayDinnerMenuDrink2 || "Cerveza";
+    if (itemLabels[6]) itemLabels[6].textContent = labels.fridayDinnerMenuDrink3 || "Agua";
+    if (itemLabels[7]) itemLabels[7].textContent = labels.fridayDinnerMenuDrink4 || "Refrescos";
+    if (itemLabels[8]) itemLabels[8].textContent = labels.fridayDinnerMenuDrink5 || "Tinto de verano";
+    if (itemLabels[9]) itemLabels[9].textContent = labels.fridayDinnerMenuDrink6 || "Vermut";
+    return existingModal;
+  }
+
+  const modal = document.createElement("div");
+  modal.id = FRIDAY_DINNER_MENU_MODAL_ID;
+  modal.className = "menu-modal";
+  modal.setAttribute("hidden", "");
+  modal.setAttribute("aria-hidden", "true");
+  modal.innerHTML = `
+    <div class="menu-modal__backdrop" data-close-friday-dinner-menu="true"></div>
+    <section class="menu-modal__dialog" role="dialog" aria-modal="true" aria-labelledby="friday-dinner-menu-title">
+      <button class="menu-modal__close-btn" type="button" aria-label="${labels.closeMenuBtn || "Cerrar menú"}" data-close-friday-dinner-menu="true">×</button>
+      <p class="menu-modal__subtitle">${labels.fridayDinnerMenuSubtitle || "VIERNES · 21:00"}</p>
+      <h3 id="friday-dinner-menu-title" class="menu-modal__title">${labels.fridayDinnerMenuTitle || "Cena del viernes"}</h3>
+      <div class="menu-modal__blocks">
+        <article class="menu-modal__block">
+          <h4 class="menu-modal__block-title"><span aria-hidden="true">🥣</span> <span class="menu-modal__block-title-text">${labels.fridayDinnerMenuStarter || "Entrante"}</span></h4>
+          <ul class="menu-modal__list">
+            <li><span class="menu-modal__item-text">${labels.fridayDinnerMenuStarter1 || "Sopa fría de melón con menta"}</span></li>
+          </ul>
+        </article>
+        <article class="menu-modal__block">
+          <h4 class="menu-modal__block-title"><span aria-hidden="true">🍤</span> <span class="menu-modal__block-title-text">${labels.fridayDinnerMenuMain || "Plato principal"}</span></h4>
+          <ul class="menu-modal__list">
+            <li><span class="menu-modal__item-text">${labels.fridayDinnerMenuMain1 || "Noche de pescadito frito con limón y hierbas aromáticas"}</span></li>
+            <li><span class="menu-modal__item-text">${labels.fridayDinnerMenuMain2 || "Pequeños pescados frescos fritos al punto, acompañados de un toque refrescante de limón y hierbas aromáticas que resaltan su sabor natural, ofreciendo una experiencia ligera y deliciosa."}</span></li>
+          </ul>
+        </article>
+        <article class="menu-modal__block">
+          <h4 class="menu-modal__block-title"><span aria-hidden="true">🍰</span> <span class="menu-modal__block-title-text">${labels.fridayDinnerMenuDessert || "Postre"}</span></h4>
+          <ul class="menu-modal__list">
+            <li><span class="menu-modal__item-text">${labels.fridayDinnerMenuDessert1 || "Postre de la casa"}</span></li>
+          </ul>
+        </article>
+        <article class="menu-modal__block">
+          <h4 class="menu-modal__block-title"><span aria-hidden="true">🍷</span> <span class="menu-modal__block-title-text">${labels.fridayDinnerMenuDrinks || "Bebidas"}</span></h4>
+          <ul class="menu-modal__list">
+            <li><span class="menu-modal__item-text">${labels.fridayDinnerMenuDrink1 || "Vino"}</span></li>
+            <li><span class="menu-modal__item-text">${labels.fridayDinnerMenuDrink2 || "Cerveza"}</span></li>
+            <li><span class="menu-modal__item-text">${labels.fridayDinnerMenuDrink3 || "Agua"}</span></li>
+            <li><span class="menu-modal__item-text">${labels.fridayDinnerMenuDrink4 || "Refrescos"}</span></li>
+            <li><span class="menu-modal__item-text">${labels.fridayDinnerMenuDrink5 || "Tinto de verano"}</span></li>
+            <li><span class="menu-modal__item-text">${labels.fridayDinnerMenuDrink6 || "Vermut"}</span></li>
+          </ul>
+        </article>
+      </div>
+    </section>
+  `;
+
+  document.body.append(modal);
+  return modal;
+}
+
+function openFridayDinnerMenuModal() {
+  const modal = ensureFridayDinnerMenuModal();
+  modal.removeAttribute("hidden");
+  modal.setAttribute("aria-hidden", "false");
+  document.body.classList.add("body--menu-modal-open");
+  refs.bottomNav?.classList.add("bottom-nav--hidden");
+}
+
+function closeFridayDinnerMenuModal() {
+  const modal = getFridayDinnerMenuModal();
+  if (!modal || modal.hasAttribute("hidden")) return;
+  modal.setAttribute("hidden", "");
+  modal.setAttribute("aria-hidden", "true");
+  document.body.classList.remove("body--menu-modal-open");
+  refs.bottomNav?.classList.remove("bottom-nav--hidden");
+}
 
 function getSaturdayMenuModal() {
   return document.getElementById(SATURDAY_MENU_MODAL_ID);
@@ -628,6 +731,11 @@ function bindUIEvents() {
   });
 
   document.addEventListener("click", (event) => {
+    const openFridayDinnerButton = event.target.closest("[data-open-friday-dinner-menu]");
+    if (openFridayDinnerButton) {
+      openFridayDinnerMenuModal();
+      return;
+    }
     const openButton = event.target.closest("[data-open-saturday-menu]");
     if (openButton) {
       openSaturdayMenuModal();
@@ -636,6 +744,11 @@ function bindUIEvents() {
     const openPrivateDinnerButton = event.target.closest("[data-open-private-dinner-surprise]");
     if (openPrivateDinnerButton) {
       openPrivateDinnerSurpriseModal();
+      return;
+    }
+    const closeFridayDinnerButton = event.target.closest("[data-close-friday-dinner-menu]");
+    if (closeFridayDinnerButton) {
+      closeFridayDinnerMenuModal();
       return;
     }
     const closeButton = event.target.closest("[data-close-saturday-menu]");
@@ -649,6 +762,7 @@ function bindUIEvents() {
 
   document.addEventListener("keydown", (event) => {
     if (event.key === "Escape") {
+      closeFridayDinnerMenuModal();
       closeSaturdayMenuModal();
       closePrivateDinnerSurpriseModal();
     }
