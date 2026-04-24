@@ -474,6 +474,30 @@ function bindUIEvents() {
     card.setAttribute("aria-pressed", "true");
   };
 
+  const updateGuestCardPointer = (card, clientX, clientY) => {
+    if (!card) return;
+    const rect = card.getBoundingClientRect();
+    if (!rect.width || !rect.height) return;
+    const x = Math.min(Math.max(clientX - rect.left, 0), rect.width);
+    const y = Math.min(Math.max(clientY - rect.top, 0), rect.height);
+    const ratioX = x / rect.width;
+    const ratioY = y / rect.height;
+    const tiltY = (ratioX - 0.5) * 16;
+    const tiltX = (0.5 - ratioY) * 14;
+    card.style.setProperty("--pointer-x", `${ratioX * 100}%`);
+    card.style.setProperty("--pointer-y", `${ratioY * 100}%`);
+    card.style.setProperty("--guest-tilt-x", `${tiltX.toFixed(2)}deg`);
+    card.style.setProperty("--guest-tilt-y", `${tiltY.toFixed(2)}deg`);
+  };
+
+  const resetGuestCardPointer = (card) => {
+    if (!card) return;
+    card.style.removeProperty("--pointer-x");
+    card.style.removeProperty("--pointer-y");
+    card.style.removeProperty("--guest-tilt-x");
+    card.style.removeProperty("--guest-tilt-y");
+  };
+
   refs.guestGrid.addEventListener("click", async (event) => {
     const enterButton = event.target.closest("[data-guest-enter]");
     if (enterButton) {
@@ -500,6 +524,18 @@ function bindUIEvents() {
       toggleGuestCardFlip(card);
     }
   });
+
+  refs.guestGrid.addEventListener("pointermove", (event) => {
+    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+    const card = event.target.closest(".guest-card");
+    if (!card) return;
+    updateGuestCardPointer(card, event.clientX, event.clientY);
+  });
+
+  refs.guestGrid.addEventListener("pointerleave", (event) => {
+    const card = event.target.closest(".guest-card");
+    resetGuestCardPointer(card);
+  }, true);
 }
 
 window.addEventListener("beforeunload", () => {
