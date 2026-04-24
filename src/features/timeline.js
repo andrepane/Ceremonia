@@ -99,7 +99,7 @@ export function renderTimeline() {
   document.getElementById("timeline").innerHTML = timelineItems
     .map(({ item, index }) => {
       const isSaturdayLunch = index === 5;
-      return `<article class="timeline-item"><span class="timeline-day">${item.day}</span><h4 class="timeline-title">${item.title}</h4><p class="timeline-text">${item.text}</p>${isSaturdayLunch ? `<button class="timeline-menu-btn" type="button" data-open-saturday-menu="true">Ver menú</button>` : ""}<span class="status-tag status-tag--${item.tone}">${item.status}</span></article>`;
+      return `<article class="timeline-item"><span class="timeline-day">${item.day}</span><h4 class="timeline-title">${item.title}</h4><p class="timeline-text">${item.text}</p><div class="timeline-item__meta"><span class="status-tag status-tag--${item.tone}">${item.status}</span>${isSaturdayLunch ? `<button class="timeline-menu-btn" type="button" data-open-saturday-menu="true">Ver menú</button>` : ""}</div></article>`;
     })
     .join("");
 }
