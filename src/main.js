@@ -6,7 +6,7 @@ import {
   releaseGuestProfileLock,
   switchGuestProfileLock
 } from "../firebase.js";
-import { APP_DATA, refs, state, setState, findGuestById, getHomeCopy } from "./state.js";
+import { APP_DATA, refs, state, setState, findGuestById, getHomeCopy, getLocale } from "./state.js";
 import { applyTranslations } from "./ui/translations.js";
 import { handleUsefulPhraseSpeakClick, renderAllDynamicSections, renderDictionary, renderGuestCards, renderHomeDashboard, updateAppHeaderForView, updateGuestHeaderMessage, updateProfileAvatar, updateWelcomeLabel } from "./ui/render.js";
 import { handleSpeakTranslation, handleTranslatorRequest } from "./features/translator.js";
@@ -31,8 +31,37 @@ function getSaturdayMenuModal() {
 }
 
 function ensureSaturdayMenuModal() {
+  const locale = getLocale();
+  const labels = locale.labels || {};
   const existingModal = getSaturdayMenuModal();
-  if (existingModal) return existingModal;
+  if (existingModal) {
+    const closeButton = existingModal.querySelector(".menu-modal__close-btn");
+    const subtitle = existingModal.querySelector(".menu-modal__subtitle");
+    const title = existingModal.querySelector(".menu-modal__title");
+    const sectionTitles = existingModal.querySelectorAll(".menu-modal__block-title-text");
+    const itemLabels = existingModal.querySelectorAll(".menu-modal__item-text");
+
+    if (closeButton) closeButton.setAttribute("aria-label", labels.closeMenuBtn || "Cerrar menú");
+    if (subtitle) subtitle.textContent = labels.saturdayMenuSubtitle || "SÁBADO · 14:00";
+    if (title) title.textContent = labels.saturdayMenuTitle || "Almuerzo del sábado";
+    if (sectionTitles[0]) sectionTitles[0].textContent = labels.saturdayMenuStarters || "Entrantes al centro";
+    if (sectionTitles[1]) sectionTitles[1].textContent = labels.saturdayMenuMain || "Principal";
+    if (sectionTitles[2]) sectionTitles[2].textContent = labels.saturdayMenuDessert || "Postre";
+    if (sectionTitles[3]) sectionTitles[3].textContent = labels.saturdayMenuCoffee || "Café";
+    if (sectionTitles[4]) sectionTitles[4].textContent = labels.saturdayMenuDrinks || "Bebidas";
+    if (itemLabels[0]) itemLabels[0].textContent = labels.saturdayMenuStarter1 || "Salmorejo";
+    if (itemLabels[1]) itemLabels[1].textContent = labels.saturdayMenuStarter2 || "Ensaladilla rusa";
+    if (itemLabels[2]) itemLabels[2].textContent = labels.saturdayMenuMain1 || "Paella de marisco";
+    if (itemLabels[3]) itemLabels[3].textContent = labels.saturdayMenuDessert1 || "Postre de la casa";
+    if (itemLabels[4]) itemLabels[4].textContent = labels.saturdayMenuCoffee1 || "Café";
+    if (itemLabels[5]) itemLabels[5].textContent = labels.saturdayMenuDrink1 || "Vino";
+    if (itemLabels[6]) itemLabels[6].textContent = labels.saturdayMenuDrink2 || "Cerveza";
+    if (itemLabels[7]) itemLabels[7].textContent = labels.saturdayMenuDrink3 || "Agua";
+    if (itemLabels[8]) itemLabels[8].textContent = labels.saturdayMenuDrink4 || "Refrescos";
+    if (itemLabels[9]) itemLabels[9].textContent = labels.saturdayMenuDrink5 || "Tinto de verano";
+    if (itemLabels[10]) itemLabels[10].textContent = labels.saturdayMenuDrink6 || "Vermut";
+    return existingModal;
+  }
 
   const modal = document.createElement("div");
   modal.id = SATURDAY_MENU_MODAL_ID;
@@ -42,44 +71,44 @@ function ensureSaturdayMenuModal() {
   modal.innerHTML = `
     <div class="menu-modal__backdrop" data-close-saturday-menu="true"></div>
     <section class="menu-modal__dialog" role="dialog" aria-modal="true" aria-labelledby="menu-modal-title">
-      <button class="menu-modal__close-btn" type="button" aria-label="Cerrar menú" data-close-saturday-menu="true">×</button>
-      <p class="menu-modal__subtitle">SÁBADO · 14:00</p>
-      <h3 id="menu-modal-title" class="menu-modal__title">Almuerzo del sábado</h3>
+      <button class="menu-modal__close-btn" type="button" aria-label="${labels.closeMenuBtn || "Cerrar menú"}" data-close-saturday-menu="true">×</button>
+      <p class="menu-modal__subtitle">${labels.saturdayMenuSubtitle || "SÁBADO · 14:00"}</p>
+      <h3 id="menu-modal-title" class="menu-modal__title">${labels.saturdayMenuTitle || "Almuerzo del sábado"}</h3>
       <div class="menu-modal__blocks">
         <article class="menu-modal__block">
-          <h4 class="menu-modal__block-title"><span aria-hidden="true">🥣</span> Entrantes al centro</h4>
+          <h4 class="menu-modal__block-title"><span aria-hidden="true">🥣</span> <span class="menu-modal__block-title-text">${labels.saturdayMenuStarters || "Entrantes al centro"}</span></h4>
           <ul class="menu-modal__list">
-            <li>Salmorejo</li>
-            <li>Ensaladilla rusa</li>
+            <li><span class="menu-modal__item-text">${labels.saturdayMenuStarter1 || "Salmorejo"}</span></li>
+            <li><span class="menu-modal__item-text">${labels.saturdayMenuStarter2 || "Ensaladilla rusa"}</span></li>
           </ul>
         </article>
         <article class="menu-modal__block">
-          <h4 class="menu-modal__block-title"><span aria-hidden="true">🥘</span> Principal</h4>
+          <h4 class="menu-modal__block-title"><span aria-hidden="true">🥘</span> <span class="menu-modal__block-title-text">${labels.saturdayMenuMain || "Principal"}</span></h4>
           <ul class="menu-modal__list">
-            <li>Paella de marisco</li>
+            <li><span class="menu-modal__item-text">${labels.saturdayMenuMain1 || "Paella de marisco"}</span></li>
           </ul>
         </article>
         <article class="menu-modal__block">
-          <h4 class="menu-modal__block-title"><span aria-hidden="true">🍰</span> Postre</h4>
+          <h4 class="menu-modal__block-title"><span aria-hidden="true">🍰</span> <span class="menu-modal__block-title-text">${labels.saturdayMenuDessert || "Postre"}</span></h4>
           <ul class="menu-modal__list">
-            <li>Postre de la casa</li>
+            <li><span class="menu-modal__item-text">${labels.saturdayMenuDessert1 || "Postre de la casa"}</span></li>
           </ul>
         </article>
         <article class="menu-modal__block">
-          <h4 class="menu-modal__block-title"><span aria-hidden="true">☕</span> Café</h4>
+          <h4 class="menu-modal__block-title"><span aria-hidden="true">☕</span> <span class="menu-modal__block-title-text">${labels.saturdayMenuCoffee || "Café"}</span></h4>
           <ul class="menu-modal__list">
-            <li>Café</li>
+            <li><span class="menu-modal__item-text">${labels.saturdayMenuCoffee1 || "Café"}</span></li>
           </ul>
         </article>
         <article class="menu-modal__block">
-          <h4 class="menu-modal__block-title"><span aria-hidden="true">🍷</span> Bebidas</h4>
+          <h4 class="menu-modal__block-title"><span aria-hidden="true">🍷</span> <span class="menu-modal__block-title-text">${labels.saturdayMenuDrinks || "Bebidas"}</span></h4>
           <ul class="menu-modal__list">
-            <li>Vino</li>
-            <li>Cerveza</li>
-            <li>Agua</li>
-            <li>Refrescos</li>
-            <li>Tinto de verano</li>
-            <li>Vermút</li>
+            <li><span class="menu-modal__item-text">${labels.saturdayMenuDrink1 || "Vino"}</span></li>
+            <li><span class="menu-modal__item-text">${labels.saturdayMenuDrink2 || "Cerveza"}</span></li>
+            <li><span class="menu-modal__item-text">${labels.saturdayMenuDrink3 || "Agua"}</span></li>
+            <li><span class="menu-modal__item-text">${labels.saturdayMenuDrink4 || "Refrescos"}</span></li>
+            <li><span class="menu-modal__item-text">${labels.saturdayMenuDrink5 || "Tinto de verano"}</span></li>
+            <li><span class="menu-modal__item-text">${labels.saturdayMenuDrink6 || "Vermut"}</span></li>
           </ul>
         </article>
       </div>
