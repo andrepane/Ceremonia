@@ -53,6 +53,15 @@ body.body--language-locked {
   touch-action: none;
 }
 
+body.body--modal-open {
+  overflow: hidden;
+}
+
+body.body--modal-open #screen-app .screen__inner--app > *:not(.menu-modal-overlay) {
+  filter: blur(7px) saturate(88%);
+  transition: filter 220ms ease;
+}
+
 button,
 input {
   font: inherit;
@@ -1325,6 +1334,52 @@ input {
 .status-tag--strong {
   background: #dcc3b2;
   color: #5f4435;
+}
+
+.timeline-menu-btn {
+  margin-top: 12px;
+}
+
+.menu-modal-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 90;
+  display: grid;
+  place-items: center;
+  padding: 20px;
+  background: rgba(47, 30, 20, 0.24);
+  -webkit-backdrop-filter: blur(16px) saturate(128%);
+  backdrop-filter: blur(16px) saturate(128%);
+}
+
+.menu-modal {
+  position: relative;
+  width: min(100%, 460px);
+  border-radius: var(--radius-lg);
+  padding: 24px 20px 20px;
+  background: var(--glass-surface);
+  border: 1px solid var(--glass-edge);
+  -webkit-backdrop-filter: blur(var(--glass-blur)) saturate(var(--glass-saturation));
+  backdrop-filter: blur(var(--glass-blur)) saturate(var(--glass-saturation));
+  box-shadow:
+    0 24px 46px rgba(56, 37, 23, 0.24),
+    0 1px 0 rgba(255, 255, 255, 0.45) inset;
+}
+
+.menu-modal__close-btn {
+  position: absolute;
+  top: 12px;
+  right: 12px;
+  width: 32px;
+  height: 32px;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.48);
+  border: 1px solid rgba(255, 255, 255, 0.68);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1rem;
+  color: var(--accent-strong);
 }
 
 .translator-card {

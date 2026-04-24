@@ -160,14 +160,16 @@ window.WEDDING_APP_DATA = {
           title: "Pescaito frito",
           text: "Cena informal para empezar el finde como se merece.",
           status: "Comida",
-          tone: "warn"
+          tone: "warn",
+          menuModalEnabled: true
         },
         {
           day: "Sábado 5 · 9:00–10:00",
           title: "Desayuno",
           text: "Desayuno para coger energía antes del día grande.",
           status: "Comida",
-          tone: "soft"
+          tone: "soft",
+          menuModalEnabled: true
         },
         {
           day: "Sábado 5 · mañana",
@@ -181,7 +183,8 @@ window.WEDDING_APP_DATA = {
           title: "Almuerzo",
           text: "Paella de marisco para compartir todos juntos.",
           status: "Comida",
-          tone: "warn"
+          tone: "warn",
+          menuModalEnabled: true
         },
         {
           day: "Sábado 5 · tarde",
@@ -216,7 +219,8 @@ window.WEDDING_APP_DATA = {
           title: "Desayuno y check-out",
           text: "Último desayuno juntos y cierre del fin de semana.",
           status: "Despedida",
-          tone: "soft"
+          tone: "soft",
+          menuModalEnabled: true
         }
       ],
       falseFriends: [
@@ -550,14 +554,16 @@ window.WEDDING_APP_DATA = {
           title: "Pescaito frito",
           text: "Cena informale per aprire il weekend nel modo migliore.",
           status: "Pasto",
-          tone: "warn"
+          tone: "warn",
+          menuModalEnabled: true
         },
         {
           day: "Sabato 5 · 9:00–10:00",
           title: "Colazione",
           text: "Colazione per fare energia prima della giornata più intensa.",
           status: "Pasto",
-          tone: "soft"
+          tone: "soft",
+          menuModalEnabled: true
         },
         {
           day: "Sabato 5 · mattina",
@@ -571,7 +577,8 @@ window.WEDDING_APP_DATA = {
           title: "Pranzo",
           text: "Paella ai frutti di mare da condividere tutti insieme.",
           status: "Pasto",
-          tone: "warn"
+          tone: "warn",
+          menuModalEnabled: true
         },
         {
           day: "Sabato 5 · pomeriggio",
@@ -606,7 +613,8 @@ window.WEDDING_APP_DATA = {
           title: "Colazione e check-out",
           text: "Ultima colazione insieme e chiusura del weekend.",
           status: "Saluti",
-          tone: "soft"
+          tone: "soft",
+          menuModalEnabled: true
         }
       ],
       falseFriends: [

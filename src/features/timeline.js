@@ -97,7 +97,7 @@ export function renderTimeline() {
   const locale = getLocale();
   const timelineItems = getGuestTimelineItems(locale).map(({ item }) => item);
   document.getElementById("timeline").innerHTML = timelineItems
-    .map((item) => `<article class="timeline-item"><span class="timeline-day">${item.day}</span><h4 class="timeline-title">${item.title}</h4><p class="timeline-text">${item.text}</p><span class="status-tag status-tag--${item.tone}">${item.status}</span></article>`)
+    .map((item) => `<article class="timeline-item"><span class="timeline-day">${item.day}</span><h4 class="timeline-title">${item.title}</h4><p class="timeline-text">${item.text}</p><span class="status-tag status-tag--${item.tone}">${item.status}</span>${item.menuModalEnabled ? '<button class="timeline-menu-btn secondary-btn" type="button" data-menu-modal-open>Ver menú</button>' : ""}</article>`)
     .join("");
 }
 

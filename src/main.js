@@ -286,6 +286,7 @@ function syncBottomNavIndicator(activeButton) {
 }
 
 function activateView(viewName) {
+  closeMenuModal();
   refs.views.forEach((view) => view.classList.remove("view--active"));
   refs.navButtons.forEach((button) => {
     button.classList.remove("nav-btn--active");
@@ -304,6 +305,18 @@ function activateView(viewName) {
   }
   updateAppHeaderForView(viewName);
   scrollViewportToTop();
+}
+
+function openMenuModal() {
+  if (!refs.menuModalOverlay) return;
+  refs.menuModalOverlay.hidden = false;
+  document.body.classList.add("body--modal-open");
+}
+
+function closeMenuModal() {
+  if (!refs.menuModalOverlay) return;
+  refs.menuModalOverlay.hidden = true;
+  document.body.classList.remove("body--modal-open");
 }
 
 async function playLanguageSelectionAnimation(lang) {
@@ -416,6 +429,7 @@ function bindUIEvents() {
   refs.btnIt.addEventListener("click", () => setLanguage("it"));
   refs.backToLanguage.addEventListener("click", () => showScreen(refs.screenLanguage));
   refs.changeProfile.addEventListener("click", async () => {
+    closeMenuModal();
     const previousGuestId = state.currentGuestId;
     if (isFirebaseConfigured() && previousGuestId) {
       try { await releaseGuestProfileLock(previousGuestId); } catch {}
@@ -431,6 +445,20 @@ function bindUIEvents() {
   });
 
   refs.navButtons.forEach((button) => button.addEventListener("click", () => activateView(button.dataset.view)));
+
+  document.getElementById("timeline").addEventListener("click", (event) => {
+    if (!event.target.closest("[data-menu-modal-open]")) return;
+    openMenuModal();
+  });
+  refs.menuModalClose?.addEventListener("click", closeMenuModal);
+  refs.menuModalOverlay?.addEventListener("click", (event) => {
+    if (event.target !== refs.menuModalOverlay) return;
+    closeMenuModal();
+  });
+  document.addEventListener("keydown", (event) => {
+    if (event.key !== "Escape" || refs.menuModalOverlay?.hidden) return;
+    closeMenuModal();
+  });
 
   refs.homeInfoStack.addEventListener("click", (event) => {
     const targetButton = event.target.closest("[data-target-view]");
