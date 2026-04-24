@@ -53,6 +53,11 @@ body.body--language-locked {
   touch-action: none;
 }
 
+body.body--menu-modal-open {
+  overflow: hidden;
+  overscroll-behavior: none;
+}
+
 button,
 input {
   font: inherit;
@@ -1301,6 +1306,25 @@ input {
   line-height: 1.55;
 }
 
+.timeline-menu-btn {
+  margin-top: 14px;
+  min-height: 38px;
+  padding: 0 16px;
+  border-radius: 999px;
+  border: 1px solid rgba(127, 95, 77, 0.24);
+  background: linear-gradient(155deg, rgba(255, 255, 255, 0.86), rgba(245, 234, 224, 0.62));
+  color: var(--accent-strong);
+  font-weight: 600;
+  letter-spacing: 0.02em;
+  transition: transform 180ms ease, box-shadow 220ms ease, border-color 220ms ease;
+}
+
+.timeline-menu-btn:hover {
+  transform: translateY(-1px);
+  border-color: rgba(127, 95, 77, 0.42);
+  box-shadow: 0 10px 20px rgba(56, 37, 23, 0.12);
+}
+
 .status-tag {
   display: inline-flex;
   align-items: center;
@@ -1714,6 +1738,13 @@ input {
   isolation: isolate;
   overflow: hidden;
   z-index: 30;
+  transition: transform 300ms cubic-bezier(0.22, 1, 0.36, 1), opacity 240ms ease;
+}
+
+.bottom-nav.bottom-nav--hidden {
+  opacity: 0;
+  transform: translate(-50%, calc(100% + 18px));
+  pointer-events: none;
 }
 
 .bottom-nav::before {
@@ -1804,6 +1835,133 @@ input {
     opacity 260ms ease;
   opacity: 0.75;
   transform-origin: center center;
+}
+
+.menu-modal {
+  position: fixed;
+  inset: 0;
+  z-index: 130;
+  display: grid;
+  place-items: center;
+  padding: max(14px, env(safe-area-inset-top, 0px) + 10px) 14px max(14px, env(safe-area-inset-bottom, 0px) + 10px);
+}
+
+.menu-modal[hidden] {
+  display: none;
+}
+
+.menu-modal__backdrop {
+  position: absolute;
+  inset: 0;
+  background: rgba(48, 31, 20, 0.28);
+  -webkit-backdrop-filter: blur(16px) saturate(135%);
+  backdrop-filter: blur(16px) saturate(135%);
+  animation: modalBackdropIn 280ms ease both;
+}
+
+.menu-modal__dialog {
+  position: relative;
+  width: min(100%, 520px);
+  max-height: min(86vh, 760px);
+  overflow: auto;
+  border-radius: 30px;
+  border: 1px solid rgba(255, 255, 255, 0.56);
+  background: linear-gradient(152deg, rgba(255, 255, 255, 0.8) 0%, rgba(249, 240, 233, 0.74) 55%, rgba(244, 233, 223, 0.7) 100%);
+  box-shadow:
+    0 26px 58px rgba(47, 27, 15, 0.28),
+    0 1px 0 rgba(255, 255, 255, 0.85) inset;
+  -webkit-backdrop-filter: blur(28px) saturate(172%);
+  backdrop-filter: blur(28px) saturate(172%);
+  padding: 24px 20px 20px;
+  animation: modalCardIn 320ms cubic-bezier(0.22, 1, 0.36, 1) both;
+  -webkit-overflow-scrolling: touch;
+}
+
+.menu-modal__close-btn {
+  position: absolute;
+  top: 14px;
+  right: 14px;
+  width: 38px;
+  height: 38px;
+  border-radius: 999px;
+  border: 1px solid rgba(127, 95, 77, 0.2);
+  background: rgba(255, 255, 255, 0.8);
+  color: var(--accent-strong);
+  display: grid;
+  place-items: center;
+  font-size: 1.45rem;
+  line-height: 1;
+}
+
+.menu-modal__subtitle {
+  margin: 0;
+  padding-right: 48px;
+  font-size: 0.76rem;
+  letter-spacing: 0.18em;
+  font-weight: 700;
+  color: #7b6b60;
+  text-transform: uppercase;
+}
+
+.menu-modal__title {
+  margin: 8px 0 16px;
+  font-size: clamp(2rem, 7.4vw, 2.45rem);
+  color: var(--accent-strong);
+  line-height: 1.02;
+}
+
+.menu-modal__blocks {
+  display: grid;
+  gap: 10px;
+}
+
+.menu-modal__block {
+  padding: 12px 14px;
+  border-radius: 18px;
+  border: 1px solid rgba(255, 255, 255, 0.6);
+  background: linear-gradient(145deg, rgba(255, 255, 255, 0.76), rgba(245, 232, 222, 0.5));
+  box-shadow: 0 8px 20px rgba(51, 34, 23, 0.08);
+}
+
+.menu-modal__block + .menu-modal__block {
+  position: relative;
+}
+
+.menu-modal__block-title {
+  margin: 0;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 1.3rem;
+  color: #654938;
+}
+
+.menu-modal__list {
+  margin: 8px 0 0;
+  padding-left: 18px;
+  color: #5f534b;
+  display: grid;
+  gap: 6px;
+}
+
+@keyframes modalCardIn {
+  from {
+    opacity: 0;
+    transform: translateY(16px) scale(0.98);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+@keyframes modalBackdropIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
 }
 
 .nav-btn__icon {
