@@ -25,7 +25,9 @@ const SCREEN_TRANSITION_MS = 560;
 const VIEW_TRANSITION_MS = 420;
 const ENTER_BUTTON_FEEDBACK_MS = 220;
 const FRIDAY_DINNER_MENU_MODAL_ID = "friday-dinner-menu-modal";
+const SATURDAY_BREAKFAST_MENU_MODAL_ID = "saturday-breakfast-menu-modal";
 const SATURDAY_MENU_MODAL_ID = "saturday-menu-modal";
+const SUNDAY_BREAKFAST_MENU_MODAL_ID = "sunday-breakfast-menu-modal";
 const PRIVATE_DINNER_SURPRISE_MODAL_ID = "private-dinner-surprise-modal";
 
 function getFridayDinnerMenuModal() {
@@ -123,6 +125,110 @@ function openFridayDinnerMenuModal() {
 
 function closeFridayDinnerMenuModal() {
   const modal = getFridayDinnerMenuModal();
+  if (!modal || modal.hasAttribute("hidden")) return;
+  modal.setAttribute("hidden", "");
+  modal.setAttribute("aria-hidden", "true");
+  document.body.classList.remove("body--menu-modal-open");
+  refs.bottomNav?.classList.remove("bottom-nav--hidden");
+}
+
+function getSaturdayBreakfastMenuModal() {
+  return document.getElementById(SATURDAY_BREAKFAST_MENU_MODAL_ID);
+}
+
+function ensureSaturdayBreakfastMenuModal() {
+  const locale = getLocale();
+  const labels = locale.labels || {};
+  const existingModal = getSaturdayBreakfastMenuModal();
+  if (existingModal) {
+    const closeButton = existingModal.querySelector(".menu-modal__close-btn");
+    const subtitle = existingModal.querySelector(".menu-modal__subtitle");
+    const title = existingModal.querySelector(".menu-modal__title");
+    const sectionTitles = existingModal.querySelectorAll(".menu-modal__block-title-text");
+    const itemLabels = existingModal.querySelectorAll(".menu-modal__item-text");
+
+    if (closeButton) closeButton.setAttribute("aria-label", labels.closeMenuBtn || "Cerrar menú");
+    if (subtitle) subtitle.textContent = labels.saturdayBreakfastMenuSubtitle || "SÁBADO · 09:00–11:00";
+    if (title) title.textContent = labels.breakfastMenuTitle || "Desayuno";
+    if (sectionTitles[0]) sectionTitles[0].textContent = labels.breakfastMenuIntroTitle || "Para empezar el día con calma";
+    if (sectionTitles[1]) sectionTitles[1].textContent = labels.breakfastMenuToastsTitle || "Tostadas a elegir";
+    if (sectionTitles[2]) sectionTitles[2].textContent = labels.breakfastMenuSweetTitle || "Dulce";
+    if (sectionTitles[3]) sectionTitles[3].textContent = labels.breakfastMenuDrinksTitle || "Para acompañar";
+    if (itemLabels[0]) itemLabels[0].textContent = labels.breakfastMenuToast1 || "Tomate";
+    if (itemLabels[1]) itemLabels[1].textContent = labels.breakfastMenuToast2 || "Tomate y jamón";
+    if (itemLabels[2]) itemLabels[2].textContent = labels.breakfastMenuToast3 || "Aguacate y tomate";
+    if (itemLabels[3]) itemLabels[3].textContent = labels.breakfastMenuToast4 || "Aguacate y jamón";
+    if (itemLabels[4]) itemLabels[4].textContent = labels.breakfastMenuToast5 || "Aceite y jamón";
+    if (itemLabels[5]) itemLabels[5].textContent = labels.breakfastMenuToast6 || "Mantequilla y mermelada";
+    if (itemLabels[6]) itemLabels[6].textContent = labels.breakfastMenuSweet1 || "Croissants";
+    if (itemLabels[7]) itemLabels[7].textContent = labels.breakfastMenuSweet2 || "Bollería variada";
+    if (itemLabels[8]) itemLabels[8].textContent = labels.breakfastMenuDrink1 || "Café";
+    if (itemLabels[9]) itemLabels[9].textContent = labels.breakfastMenuDrink2 || "Leche";
+    if (itemLabels[10]) itemLabels[10].textContent = labels.breakfastMenuDrink3 || "Zumo";
+    if (itemLabels[11]) itemLabels[11].textContent = labels.breakfastMenuDrink4 || "Agua";
+    return existingModal;
+  }
+
+  const modal = document.createElement("div");
+  modal.id = SATURDAY_BREAKFAST_MENU_MODAL_ID;
+  modal.className = "menu-modal";
+  modal.setAttribute("hidden", "");
+  modal.setAttribute("aria-hidden", "true");
+  modal.innerHTML = `
+    <div class="menu-modal__backdrop" data-close-saturday-breakfast-menu="true"></div>
+    <section class="menu-modal__dialog" role="dialog" aria-modal="true" aria-labelledby="saturday-breakfast-menu-title">
+      <button class="menu-modal__close-btn" type="button" aria-label="${labels.closeMenuBtn || "Cerrar menú"}" data-close-saturday-breakfast-menu="true">×</button>
+      <p class="menu-modal__subtitle">${labels.saturdayBreakfastMenuSubtitle || "SÁBADO · 09:00–11:00"}</p>
+      <h3 id="saturday-breakfast-menu-title" class="menu-modal__title">${labels.breakfastMenuTitle || "Desayuno"}</h3>
+      <div class="menu-modal__blocks">
+        <article class="menu-modal__block">
+          <h4 class="menu-modal__block-title"><span aria-hidden="true">🌞</span> <span class="menu-modal__block-title-text">${labels.breakfastMenuIntroTitle || "Para empezar el día con calma"}</span></h4>
+        </article>
+        <article class="menu-modal__block">
+          <h4 class="menu-modal__block-title"><span aria-hidden="true">🍞</span> <span class="menu-modal__block-title-text">${labels.breakfastMenuToastsTitle || "Tostadas a elegir"}</span></h4>
+          <ul class="menu-modal__list">
+            <li><span class="menu-modal__item-text">${labels.breakfastMenuToast1 || "Tomate"}</span></li>
+            <li><span class="menu-modal__item-text">${labels.breakfastMenuToast2 || "Tomate y jamón"}</span></li>
+            <li><span class="menu-modal__item-text">${labels.breakfastMenuToast3 || "Aguacate y tomate"}</span></li>
+            <li><span class="menu-modal__item-text">${labels.breakfastMenuToast4 || "Aguacate y jamón"}</span></li>
+            <li><span class="menu-modal__item-text">${labels.breakfastMenuToast5 || "Aceite y jamón"}</span></li>
+            <li><span class="menu-modal__item-text">${labels.breakfastMenuToast6 || "Mantequilla y mermelada"}</span></li>
+          </ul>
+        </article>
+        <article class="menu-modal__block">
+          <h4 class="menu-modal__block-title"><span aria-hidden="true">🥐</span> <span class="menu-modal__block-title-text">${labels.breakfastMenuSweetTitle || "Dulce"}</span></h4>
+          <ul class="menu-modal__list">
+            <li><span class="menu-modal__item-text">${labels.breakfastMenuSweet1 || "Croissants"}</span></li>
+            <li><span class="menu-modal__item-text">${labels.breakfastMenuSweet2 || "Bollería variada"}</span></li>
+          </ul>
+        </article>
+        <article class="menu-modal__block">
+          <h4 class="menu-modal__block-title"><span aria-hidden="true">☕</span> <span class="menu-modal__block-title-text">${labels.breakfastMenuDrinksTitle || "Para acompañar"}</span></h4>
+          <ul class="menu-modal__list">
+            <li><span class="menu-modal__item-text">${labels.breakfastMenuDrink1 || "Café"}</span></li>
+            <li><span class="menu-modal__item-text">${labels.breakfastMenuDrink2 || "Leche"}</span></li>
+            <li><span class="menu-modal__item-text">${labels.breakfastMenuDrink3 || "Zumo"}</span></li>
+            <li><span class="menu-modal__item-text">${labels.breakfastMenuDrink4 || "Agua"}</span></li>
+          </ul>
+        </article>
+      </div>
+    </section>
+  `;
+
+  document.body.append(modal);
+  return modal;
+}
+
+function openSaturdayBreakfastMenuModal() {
+  const modal = ensureSaturdayBreakfastMenuModal();
+  modal.removeAttribute("hidden");
+  modal.setAttribute("aria-hidden", "false");
+  document.body.classList.add("body--menu-modal-open");
+  refs.bottomNav?.classList.add("bottom-nav--hidden");
+}
+
+function closeSaturdayBreakfastMenuModal() {
+  const modal = getSaturdayBreakfastMenuModal();
   if (!modal || modal.hasAttribute("hidden")) return;
   modal.setAttribute("hidden", "");
   modal.setAttribute("aria-hidden", "true");
@@ -233,6 +339,110 @@ function openSaturdayMenuModal() {
 
 function closeSaturdayMenuModal() {
   const modal = getSaturdayMenuModal();
+  if (!modal || modal.hasAttribute("hidden")) return;
+  modal.setAttribute("hidden", "");
+  modal.setAttribute("aria-hidden", "true");
+  document.body.classList.remove("body--menu-modal-open");
+  refs.bottomNav?.classList.remove("bottom-nav--hidden");
+}
+
+function getSundayBreakfastMenuModal() {
+  return document.getElementById(SUNDAY_BREAKFAST_MENU_MODAL_ID);
+}
+
+function ensureSundayBreakfastMenuModal() {
+  const locale = getLocale();
+  const labels = locale.labels || {};
+  const existingModal = getSundayBreakfastMenuModal();
+  if (existingModal) {
+    const closeButton = existingModal.querySelector(".menu-modal__close-btn");
+    const subtitle = existingModal.querySelector(".menu-modal__subtitle");
+    const title = existingModal.querySelector(".menu-modal__title");
+    const sectionTitles = existingModal.querySelectorAll(".menu-modal__block-title-text");
+    const itemLabels = existingModal.querySelectorAll(".menu-modal__item-text");
+
+    if (closeButton) closeButton.setAttribute("aria-label", labels.closeMenuBtn || "Cerrar menú");
+    if (subtitle) subtitle.textContent = labels.sundayBreakfastMenuSubtitle || "DOMINGO · 09:00–11:00";
+    if (title) title.textContent = labels.breakfastMenuTitle || "Desayuno";
+    if (sectionTitles[0]) sectionTitles[0].textContent = labels.breakfastMenuIntroTitle || "Para empezar el día con calma";
+    if (sectionTitles[1]) sectionTitles[1].textContent = labels.breakfastMenuToastsTitle || "Tostadas a elegir";
+    if (sectionTitles[2]) sectionTitles[2].textContent = labels.breakfastMenuSweetTitle || "Dulce";
+    if (sectionTitles[3]) sectionTitles[3].textContent = labels.breakfastMenuDrinksTitle || "Para acompañar";
+    if (itemLabels[0]) itemLabels[0].textContent = labels.breakfastMenuToast1 || "Tomate";
+    if (itemLabels[1]) itemLabels[1].textContent = labels.breakfastMenuToast2 || "Tomate y jamón";
+    if (itemLabels[2]) itemLabels[2].textContent = labels.breakfastMenuToast3 || "Aguacate y tomate";
+    if (itemLabels[3]) itemLabels[3].textContent = labels.breakfastMenuToast4 || "Aguacate y jamón";
+    if (itemLabels[4]) itemLabels[4].textContent = labels.breakfastMenuToast5 || "Aceite y jamón";
+    if (itemLabels[5]) itemLabels[5].textContent = labels.breakfastMenuToast6 || "Mantequilla y mermelada";
+    if (itemLabels[6]) itemLabels[6].textContent = labels.breakfastMenuSweet1 || "Croissants";
+    if (itemLabels[7]) itemLabels[7].textContent = labels.breakfastMenuSweet2 || "Bollería variada";
+    if (itemLabels[8]) itemLabels[8].textContent = labels.breakfastMenuDrink1 || "Café";
+    if (itemLabels[9]) itemLabels[9].textContent = labels.breakfastMenuDrink2 || "Leche";
+    if (itemLabels[10]) itemLabels[10].textContent = labels.breakfastMenuDrink3 || "Zumo";
+    if (itemLabels[11]) itemLabels[11].textContent = labels.breakfastMenuDrink4 || "Agua";
+    return existingModal;
+  }
+
+  const modal = document.createElement("div");
+  modal.id = SUNDAY_BREAKFAST_MENU_MODAL_ID;
+  modal.className = "menu-modal";
+  modal.setAttribute("hidden", "");
+  modal.setAttribute("aria-hidden", "true");
+  modal.innerHTML = `
+    <div class="menu-modal__backdrop" data-close-sunday-breakfast-menu="true"></div>
+    <section class="menu-modal__dialog" role="dialog" aria-modal="true" aria-labelledby="sunday-breakfast-menu-title">
+      <button class="menu-modal__close-btn" type="button" aria-label="${labels.closeMenuBtn || "Cerrar menú"}" data-close-sunday-breakfast-menu="true">×</button>
+      <p class="menu-modal__subtitle">${labels.sundayBreakfastMenuSubtitle || "DOMINGO · 09:00–11:00"}</p>
+      <h3 id="sunday-breakfast-menu-title" class="menu-modal__title">${labels.breakfastMenuTitle || "Desayuno"}</h3>
+      <div class="menu-modal__blocks">
+        <article class="menu-modal__block">
+          <h4 class="menu-modal__block-title"><span aria-hidden="true">🌞</span> <span class="menu-modal__block-title-text">${labels.breakfastMenuIntroTitle || "Para empezar el día con calma"}</span></h4>
+        </article>
+        <article class="menu-modal__block">
+          <h4 class="menu-modal__block-title"><span aria-hidden="true">🍞</span> <span class="menu-modal__block-title-text">${labels.breakfastMenuToastsTitle || "Tostadas a elegir"}</span></h4>
+          <ul class="menu-modal__list">
+            <li><span class="menu-modal__item-text">${labels.breakfastMenuToast1 || "Tomate"}</span></li>
+            <li><span class="menu-modal__item-text">${labels.breakfastMenuToast2 || "Tomate y jamón"}</span></li>
+            <li><span class="menu-modal__item-text">${labels.breakfastMenuToast3 || "Aguacate y tomate"}</span></li>
+            <li><span class="menu-modal__item-text">${labels.breakfastMenuToast4 || "Aguacate y jamón"}</span></li>
+            <li><span class="menu-modal__item-text">${labels.breakfastMenuToast5 || "Aceite y jamón"}</span></li>
+            <li><span class="menu-modal__item-text">${labels.breakfastMenuToast6 || "Mantequilla y mermelada"}</span></li>
+          </ul>
+        </article>
+        <article class="menu-modal__block">
+          <h4 class="menu-modal__block-title"><span aria-hidden="true">🥐</span> <span class="menu-modal__block-title-text">${labels.breakfastMenuSweetTitle || "Dulce"}</span></h4>
+          <ul class="menu-modal__list">
+            <li><span class="menu-modal__item-text">${labels.breakfastMenuSweet1 || "Croissants"}</span></li>
+            <li><span class="menu-modal__item-text">${labels.breakfastMenuSweet2 || "Bollería variada"}</span></li>
+          </ul>
+        </article>
+        <article class="menu-modal__block">
+          <h4 class="menu-modal__block-title"><span aria-hidden="true">☕</span> <span class="menu-modal__block-title-text">${labels.breakfastMenuDrinksTitle || "Para acompañar"}</span></h4>
+          <ul class="menu-modal__list">
+            <li><span class="menu-modal__item-text">${labels.breakfastMenuDrink1 || "Café"}</span></li>
+            <li><span class="menu-modal__item-text">${labels.breakfastMenuDrink2 || "Leche"}</span></li>
+            <li><span class="menu-modal__item-text">${labels.breakfastMenuDrink3 || "Zumo"}</span></li>
+            <li><span class="menu-modal__item-text">${labels.breakfastMenuDrink4 || "Agua"}</span></li>
+          </ul>
+        </article>
+      </div>
+    </section>
+  `;
+
+  document.body.append(modal);
+  return modal;
+}
+
+function openSundayBreakfastMenuModal() {
+  const modal = ensureSundayBreakfastMenuModal();
+  modal.removeAttribute("hidden");
+  modal.setAttribute("aria-hidden", "false");
+  document.body.classList.add("body--menu-modal-open");
+  refs.bottomNav?.classList.add("bottom-nav--hidden");
+}
+
+function closeSundayBreakfastMenuModal() {
+  const modal = getSundayBreakfastMenuModal();
   if (!modal || modal.hasAttribute("hidden")) return;
   modal.setAttribute("hidden", "");
   modal.setAttribute("aria-hidden", "true");
@@ -736,6 +946,11 @@ function bindUIEvents() {
       openFridayDinnerMenuModal();
       return;
     }
+    const openSaturdayBreakfastButton = event.target.closest("[data-open-saturday-breakfast-menu]");
+    if (openSaturdayBreakfastButton) {
+      openSaturdayBreakfastMenuModal();
+      return;
+    }
     const openButton = event.target.closest("[data-open-saturday-menu]");
     if (openButton) {
       openSaturdayMenuModal();
@@ -751,9 +966,24 @@ function bindUIEvents() {
       closeFridayDinnerMenuModal();
       return;
     }
+    const closeSaturdayBreakfastButton = event.target.closest("[data-close-saturday-breakfast-menu]");
+    if (closeSaturdayBreakfastButton) {
+      closeSaturdayBreakfastMenuModal();
+      return;
+    }
     const closeButton = event.target.closest("[data-close-saturday-menu]");
     if (closeButton) {
       closeSaturdayMenuModal();
+      return;
+    }
+    const openSundayBreakfastButton = event.target.closest("[data-open-sunday-breakfast-menu]");
+    if (openSundayBreakfastButton) {
+      openSundayBreakfastMenuModal();
+      return;
+    }
+    const closeSundayBreakfastButton = event.target.closest("[data-close-sunday-breakfast-menu]");
+    if (closeSundayBreakfastButton) {
+      closeSundayBreakfastMenuModal();
       return;
     }
     const closePrivateDinnerButton = event.target.closest("[data-close-private-dinner-surprise]");
@@ -763,7 +993,9 @@ function bindUIEvents() {
   document.addEventListener("keydown", (event) => {
     if (event.key === "Escape") {
       closeFridayDinnerMenuModal();
+      closeSaturdayBreakfastMenuModal();
       closeSaturdayMenuModal();
+      closeSundayBreakfastMenuModal();
       closePrivateDinnerSurpriseModal();
     }
   });
