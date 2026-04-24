@@ -25,6 +25,7 @@ const SCREEN_TRANSITION_MS = 560;
 const VIEW_TRANSITION_MS = 420;
 const ENTER_BUTTON_FEEDBACK_MS = 220;
 const SATURDAY_MENU_MODAL_ID = "saturday-menu-modal";
+const PRIVATE_DINNER_SURPRISE_MODAL_ID = "private-dinner-surprise-modal";
 
 function getSaturdayMenuModal() {
   return document.getElementById(SATURDAY_MENU_MODAL_ID);
@@ -129,6 +130,79 @@ function openSaturdayMenuModal() {
 
 function closeSaturdayMenuModal() {
   const modal = getSaturdayMenuModal();
+  if (!modal || modal.hasAttribute("hidden")) return;
+  modal.setAttribute("hidden", "");
+  modal.setAttribute("aria-hidden", "true");
+  document.body.classList.remove("body--menu-modal-open");
+  refs.bottomNav?.classList.remove("bottom-nav--hidden");
+}
+
+function getPrivateDinnerSurpriseModal() {
+  return document.getElementById(PRIVATE_DINNER_SURPRISE_MODAL_ID);
+}
+
+function getPrivateDinnerSurpriseText(locale, guest) {
+  if (state.currentLanguage !== "it") return locale.labels.privateDinnerSurpriseText || "Esto va a ser una sorpresa: !Cotilla!";
+  const isFemale = guest?.sex === "f";
+  return isFemale
+    ? locale.labels.privateDinnerSurpriseTextFemale || "Questa è una sorpresa: ¡Pettegola!"
+    : locale.labels.privateDinnerSurpriseTextMale || "Questa è una sorpresa: ¡Pettegolo!";
+}
+
+function ensurePrivateDinnerSurpriseModal() {
+  const locale = getLocale();
+  const labels = locale.labels || {};
+  const guest = findGuestById(state.currentGuestId);
+  const surpriseText = getPrivateDinnerSurpriseText(locale, guest);
+  const existingModal = getPrivateDinnerSurpriseModal();
+  if (existingModal) {
+    const closeButton = existingModal.querySelector(".menu-modal__close-btn");
+    const subtitle = existingModal.querySelector(".menu-modal__subtitle");
+    const title = existingModal.querySelector(".menu-modal__title");
+    const message = existingModal.querySelector(".menu-modal__item-text");
+    if (closeButton) closeButton.setAttribute("aria-label", labels.closeMenuBtn || "Cerrar menú");
+    if (subtitle) subtitle.textContent = labels.privateDinnerSurpriseSubtitle || "SÁBADO · 21:00/21:30";
+    if (title) title.textContent = labels.privateDinnerSurpriseTitle || "Cena con chef privado";
+    if (message) message.textContent = surpriseText;
+    return existingModal;
+  }
+
+  const modal = document.createElement("div");
+  modal.id = PRIVATE_DINNER_SURPRISE_MODAL_ID;
+  modal.className = "menu-modal";
+  modal.setAttribute("hidden", "");
+  modal.setAttribute("aria-hidden", "true");
+  modal.innerHTML = `
+    <div class="menu-modal__backdrop" data-close-private-dinner-surprise="true"></div>
+    <section class="menu-modal__dialog" role="dialog" aria-modal="true" aria-labelledby="private-dinner-surprise-title">
+      <button class="menu-modal__close-btn" type="button" aria-label="${labels.closeMenuBtn || "Cerrar menú"}" data-close-private-dinner-surprise="true">×</button>
+      <p class="menu-modal__subtitle">${labels.privateDinnerSurpriseSubtitle || "SÁBADO · 21:00/21:30"}</p>
+      <h3 id="private-dinner-surprise-title" class="menu-modal__title">${labels.privateDinnerSurpriseTitle || "Cena con chef privado"}</h3>
+      <div class="menu-modal__blocks">
+        <article class="menu-modal__block">
+          <h4 class="menu-modal__block-title"><span aria-hidden="true">🤫</span> <span class="menu-modal__block-title-text">${labels.privateDinnerSurpriseBlockTitle || "Sorpresa"}</span></h4>
+          <ul class="menu-modal__list">
+            <li><span class="menu-modal__item-text">${surpriseText}</span></li>
+          </ul>
+        </article>
+      </div>
+    </section>
+  `;
+
+  document.body.append(modal);
+  return modal;
+}
+
+function openPrivateDinnerSurpriseModal() {
+  const modal = ensurePrivateDinnerSurpriseModal();
+  modal.removeAttribute("hidden");
+  modal.setAttribute("aria-hidden", "false");
+  document.body.classList.add("body--menu-modal-open");
+  refs.bottomNav?.classList.add("bottom-nav--hidden");
+}
+
+function closePrivateDinnerSurpriseModal() {
+  const modal = getPrivateDinnerSurpriseModal();
   if (!modal || modal.hasAttribute("hidden")) return;
   modal.setAttribute("hidden", "");
   modal.setAttribute("aria-hidden", "true");
@@ -559,12 +633,25 @@ function bindUIEvents() {
       openSaturdayMenuModal();
       return;
     }
+    const openPrivateDinnerButton = event.target.closest("[data-open-private-dinner-surprise]");
+    if (openPrivateDinnerButton) {
+      openPrivateDinnerSurpriseModal();
+      return;
+    }
     const closeButton = event.target.closest("[data-close-saturday-menu]");
-    if (closeButton) closeSaturdayMenuModal();
+    if (closeButton) {
+      closeSaturdayMenuModal();
+      return;
+    }
+    const closePrivateDinnerButton = event.target.closest("[data-close-private-dinner-surprise]");
+    if (closePrivateDinnerButton) closePrivateDinnerSurpriseModal();
   });
 
   document.addEventListener("keydown", (event) => {
-    if (event.key === "Escape") closeSaturdayMenuModal();
+    if (event.key === "Escape") {
+      closeSaturdayMenuModal();
+      closePrivateDinnerSurpriseModal();
+    }
   });
 
   ["useful-phrases", "false-friends"].forEach((id) => {

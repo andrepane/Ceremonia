@@ -124,7 +124,11 @@ window.WEDDING_APP_DATA = {
         saturdayMenuDrink3: "Agua",
         saturdayMenuDrink4: "Refrescos",
         saturdayMenuDrink5: "Tinto de verano",
-        saturdayMenuDrink6: "Vermut"
+        saturdayMenuDrink6: "Vermut",
+        privateDinnerSurpriseSubtitle: "SÁBADO · 21:00/21:30",
+        privateDinnerSurpriseTitle: "Cena con chef privado",
+        privateDinnerSurpriseBlockTitle: "Sorpresa",
+        privateDinnerSurpriseText: "Esto va a ser una sorpresa: !Cotilla!"
       },
       roles: {
         bride: "Novia",
@@ -534,7 +538,12 @@ window.WEDDING_APP_DATA = {
         saturdayMenuDrink3: "Acqua",
         saturdayMenuDrink4: "Bibite",
         saturdayMenuDrink5: "Tinto de verano",
-        saturdayMenuDrink6: "Vermut"
+        saturdayMenuDrink6: "Vermut",
+        privateDinnerSurpriseSubtitle: "SABATO · 21:00/21:30",
+        privateDinnerSurpriseTitle: "Cena con chef privato",
+        privateDinnerSurpriseBlockTitle: "Sorpresa",
+        privateDinnerSurpriseTextMale: "Questa è una sorpresa: ¡Pettegolo!",
+        privateDinnerSurpriseTextFemale: "Questa è una sorpresa: ¡Pettegola!"
       },
       roles: {
         bride: "Sposa",
