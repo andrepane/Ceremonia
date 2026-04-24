@@ -1560,7 +1560,7 @@ input {
 .nav-liquid-indicator {
   position: absolute;
   top: 8px;
-  left: 8px;
+  left: 0;
   width: calc((100% - 16px - 24px) / 5);
   height: calc(100% - 16px);
   border-radius: 20px;
@@ -1617,6 +1617,7 @@ input {
     transform 360ms cubic-bezier(0.2, 0.8, 0.3, 1),
     opacity 260ms ease;
   opacity: 0.75;
+  transform-origin: center center;
 }
 
 .nav-btn__icon {

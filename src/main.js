@@ -274,8 +274,14 @@ function highlightSelectedLanguage() {
 
 function syncBottomNavIndicator(activeButton) {
   if (!refs.bottomNav || !refs.navLiquidIndicator || !activeButton) return;
-  const offsetX = activeButton.offsetLeft;
-  refs.navLiquidIndicator.style.width = `${activeButton.offsetWidth}px`;
+
+  const navRect = refs.bottomNav.getBoundingClientRect();
+  const buttonRect = activeButton.getBoundingClientRect();
+  const indicatorWidth = activeButton.offsetWidth;
+  const buttonCenterX = buttonRect.left + buttonRect.width / 2;
+  const offsetX = buttonCenterX - navRect.left - indicatorWidth / 2;
+
+  refs.navLiquidIndicator.style.width = `${indicatorWidth}px`;
   refs.navLiquidIndicator.style.transform = `translate3d(${offsetX}px, 0, 0)`;
 }
 
