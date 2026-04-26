@@ -105,7 +105,8 @@ input {
   display: flex;
   justify-content: space-between;
   gap: 12px;
-  align-items: flex-start;
+  align-items: center;
+  margin-bottom: 14px;
 }
 
 .install-onboarding__lang {
@@ -129,7 +130,7 @@ input {
 }
 
 .install-onboarding__progress {
-  margin: 0 0 14px;
+  margin: 0;
   color: var(--muted);
   font-weight: 600;
 }
@@ -172,6 +173,7 @@ input {
   background: rgba(255, 255, 255, 0.7);
   font-size: 22px;
   line-height: 1;
+  flex: 0 0 auto;
 }
 
 .install-onboarding__screen {

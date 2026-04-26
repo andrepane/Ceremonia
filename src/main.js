@@ -147,22 +147,25 @@ function initInstallOnboardingGate() {
     const text = isStepOne ? copy.screen1Text : isStepTwo ? copy.screen2Text : "";
     const steps = isStepThree ? (isIos ? copy.iosSteps : copy.androidSteps) : [];
     const finalMessage = isStepThree ? (isIos ? copy.iosFinal : copy.androidFinal) : "";
+    const progressLabel = copy.progress[onboardingState.step - 1];
 
     onboardingRoot.innerHTML = `
       <section class="install-onboarding__card install-onboarding__screen">
         <div class="install-onboarding__head">
-          <p class="install-onboarding__progress">${copy.progress[onboardingState.step - 1]}</p>
-          <div class="install-onboarding__lang" role="group" aria-label="Language">
-            <button type="button" class="install-onboarding__lang-btn ${onboardingState.lang === "es" ? "install-onboarding__lang-btn--active" : ""}" data-onboarding-lang="es">ES</button>
-            <button type="button" class="install-onboarding__lang-btn ${onboardingState.lang === "it" ? "install-onboarding__lang-btn--active" : ""}" data-onboarding-lang="it">IT</button>
-          </div>
+          ${onboardingState.step > 1 ? `<button type="button" class="install-onboarding__back" data-onboarding-back="true" aria-label="Back">←</button>` : `<p class="install-onboarding__progress">${progressLabel}</p>`}
+          ${isStepOne
+            ? `<div class="install-onboarding__lang" role="group" aria-label="Language">
+                <button type="button" class="install-onboarding__lang-btn ${onboardingState.lang === "es" ? "install-onboarding__lang-btn--active" : ""}" data-onboarding-lang="es">ES</button>
+                <button type="button" class="install-onboarding__lang-btn ${onboardingState.lang === "it" ? "install-onboarding__lang-btn--active" : ""}" data-onboarding-lang="it">IT</button>
+              </div>`
+            : `<p class="install-onboarding__progress">${progressLabel}</p>`
+          }
         </div>
         <h2 class="section-title install-onboarding__title">${title}</h2>
         ${text ? `<p class="install-onboarding__text">${text}</p>` : ""}
         ${steps.length ? `<ol class="install-onboarding__steps">${steps.map((item) => `<li>${item}</li>`).join("")}</ol>` : ""}
         ${finalMessage ? `<p class="install-onboarding__footer-note">${finalMessage}</p>` : ""}
         <div class="install-onboarding__actions">
-          ${onboardingState.step > 1 ? '<button type="button" class="install-onboarding__back" data-onboarding-back="true" aria-label="Back">←</button>' : ""}
           ${isStepOne ? `<button type="button" class="primary-btn primary-btn--full" data-onboarding-next="1">${copy.enter}</button>` : ""}
           ${isStepTwo ? `<button type="button" class="primary-btn primary-btn--full" data-onboarding-device="ios">${copy.ios}</button><button type="button" class="primary-btn primary-btn--full" data-onboarding-device="android">${copy.android}</button>` : ""}
           ${isStepThree ? `<button type="button" class="primary-btn primary-btn--full" data-onboarding-done="true">${copy.done}</button>` : ""}
