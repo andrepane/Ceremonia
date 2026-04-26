@@ -44,7 +44,7 @@ const INSTALL_ONBOARDING_COPY = {
     iosTitle: "Instalar en iPhone",
     iosSteps: [
       "Toca los 3 puntitos abajo a la derecha.",
-      "Pulsa el botón de compartir en Safari.",
+      "Pulsa el botón 'compartir'.",
       "Busca y pulsa “Añadir a pantalla de inicio”.",
       "Pulsa “Añadir”.",
       "Busca el icono de la app en tu pantalla de inicio.",
