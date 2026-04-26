@@ -1,7 +1,7 @@
 {
   "id": "./?source=pwa",
-  "name": "Boda Cintia & Andrea",
-  "short_name": "Boda C&A",
+  "name": "C&A",
+  "short_name": "C&A",
   "description": "App de boda del fin de semana del 4 al 6 de septiembre.",
   "start_url": "./",
   "scope": "./",
