@@ -43,6 +43,7 @@ const INSTALL_ONBOARDING_COPY = {
     android: "Android",
     iosTitle: "Instalar en iPhone",
     iosSteps: [
+      "Toca los 3 puntitos abajo a la derecha.",
       "Pulsa el botón de compartir en Safari.",
       "Busca y pulsa “Añadir a pantalla de inicio”.",
       "Pulsa “Añadir”.",
@@ -73,6 +74,7 @@ const INSTALL_ONBOARDING_COPY = {
     android: "Android",
     iosTitle: "Installare su iPhone",
     iosSteps: [
+      "Tocca i 3 puntini in basso a destra.",
       "Tocca il tasto condividi.",
       "Cerca e tocca “Aggiungi alla schermata Home”.",
       "Tocca “Aggiungi”.",
