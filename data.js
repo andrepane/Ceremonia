@@ -201,79 +201,79 @@ window.WEDDING_APP_DATA = {
       ],
       timeline: [
         {
-          day: "Viernes 4 · 15:00",
+          day: "VIERNES · 15:00",
           title: "Llegada",
-          text: "Llegamos sobre las 15:00 y arrancamos el fin de semana.",
+          text: "Primer paso: llegar, soltar maletas y empezar a disfrutar.",
           status: "Bienvenida",
           tone: "soft"
         },
         {
-          day: "Viernes 4 · tarde",
-          title: "Piscina, mini golf, pádel y relax",
-          text: "Tarde libre para disfrutar juntos y ponerse en modo vacaciones.",
+          day: "VIERNES · TARDE",
+          title: "Plan libre",
+          text: "Tarde libre: relax, piscina, mini golf y pádel.",
           status: "Plan libre",
           tone: "soft"
         },
         {
-          day: "Viernes 4 · 21:00",
-          title: "Pescaito frito",
-          text: "Cena informal para empezar el finde como se merece.",
+          day: "VIERNES · 21:00",
+          title: "Cena (pescaito)",
+          text: "Primera cena juntos: informal, rica y con buen ambiente.",
           status: "Comida",
           tone: "warn"
         },
         {
-          day: "Sábado 5 · 9:00–10:00",
+          day: "SÁBADO · 9:00–10:00",
           title: "Desayuno",
-          text: "Desayuno para coger energía antes del día grande.",
+          text: "Café, tostadas y arrancamos poco a poco.",
           status: "Comida",
           tone: "soft"
         },
         {
-          day: "Sábado 5 · mañana",
-          title: "Piscina, mini golf, pádel y relax",
-          text: "El resto de la mañana, plan libre para disfrutar y recargar pilas.",
+          day: "SÁBADO · MAÑANA",
+          title: "Plan libre",
+          text: "Plan libre para disfrutar sin horarios.",
           status: "Plan libre",
           tone: "soft"
         },
         {
-          day: "Sábado 5 · 14:00",
+          day: "SÁBADO · 14:00",
           title: "Almuerzo",
-          text: "Paella de marisco para compartir todos juntos.",
+          text: "Nos juntamos alrededor de una buena paella.",
           status: "Comida",
           tone: "warn"
         },
         {
-          day: "Sábado 5 · tarde",
+          day: "SÁBADO · TARDE",
           title: "Preparativos",
-          text: "Últimos detalles antes del gran momento.",
+          text: "Preparamos juntos el momento.",
           status: "Conviene ayudar",
           tone: "warn"
         },
         {
-          day: "Sábado 5 · 20:00",
+          day: "SÁBADO · 20:00",
           title: "Ceremonia",
-          text: "Puntuales y preparados: empieza el momento más importante.",
+          text: "Ahora sí: empieza lo importante.",
           status: "Momento importante",
           tone: "strong"
         },
         {
-          day: "Sábado 5 · 21:00/21:30",
-          title: "Cena con chef privado",
+          day: "SÁBADO · 21:00/21:30",
+          title: "Cena",
           text: "Después de la ceremonia, cena especial todos juntos.",
           status: "Comida",
           tone: "warn"
         },
         {
-          day: "Sábado 5 · 23:00–5:00",
+          day: "SÁBADO · 23:00–5:00",
           title: "Baile",
-          text: "Desde las 23:00 hasta las 5:00, toca celebrarlo bailando.",
+          text: "A partir de aquí… que cada uno aguante lo que pueda.",
           status: "Fiesta",
           tone: "strong"
         },
         {
-          day: "Domingo 6 · mañana",
-          title: "Desayuno y check-out",
-          text: "Último desayuno juntos y cierre del fin de semana.",
+          day: "DOMINGO · MAÑANA",
+          title: "Desayuno & despedida",
+          text: "Desayuno, despedidas y fin del plan.",
           status: "Despedida",
           tone: "soft"
         }
@@ -651,79 +651,79 @@ window.WEDDING_APP_DATA = {
       ],
       timeline: [
         {
-          day: "Venerdì 4 · 15:00",
+          day: "VENERDÌ · 15:00",
           title: "Arrivo",
-          text: "Arriviamo verso le 15:00 e iniziamo il weekend.",
+          text: "Primo passo: arrivare, lasciare le valigie e iniziare a godersela.",
           status: "Benvenuto",
           tone: "soft"
         },
         {
-          day: "Venerdì 4 · pomeriggio",
-          title: "Piscina, mini golf, padel e relax",
-          text: "Pomeriggio libero per stare insieme e rilassarsi.",
+          day: "VENERDÌ · POMERIGGIO",
+          title: "Tempo libero",
+          text: "Pomeriggio libero: relax, piscina, mini golf e padel.",
           status: "Programma libero",
           tone: "soft"
         },
         {
-          day: "Venerdì 4 · 21:00",
-          title: "Pescaito frito",
-          text: "Cena informale per aprire il weekend nel modo migliore.",
+          day: "VENERDÌ · 21:00",
+          title: "Cena (pesce fritto)",
+          text: "Prima cena insieme: informale, buona e con un bel clima.",
           status: "Pasto",
           tone: "warn"
         },
         {
-          day: "Sabato 5 · 9:00–10:00",
+          day: "SABATO · 9:00–10:00",
           title: "Colazione",
-          text: "Colazione per fare energia prima della giornata più intensa.",
+          text: "Caffè, croissant e si parte piano piano.",
           status: "Pasto",
           tone: "soft"
         },
         {
-          day: "Sabato 5 · mattina",
-          title: "Piscina, mini golf, padel e relax",
-          text: "Il resto della mattina è libero tra relax e attività.",
+          day: "SABATO · MATTINA",
+          title: "Tempo libero",
+          text: "Tempo libero per godersela senza orari.",
           status: "Programma libero",
           tone: "soft"
         },
         {
-          day: "Sabato 5 · 14:00",
+          day: "SABATO · 14:00",
           title: "Pranzo",
-          text: "Paella ai frutti di mare da condividere tutti insieme.",
+          text: "Ci sediamo attorno a un’ottima paella.",
           status: "Pasto",
           tone: "warn"
         },
         {
-          day: "Sabato 5 · pomeriggio",
+          day: "SABATO · POMERIGGIO",
           title: "Preparativi",
-          text: "Ultimi dettagli prima del grande momento.",
+          text: "Prepariamo insieme il momento.",
           status: "Meglio aiutare",
           tone: "warn"
         },
         {
-          day: "Sabato 5 · 20:00",
+          day: "SABATO · 20:00",
           title: "Cerimonia",
-          text: "Puntuali e pronti: qui inizia il momento più importante.",
+          text: "Adesso sì: inizia il momento importante.",
           status: "Momento importante",
           tone: "strong"
         },
         {
-          day: "Sabato 5 · 21:00/21:30",
-          title: "Cena con chef privato",
+          day: "SABATO · 21:00/21:30",
+          title: "Cena",
           text: "Dopo la cerimonia, cena speciale tutti insieme.",
           status: "Pasto",
           tone: "warn"
         },
         {
-          day: "Sabato 5 · 23:00–5:00",
-          title: "Ballo",
-          text: "Dalle 23:00 alle 5:00 si festeggia in pista.",
+          day: "SABATO · 23:00–5:00",
+          title: "Festa",
+          text: "Da qui in poi… vediamo chi resiste di più.",
           status: "Festa",
           tone: "strong"
         },
         {
-          day: "Domenica 6 · mattina",
-          title: "Colazione e check-out",
-          text: "Ultima colazione insieme e chiusura del weekend.",
+          day: "DOMENICA · MATTINA",
+          title: "Colazione & saluti",
+          text: "Colazione, saluti e fine del weekend.",
           status: "Saluti",
           tone: "soft"
         }
