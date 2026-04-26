@@ -19,6 +19,7 @@ import {
   startGuestDictionarySync,
   stopGuestDictionarySync
 } from "./features/dictionary-store.js";
+import { initInstallOnboarding } from "./features/install-onboarding.js";
 
 const rotatorSyncGroups = new Map();
 const SCREEN_TRANSITION_MS = 560;
@@ -1065,6 +1066,7 @@ window.addEventListener("beforeunload", () => {
   releaseGuestProfileLock(state.currentGuestId).catch(() => {});
 });
 
+initInstallOnboarding();
 bindUIEvents();
 restoreSession();
 initHeroRotator();

@@ -78,6 +78,120 @@ input {
   min-height: 100vh;
 }
 
+.app-shell--hidden {
+  display: none;
+}
+
+.install-onboarding {
+  position: fixed;
+  inset: 0;
+  z-index: 1200;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+}
+
+.install-onboarding[hidden] {
+  display: none;
+}
+
+.install-onboarding__bg {
+  position: absolute;
+  inset: 0;
+  background:
+    radial-gradient(circle at top, rgba(255, 255, 255, 0.92), transparent 30%),
+    linear-gradient(180deg, rgba(249, 244, 238, 0.96), rgba(241, 234, 223, 0.92));
+  backdrop-filter: blur(10px);
+}
+
+.install-onboarding__inner {
+  position: relative;
+  width: min(100%, 560px);
+}
+
+.install-onboarding__card {
+  position: relative;
+  border-radius: var(--radius-xl);
+  padding: 18px;
+  background: var(--glass-surface);
+  border: 1px solid var(--glass-edge);
+  box-shadow: 0 24px 54px rgba(53, 33, 22, 0.14);
+  backdrop-filter: blur(var(--glass-blur)) saturate(var(--glass-saturation));
+}
+
+.install-onboarding__card--enter {
+  animation: onboardingCardIn 360ms cubic-bezier(0.2, 0.74, 0.2, 1) both;
+}
+
+.install-onboarding__header {
+  margin-bottom: 14px;
+}
+
+.install-onboarding__progress {
+  margin: 0 0 8px;
+  font-size: 0.76rem;
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+  color: var(--muted);
+  font-weight: 700;
+}
+
+.install-onboarding__title {
+  margin: 0;
+  font-family: "Cormorant Garamond", serif;
+  font-size: clamp(1.95rem, 9vw, 2.4rem);
+  line-height: 1;
+}
+
+.install-onboarding__text {
+  margin: 10px 0 0;
+  color: var(--muted);
+  line-height: 1.55;
+}
+
+.install-onboarding__steps {
+  margin: 0;
+  padding-left: 20px;
+  display: grid;
+  gap: 10px;
+  line-height: 1.45;
+}
+
+.install-onboarding__steps li {
+  padding-left: 4px;
+}
+
+.install-onboarding__note {
+  margin: 16px 0 0;
+  padding: 12px 14px;
+  border-radius: var(--radius-md);
+  background: rgba(127, 95, 77, 0.08);
+  border: 1px solid rgba(127, 95, 77, 0.15);
+  font-weight: 600;
+  line-height: 1.45;
+}
+
+.install-onboarding__actions {
+  margin-top: 18px;
+  display: grid;
+  gap: 10px;
+}
+
+.install-onboarding__skip {
+  justify-self: center;
+  min-height: 36px;
+  padding: 0 12px;
+  font-size: 0.84rem;
+  color: var(--muted);
+  text-decoration: underline;
+  text-underline-offset: 2px;
+}
+
+.install-onboarding__back {
+  margin-bottom: 12px;
+}
+
 .screen {
   display: none;
   min-height: 100vh;
@@ -2043,6 +2157,17 @@ input {
   100% {
     transform: translateZ(30px) scale(1);
     box-shadow: 0 0 0 0 rgba(255, 255, 255, 0);
+  }
+}
+
+@keyframes onboardingCardIn {
+  0% {
+    opacity: 0;
+    transform: translate3d(0, 16px, 0);
+  }
+  100% {
+    opacity: 1;
+    transform: translate3d(0, 0, 0);
   }
 }
 

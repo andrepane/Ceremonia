@@ -30,7 +30,14 @@
   <link rel="stylesheet" href="style.css" />
 </head>
 <body>
-  <div class="app-shell">
+  <section id="install-onboarding" class="install-onboarding" aria-live="polite">
+    <div class="install-onboarding__bg"></div>
+    <div class="install-onboarding__inner">
+      <article id="install-onboarding-card" class="install-onboarding__card" role="dialog" aria-modal="true"></article>
+    </div>
+  </section>
+
+  <div class="app-shell app-shell--hidden">
 
     <!-- PANTALLA 1: IDIOMA -->
     <section id="screen-language" class="screen screen--active">
