@@ -30,6 +30,7 @@ const SATURDAY_MENU_MODAL_ID = "saturday-menu-modal";
 const SUNDAY_BREAKFAST_MENU_MODAL_ID = "sunday-breakfast-menu-modal";
 const PRIVATE_DINNER_SURPRISE_MODAL_ID = "private-dinner-surprise-modal";
 const INSTALL_ONBOARDING_COMPLETED_KEY = "install_onboarding_completed";
+const INSTALL_ONBOARDING_DONE_ANIMATION_MS = 1400;
 
 const INSTALL_ONBOARDING_COPY = {
   es: {
@@ -59,7 +60,8 @@ const INSTALL_ONBOARDING_COPY = {
       "Abre la app desde ese icono."
     ],
     androidFinal: "Abre la app desde el icono para continuar. Ya no hace falta que uses Chrome.",
-    done: "Hecho"
+    done: "Hecho",
+    finished: "Tutorial terminado"
   },
   it: {
     progress: ["Passo 1 di 3", "Passo 2 di 3", "Passo 3 di 3"],
@@ -88,7 +90,8 @@ const INSTALL_ONBOARDING_COPY = {
       "Apri l’app da quell’icona."
     ],
     androidFinal: "Apri l’app dall’icona per continuare. Non c’è più bisogno che utilizzi Chrome.",
-    done: "Fatto"
+    done: "Fatto",
+    finished: "Tutorial finito"
   }
 };
 
@@ -114,7 +117,8 @@ function initInstallOnboardingGate() {
   const onboardingRoot = document.getElementById("onboarding");
   if (!onboardingRoot) return false;
 
-  const shouldAllowAccess = isStandaloneMode();
+  const hasCompletedOnboarding = localStorage.getItem(INSTALL_ONBOARDING_COMPLETED_KEY) === "true";
+  const shouldAllowAccess = isStandaloneMode() || hasCompletedOnboarding;
   if (shouldAllowAccess) {
     setOnboardingVisibility(false);
     setAppAccessVisibility(true);
@@ -200,10 +204,16 @@ function initInstallOnboardingGate() {
     const doneButton = event.target.closest("[data-onboarding-done]");
     if (!doneButton) return;
     localStorage.setItem(INSTALL_ONBOARDING_COMPLETED_KEY, "true");
-    onboardingState.step = 3;
-    render();
-    setOnboardingVisibility(true);
-    setAppAccessVisibility(false);
+    const copy = INSTALL_ONBOARDING_COPY[onboardingState.lang];
+    onboardingRoot.innerHTML = `
+      <section class="install-onboarding__card install-onboarding__done-screen" aria-live="polite">
+        <p class="install-onboarding__done-badge">✨ ${copy.finished}</p>
+      </section>
+    `;
+    window.setTimeout(() => {
+      setOnboardingVisibility(false);
+      setAppAccessVisibility(true);
+    }, INSTALL_ONBOARDING_DONE_ANIMATION_MS);
   });
 
   render();
