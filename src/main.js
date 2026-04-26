@@ -96,10 +96,6 @@ function isStandaloneMode() {
   return window.matchMedia("(display-mode: standalone)").matches || window.navigator.standalone === true;
 }
 
-function hasCompletedInstallOnboarding() {
-  return localStorage.getItem(INSTALL_ONBOARDING_COMPLETED_KEY) === "true";
-}
-
 function setAppAccessVisibility(isVisible) {
   const appRoot = document.getElementById("app");
   if (!appRoot) return;
@@ -118,7 +114,7 @@ function initInstallOnboardingGate() {
   const onboardingRoot = document.getElementById("onboarding");
   if (!onboardingRoot) return false;
 
-  const shouldAllowAccess = isStandaloneMode() || hasCompletedInstallOnboarding();
+  const shouldAllowAccess = isStandaloneMode();
   if (shouldAllowAccess) {
     setOnboardingVisibility(false);
     setAppAccessVisibility(true);
@@ -204,8 +200,10 @@ function initInstallOnboardingGate() {
     const doneButton = event.target.closest("[data-onboarding-done]");
     if (!doneButton) return;
     localStorage.setItem(INSTALL_ONBOARDING_COMPLETED_KEY, "true");
-    setOnboardingVisibility(false);
-    setAppAccessVisibility(true);
+    onboardingState.step = 3;
+    render();
+    setOnboardingVisibility(true);
+    setAppAccessVisibility(false);
   });
 
   render();
