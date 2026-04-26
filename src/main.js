@@ -59,7 +59,8 @@ const INSTALL_ONBOARDING_COPY = {
       "Abre la app desde ese icono."
     ],
     androidFinal: "Abre la app desde el icono para continuar. Ya no hace falta que uses Chrome.",
-    done: "Hecho"
+    done: "Hecho",
+    completed: "Tutorial terminado"
   },
   it: {
     progress: ["Passo 1 di 3", "Passo 2 di 3", "Passo 3 di 3"],
@@ -88,7 +89,8 @@ const INSTALL_ONBOARDING_COPY = {
       "Apri l’app da quell’icona."
     ],
     androidFinal: "Apri l’app dall’icona per continuare. Non c’è più bisogno che utilizzi Chrome.",
-    done: "Fatto"
+    done: "Fatto",
+    completed: "Tutorial finito"
   }
 };
 
@@ -122,9 +124,26 @@ function initInstallOnboardingGate() {
   }
 
   const onboardingState = { step: 1, lang: "es", device: "ios" };
+  let completionAnimationTimeoutId = null;
+
+  const clearCompletionAnimationTimeout = () => {
+    if (!completionAnimationTimeoutId) return;
+    window.clearTimeout(completionAnimationTimeoutId);
+    completionAnimationTimeoutId = null;
+  };
 
   const render = () => {
     const copy = INSTALL_ONBOARDING_COPY[onboardingState.lang];
+    if (onboardingState.completing) {
+      onboardingRoot.innerHTML = `
+        <section class="install-onboarding__card install-onboarding__completion" aria-live="polite">
+          <p class="install-onboarding__completion-badge">✓</p>
+          <h2 class="section-title install-onboarding__completion-title">${copy.completed}</h2>
+        </section>
+      `;
+      return;
+    }
+
     const isStepOne = onboardingState.step === 1;
     const isStepTwo = onboardingState.step === 2;
     const isStepThree = onboardingState.step === 3;
@@ -200,8 +219,14 @@ function initInstallOnboardingGate() {
     const doneButton = event.target.closest("[data-onboarding-done]");
     if (!doneButton) return;
     localStorage.setItem(INSTALL_ONBOARDING_COMPLETED_KEY, "true");
-    onboardingState.step = 3;
+    clearCompletionAnimationTimeout();
+    onboardingState.completing = true;
     render();
+    completionAnimationTimeoutId = window.setTimeout(() => {
+      onboardingState.completing = false;
+      onboardingState.step = 3;
+      render();
+    }, 1900);
     setOnboardingVisibility(true);
     setAppAccessVisibility(false);
   });
