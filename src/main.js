@@ -263,14 +263,13 @@ function ensureFridayDinnerMenuModal() {
     if (sectionTitles[3]) sectionTitles[3].textContent = labels.fridayDinnerMenuDrinks || "Bebidas";
     if (itemLabels[0]) itemLabels[0].textContent = labels.fridayDinnerMenuStarter1 || "Sopa fría de melón con menta";
     if (itemLabels[1]) itemLabels[1].textContent = labels.fridayDinnerMenuMain1 || "Noche de pescadito frito con limón y hierbas aromáticas";
-    if (itemLabels[2]) itemLabels[2].textContent = labels.fridayDinnerMenuMain2 || "Pequeños pescados frescos fritos al punto, acompañados de un toque refrescante de limón y hierbas aromáticas que resaltan su sabor natural, ofreciendo una experiencia ligera y deliciosa.";
-    if (itemLabels[3]) itemLabels[3].textContent = labels.fridayDinnerMenuDessert1 || "Postre de la casa";
-    if (itemLabels[4]) itemLabels[4].textContent = labels.fridayDinnerMenuDrink1 || "Vino";
-    if (itemLabels[5]) itemLabels[5].textContent = labels.fridayDinnerMenuDrink2 || "Cerveza";
-    if (itemLabels[6]) itemLabels[6].textContent = labels.fridayDinnerMenuDrink3 || "Agua";
-    if (itemLabels[7]) itemLabels[7].textContent = labels.fridayDinnerMenuDrink4 || "Refrescos";
-    if (itemLabels[8]) itemLabels[8].textContent = labels.fridayDinnerMenuDrink5 || "Tinto de verano";
-    if (itemLabels[9]) itemLabels[9].textContent = labels.fridayDinnerMenuDrink6 || "Vermut";
+    if (itemLabels[2]) itemLabels[2].textContent = labels.fridayDinnerMenuDessert1 || "Postre de la casa";
+    if (itemLabels[3]) itemLabels[3].textContent = labels.fridayDinnerMenuDrink1 || "Vino";
+    if (itemLabels[4]) itemLabels[4].textContent = labels.fridayDinnerMenuDrink2 || "Cerveza";
+    if (itemLabels[5]) itemLabels[5].textContent = labels.fridayDinnerMenuDrink3 || "Agua";
+    if (itemLabels[6]) itemLabels[6].textContent = labels.fridayDinnerMenuDrink4 || "Refrescos";
+    if (itemLabels[7]) itemLabels[7].textContent = labels.fridayDinnerMenuDrink5 || "Tinto de verano";
+    if (itemLabels[8]) itemLabels[8].textContent = labels.fridayDinnerMenuDrink6 || "Vermut";
     return existingModal;
   }
 
@@ -296,7 +295,6 @@ function ensureFridayDinnerMenuModal() {
           <h4 class="menu-modal__block-title"><span aria-hidden="true">🍤</span> <span class="menu-modal__block-title-text">${labels.fridayDinnerMenuMain || "Plato principal"}</span></h4>
           <ul class="menu-modal__list">
             <li><span class="menu-modal__item-text">${labels.fridayDinnerMenuMain1 || "Noche de pescadito frito con limón y hierbas aromáticas"}</span></li>
-            <li><span class="menu-modal__item-text">${labels.fridayDinnerMenuMain2 || "Pequeños pescados frescos fritos al punto, acompañados de un toque refrescante de limón y hierbas aromáticas que resaltan su sabor natural, ofreciendo una experiencia ligera y deliciosa."}</span></li>
           </ul>
         </article>
         <article class="menu-modal__block">
