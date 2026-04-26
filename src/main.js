@@ -73,7 +73,7 @@ const INSTALL_ONBOARDING_COPY = {
     android: "Android",
     iosTitle: "Installare su iPhone",
     iosSteps: [
-      "Tocca il pulsante di condivisione in Safari.",
+      "Tocca il tasto condividi.",
       "Cerca e tocca “Aggiungi alla schermata Home”.",
       "Tocca “Aggiungi”.",
       "Cerca l’icona dell’app nella schermata Home.",
