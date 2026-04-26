@@ -13,6 +13,7 @@ import { handleSpeakTranslation, handleTranslatorRequest } from "./features/tran
 import { handlePhotoGridClick, handleUploadPhoto } from "./features/photos.js";
 import { renderTimeline, updateCountdown } from "./features/timeline.js";
 import { initFirebaseListeners } from "./integrations/firebase-sync.js";
+import { startOnboarding } from "./features/onboarding.js";
 import {
   renderCurrentTranslationForGuest,
   restoreDictionaryCache,
@@ -1065,18 +1066,24 @@ window.addEventListener("beforeunload", () => {
   releaseGuestProfileLock(state.currentGuestId).catch(() => {});
 });
 
-bindUIEvents();
-restoreSession();
-initHeroRotator();
-initHeroDateRotator();
-activateView("home");
-window.addEventListener("resize", () => {
-  const activeButton = document.querySelector(".nav-btn--active");
-  if (activeButton) syncBottomNavIndicator(activeButton);
+function initApp() {
+  bindUIEvents();
+  restoreSession();
+  initHeroRotator();
+  initHeroDateRotator();
+  activateView("home");
+  window.addEventListener("resize", () => {
+    const activeButton = document.querySelector(".nav-btn--active");
+    if (activeButton) syncBottomNavIndicator(activeButton);
+  });
+  updateCountdown();
+  setInterval(updateCountdown, 1000);
+  initFirebaseListeners(() => showScreen(refs.screenGuest));
+}
+
+startOnboarding({
+  onComplete: initApp
 });
-updateCountdown();
-setInterval(updateCountdown, 1000);
-initFirebaseListeners(() => showScreen(refs.screenGuest));
 
 if ("serviceWorker" in navigator) {
   window.addEventListener("load", () => {
