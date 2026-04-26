@@ -39,28 +39,26 @@ const INSTALL_ONBOARDING_COPY = {
     enter: "Entrar",
     screen2Title: "¿Qué móvil estás usando?",
     screen2Text: "Elige tu dispositivo para ver los pasos.",
-    ios: "iPhone / iPad",
+    ios: "iPhone",
     android: "Android",
     iosTitle: "Instalar en iPhone",
     iosSteps: [
       "Pulsa el botón de compartir en Safari.",
       "Busca y pulsa “Añadir a pantalla de inicio”.",
       "Pulsa “Añadir”.",
-      "Cierra Safari completamente.",
       "Busca el icono de la app en tu pantalla de inicio.",
       "Abre la app desde ese icono."
     ],
-    iosFinal: "Abre la app desde el icono para continuar. No uses Safari.",
+    iosFinal: "Abre la app desde el icono para continuar. Ya no hace falta que uses Safari.",
     androidTitle: "Instalar en Android",
     androidSteps: [
       "Pulsa el menú de los tres puntos en Chrome.",
       "Pulsa “Instalar app” o “Añadir a pantalla de inicio”.",
       "Confirma pulsando “Instalar”.",
-      "Cierra Google Chrome.",
       "Busca el icono de la app en tu pantalla de inicio o menú de apps.",
       "Abre la app desde ese icono."
     ],
-    androidFinal: "Abre la app desde el icono para continuar. No uses Chrome.",
+    androidFinal: "Abre la app desde el icono para continuar. Ya no hace falta que uses Chrome.",
     done: "Hecho"
   },
   it: {
@@ -70,28 +68,26 @@ const INSTALL_ONBOARDING_COPY = {
     enter: "Entra",
     screen2Title: "Che telefono stai usando?",
     screen2Text: "Scegli il tuo dispositivo per vedere i passaggi.",
-    ios: "iPhone / iPad",
+    ios: "iPhone",
     android: "Android",
     iosTitle: "Installare su iPhone",
     iosSteps: [
       "Tocca il pulsante di condivisione in Safari.",
       "Cerca e tocca “Aggiungi alla schermata Home”.",
       "Tocca “Aggiungi”.",
-      "Chiudi completamente Safari.",
       "Cerca l’icona dell’app nella schermata Home.",
       "Apri l’app da quell’icona."
     ],
-    iosFinal: "Apri l’app dall’icona per continuare. Non usare Safari.",
+    iosFinal: "Apri l’app dall’icona per continuare. Non c’è più bisogno che utilizzi Safari.",
     androidTitle: "Installare su Android",
     androidSteps: [
       "Tocca il menu con i tre puntini in Chrome.",
       "Tocca “Installa app” o “Aggiungi alla schermata Home”.",
       "Conferma toccando “Installa”.",
-      "Chiudi Google Chrome.",
       "Cerca l’icona dell’app nella schermata Home o nel menu app.",
       "Apri l’app da quell’icona."
     ],
-    androidFinal: "Apri l’app dall’icona per continuare. Non usare Chrome.",
+    androidFinal: "Apri l’app dall’icona per continuare. Non c’è più bisogno che utilizzi Chrome.",
     done: "Fatto"
   }
 };
