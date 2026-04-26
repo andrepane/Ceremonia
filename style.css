@@ -78,6 +78,115 @@ input {
   min-height: 100vh;
 }
 
+#app[hidden],
+#onboarding[hidden] {
+  display: none !important;
+}
+
+.install-onboarding {
+  min-height: 100vh;
+  display: grid;
+  place-items: center;
+  padding: max(20px, env(safe-area-inset-top, 0px) + 10px) 16px max(24px, env(safe-area-inset-bottom, 0px) + 14px);
+}
+
+.install-onboarding__card {
+  width: min(100%, 520px);
+  border-radius: var(--radius-xl);
+  border: 1px solid var(--glass-edge);
+  background: var(--glass-surface);
+  box-shadow: var(--shadow);
+  backdrop-filter: blur(var(--glass-blur)) saturate(var(--glass-saturation));
+  -webkit-backdrop-filter: blur(var(--glass-blur)) saturate(var(--glass-saturation));
+  padding: 24px;
+}
+
+.install-onboarding__head {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  align-items: flex-start;
+}
+
+.install-onboarding__lang {
+  display: inline-flex;
+  border-radius: 999px;
+  border: 1px solid var(--line);
+  background: rgba(255, 255, 255, 0.64);
+  padding: 4px;
+}
+
+.install-onboarding__lang-btn {
+  min-width: 44px;
+  padding: 6px 10px;
+  border-radius: 999px;
+  font-weight: 600;
+}
+
+.install-onboarding__lang-btn--active {
+  background: var(--accent);
+  color: #fff;
+}
+
+.install-onboarding__progress {
+  margin: 0 0 14px;
+  color: var(--muted);
+  font-weight: 600;
+}
+
+.install-onboarding__title {
+  margin: 0 0 10px;
+  font-size: clamp(2rem, 8vw, 2.5rem);
+  line-height: 1.05;
+}
+
+.install-onboarding__text {
+  margin: 0 0 18px;
+  color: var(--muted);
+  line-height: 1.5;
+}
+
+.install-onboarding__steps {
+  margin: 0 0 16px;
+  padding-left: 18px;
+  display: grid;
+  gap: 8px;
+}
+
+.install-onboarding__footer-note {
+  margin: 0 0 20px;
+  font-weight: 600;
+  color: var(--accent-strong);
+}
+
+.install-onboarding__actions {
+  display: grid;
+  gap: 10px;
+}
+
+.install-onboarding__back {
+  width: 42px;
+  height: 42px;
+  border-radius: 999px;
+  border: 1px solid var(--line);
+  background: rgba(255, 255, 255, 0.7);
+  font-size: 22px;
+  line-height: 1;
+}
+
+.install-onboarding__screen {
+  opacity: 0;
+  transform: translateY(8px);
+  animation: onboardingFadeIn 340ms ease forwards;
+}
+
+@keyframes onboardingFadeIn {
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
 .screen {
   display: none;
   min-height: 100vh;
