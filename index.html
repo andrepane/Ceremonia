@@ -30,7 +30,10 @@
   <link rel="stylesheet" href="style.css" />
 </head>
 <body>
-  <div class="app-shell">
+  <div id="onboarding" hidden></div>
+
+  <div id="app" hidden aria-hidden="true">
+    <div class="app-shell">
 
     <!-- PANTALLA 1: IDIOMA -->
     <section id="screen-language" class="screen screen--active">
@@ -283,9 +286,10 @@
         </nav>
       </div>
     </section>
+    </div>
   </div>
 
   <script src="data.js"></script>
-  <script type="module" src="src/main.js"></script>
+  <script type="module" src="src/onboarding.js"></script>
 </body>
 </html>
