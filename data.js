@@ -719,7 +719,7 @@ window.WEDDING_APP_DATA = {
           tone: "strong"
         },
         {
-          day: "DOMENICA · MATTINA",
+          day: "DOMENICA · 9:00-10:00",
           title: "Colazione",
           text: "Colazione, saluti e fine del weekend.",
           status: "Saluti",
