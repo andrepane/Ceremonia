@@ -333,6 +333,7 @@ async function uploadPhoto({ file, thumbnailFile, width, height, guestId, upload
     uploadId: safeUploadId,
     authorGuestId: guestId,
     authorUid: user.uid,
+    createdAt: existingPhoto?.createdAt || serverTimestamp(),
     likesCount: Number(existingPhoto?.likesCount) || 0,
     likedByGuestIds: Array.isArray(existingPhoto?.likedByGuestIds) ? existingPhoto.likedByGuestIds : [],
     uploadState: "uploading",

@@ -228,8 +228,11 @@ export function renderPhotos() {
 
   container.innerHTML = state.realtimePhotos.map((photo) => {
     const previewUrl = photo.processedThumbnailURL || photo.thumbnailURL || photo.processedDownloadURL || photo.downloadURL;
-    const fullUrl = photo.processedDownloadURL || photo.downloadURL;
-    return `<article class="photo-card"><img src="${previewUrl}" data-photo-open="${fullUrl}" alt="photo" class="photo-img" loading="lazy" /><div class="photo-meta"><div class="photo-actions"><button type="button" class="photo-like-btn ${photo.likedByGuestIds?.includes(state.currentGuestId) ? "photo-like-btn--liked" : ""}" data-photo-like="${photo.id}" aria-pressed="${photo.likedByGuestIds?.includes(state.currentGuestId) ? "true" : "false"}"><span class="photo-like-btn__icon">${photo.likedByGuestIds?.includes(state.currentGuestId) ? "♥" : "♡"}</span><span>${photo.likesCount || 0}</span></button>${photo.authorUid === state.authUid ? `<button type="button" class="photo-delete-btn" data-photo-delete="${photo.id}" aria-label="${copy.deletePhoto}" title="${copy.deletePhoto}">🗑</button>` : ""}</div></div></article>`;
+    const fullUrl = photo.processedDownloadURL || photo.downloadURL || previewUrl || "";
+    const imageMarkup = previewUrl
+      ? `<img src="${previewUrl}" data-photo-open="${fullUrl}" alt="photo" class="photo-img ${photo.downloadURL ? "" : "photo-img--preview-only"}" loading="lazy" />`
+      : `<div class="photo-placeholder">Subiendo...</div>`;
+    return `<article class="photo-card">${imageMarkup}<div class="photo-meta"><div class="photo-actions"><button type="button" class="photo-like-btn ${photo.likedByGuestIds?.includes(state.currentGuestId) ? "photo-like-btn--liked" : ""}" data-photo-like="${photo.id}" aria-pressed="${photo.likedByGuestIds?.includes(state.currentGuestId) ? "true" : "false"}"><span class="photo-like-btn__icon">${photo.likedByGuestIds?.includes(state.currentGuestId) ? "♥" : "♡"}</span><span>${photo.likesCount || 0}</span></button>${photo.authorUid === state.authUid ? `<button type="button" class="photo-delete-btn" data-photo-delete="${photo.id}" aria-label="${copy.deletePhoto}" title="${copy.deletePhoto}">🗑</button>` : ""}</div></div></article>`;
   }).join("");
 }
 
