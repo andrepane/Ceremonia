@@ -8,7 +8,7 @@ window.WEDDING_APP_DATA = {
     messagingSenderId: "146753464023",
     appId: "1:146753464023:web:2decc6675f39eebb51b292"
   },
-  ceremonyDate: "2026-09-05T20:00:00",
+  ceremonyDate: "2026-09-05T20:30:00",
   guests: [
     { id: "cintia_novia", name: "Cintia", avatar: "C", avatarImage: "images/cintia.png", roleKey: "bride", sex: "f" },
     { id: "andrea_novio", name: "Andrea", avatar: "A", avatarImage: "images/andrea.png", roleKey: "groom", sex: "m" },
@@ -66,7 +66,7 @@ window.WEDDING_APP_DATA = {
         hello: "Qué alegría verte",
         changeProfile: "Salir a perfiles",
         countdownLabel: "Cuenta atrás para la ceremonia",
-        countdownHint: "Sábado 5 · 20:00 · A esa hora empieza la ceremonia.",
+        countdownHint: "Sábado 5 · 20:30 · A esa hora empieza la ceremonia.",
         guideHeaderTitle: "Paso a paso",
         guideHeaderSubtitle: "El plan del fin de semana",
         dictionaryHeaderTitle: "Italiano de emergencia",
@@ -190,7 +190,7 @@ window.WEDDING_APP_DATA = {
         {
           label: "Próximo momento importante",
           title: "Ceremonia",
-          text: "Sábado 5 de septiembre a las 20:00. Ese es el momento final de la cuenta atrás."
+          text: "Sábado 5 de septiembre a las 20:30. Ese es el momento final de la cuenta atrás."
         },
         {
           label: "Comidas del finde",
@@ -517,7 +517,7 @@ window.WEDDING_APP_DATA = {
         hello: "Che bello vederti",
         changeProfile: "Esci ai profili",
         countdownLabel: "Conto alla rovescia per la cerimonia",
-        countdownHint: "Sabato 5 · 20:00 · A quell'ora inizia la cerimonia.",
+        countdownHint: "Sabato 5 · 20:30 · A quell'ora inizia la cerimonia.",
         guideHeaderTitle: "Passo dopo passo",
         guideHeaderSubtitle: "Il programma del fine settimana",
         dictionaryHeaderTitle: "Spagnolo di emergenza",
@@ -639,7 +639,7 @@ window.WEDDING_APP_DATA = {
         {
           label: "Prossimo momento importante",
           title: "Cerimonia",
-          text: "Sabato 5 settembre alle 20:00. Questo è il momento finale del conto alla rovescia."
+          text: "Sabato 5 settembre alle 20:30. Questo è il momento finale del conto alla rovescia."
         },
         {
           label: "Pasti del weekend",
