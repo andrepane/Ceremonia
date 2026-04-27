@@ -11,13 +11,13 @@
   "lang": "es",
   "icons": [
     {
-      "src": "icon-192.png?v=3",
+      "src": "icon-192.png?v=4",
       "sizes": "1254x1254",
       "type": "image/png",
       "purpose": "any maskable"
     },
     {
-      "src": "icon-512.png?v=3",
+      "src": "icon-512.png?v=4",
       "sizes": "1254x1254",
       "type": "image/png",
       "purpose": "any maskable"
