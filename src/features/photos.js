@@ -1,80 +1,6 @@
-import { deletePhoto, togglePhotoLike, uploadPhoto } from "../../firebase.js";
+import { deletePhoto, togglePhotoLike } from "../../firebase.js";
+import { enqueuePhotoUpload } from "./photo-upload-queue.js";
 import { refs, state, getHomeCopy } from "../state.js";
-
-const MOBILE_UPLOAD_PRESETS = {
-  large: { maxEdge: 1920, quality: 0.84 },
-  thumb: { maxEdge: 480, quality: 0.74 }
-};
-
-function buildProcessedFileName(fileName = "", suffix = "") {
-  const base = fileName.includes(".") ? fileName.slice(0, fileName.lastIndexOf(".")) : fileName || "photo";
-  const safeBase = base.replace(/[^a-zA-Z0-9_-]/g, "_").slice(0, 40) || "photo";
-  return `${safeBase}${suffix}.jpg`;
-}
-
-function getResizedDimensions(width, height, maxEdge) {
-  if (!width || !height) return { width: maxEdge, height: maxEdge };
-  const longest = Math.max(width, height);
-  if (longest <= maxEdge) return { width, height };
-  const ratio = maxEdge / longest;
-  return {
-    width: Math.max(1, Math.round(width * ratio)),
-    height: Math.max(1, Math.round(height * ratio))
-  };
-}
-
-async function loadImageElement(file) {
-  const objectUrl = URL.createObjectURL(file);
-  try {
-    const image = await new Promise((resolve, reject) => {
-      const img = new Image();
-      img.onload = () => resolve(img);
-      img.onerror = () => reject(new Error("image_load_failed"));
-      img.src = objectUrl;
-    });
-    return image;
-  } finally {
-    URL.revokeObjectURL(objectUrl);
-  }
-}
-
-async function renderResizedBlob(file, { maxEdge, quality }) {
-  const image = await loadImageElement(file);
-  const target = getResizedDimensions(image.naturalWidth, image.naturalHeight, maxEdge);
-  const canvas = document.createElement("canvas");
-  canvas.width = target.width;
-  canvas.height = target.height;
-  const ctx = canvas.getContext("2d", { alpha: false });
-  if (!ctx) throw new Error("canvas_not_supported");
-  ctx.drawImage(image, 0, 0, target.width, target.height);
-  const blob = await new Promise((resolve, reject) => {
-    canvas.toBlob((result) => {
-      if (result) {
-        resolve(result);
-      } else {
-        reject(new Error("image_encode_failed"));
-      }
-    }, "image/jpeg", quality);
-  });
-  return {
-    blob,
-    width: target.width,
-    height: target.height
-  };
-}
-
-async function buildPhotoVariants(file) {
-  const [largeVersion, thumbVersion] = await Promise.all([
-    renderResizedBlob(file, MOBILE_UPLOAD_PRESETS.large),
-    renderResizedBlob(file, MOBILE_UPLOAD_PRESETS.thumb)
-  ]);
-  return {
-    largeFile: new File([largeVersion.blob], buildProcessedFileName(file.name), { type: "image/jpeg" }),
-    thumbFile: new File([thumbVersion.blob], buildProcessedFileName(file.name, "_thumb"), { type: "image/jpeg" }),
-    width: largeVersion.width,
-    height: largeVersion.height
-  };
-}
 
 let photoViewerEl = null;
 
@@ -132,23 +58,20 @@ export async function handleUploadPhoto() {
       return;
     }
 
-    const original = refs.uploadPhotoBtn.textContent;
+    const labelEl = refs.uploadPhotoBtnLabel || refs.uploadPhotoBtn;
+    const original = labelEl.textContent;
     refs.uploadPhotoBtn.disabled = true;
-    refs.uploadPhotoBtn.textContent = getHomeCopy().uploadLoading;
+    labelEl.textContent = getHomeCopy().uploadLoading;
     try {
-      const optimizedPhotos = await buildPhotoVariants(file);
-      await uploadPhoto({
-        file: optimizedPhotos.largeFile,
-        thumbnailFile: optimizedPhotos.thumbFile,
-        width: optimizedPhotos.width,
-        height: optimizedPhotos.height,
+      await enqueuePhotoUpload({
+        file,
         guestId: state.currentGuestId
       });
     } catch {
       alert(getHomeCopy().uploadError);
     } finally {
       refs.uploadPhotoBtn.disabled = false;
-      refs.uploadPhotoBtn.textContent = original;
+      labelEl.textContent = original;
     }
   };
   input.click();

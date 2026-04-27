@@ -39,18 +39,62 @@ service cloud.firestore {
         allow create: if isAuth()
           && request.resource.data.authorUid == request.auth.uid
           && request.resource.data.authorGuestId is string
-          && request.resource.data.downloadURL is string
           && request.resource.data.storagePath is string
-          && request.resource.data.likesCount == 0;
-        allow update: if isAuth()
-          && request.resource.data.diff(resource.data).changedKeys().hasOnly(['likesCount', 'likedByGuestIds'])
-          && request.resource.data.likesCount is int
-          && request.resource.data.likesCount >= 0
-          && request.resource.data.likesCount <= resource.data.likesCount + 1
-          && request.resource.data.likesCount >= resource.data.likesCount - 1
+          && request.resource.data.uploadState in ['uploading', 'ready']
           && (
-            !request.resource.data.keys().hasAny(['likedByGuestIds'])
-            || request.resource.data.likedByGuestIds is list
+            !request.resource.data.keys().hasAny(['downloadURL'])
+            || request.resource.data.downloadURL is string
+          )
+          && (
+            !request.resource.data.keys().hasAny(['thumbnailURL'])
+            || request.resource.data.thumbnailURL is string
+          )
+          && (
+            !request.resource.data.keys().hasAny(['thumbnailPath'])
+            || request.resource.data.thumbnailPath is string
+          )
+          && (
+            !request.resource.data.keys().hasAny(['uploadId'])
+            || request.resource.data.uploadId is string
+          )
+          && (
+            !request.resource.data.keys().hasAny(['uploadPhase'])
+            || request.resource.data.uploadPhase is string
+          )
+          && request.resource.data.likesCount == 0;
+        allow update: if isAuth() && (
+            (
+              resource.data.authorUid == request.auth.uid
+              && request.resource.data.authorUid == request.auth.uid
+              && request.resource.data.authorGuestId == resource.data.authorGuestId
+              && request.resource.data.storagePath == resource.data.storagePath
+              && (
+                !request.resource.data.keys().hasAny(['thumbnailPath'])
+                || request.resource.data.thumbnailPath is string
+                || request.resource.data.thumbnailPath == null
+              )
+              && (
+                !request.resource.data.keys().hasAny(['downloadURL'])
+                || request.resource.data.downloadURL is string
+              )
+              && (
+                !request.resource.data.keys().hasAny(['thumbnailURL'])
+                || request.resource.data.thumbnailURL is string
+              )
+              && request.resource.data.uploadState in ['uploading', 'ready']
+            )
+            ||
+            (
+              request.resource.data.diff(resource.data).changedKeys().hasOnly(['likesCount', 'likedByGuestIds'])
+              && request.resource.data.likesCount is int
+              && request.resource.data.likesCount >= 0
+              && request.resource.data.likesCount <= resource.data.likesCount + 1
+              && request.resource.data.likesCount >= resource.data.likesCount - 1
+              && (
+                !request.resource.data.keys().hasAny(['likedByGuestIds'])
+                || request.resource.data.likedByGuestIds is list
+              )
+            )
           );
         allow delete: if isAuth() && resource.data.authorUid == request.auth.uid;
 
