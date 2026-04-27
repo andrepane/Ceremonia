@@ -357,10 +357,9 @@ function ensureSaturdayBreakfastMenuModal() {
     if (closeButton) closeButton.setAttribute("aria-label", labels.closeMenuBtn || "Cerrar menú");
     if (subtitle) subtitle.textContent = labels.saturdayBreakfastMenuSubtitle || "SÁBADO · 09:00–11:00";
     if (title) title.textContent = labels.breakfastMenuTitle || "Desayuno";
-    if (sectionTitles[0]) sectionTitles[0].textContent = labels.breakfastMenuIntroTitle || "Para empezar el día con calma";
-    if (sectionTitles[1]) sectionTitles[1].textContent = labels.breakfastMenuToastsTitle || "Tostadas a elegir";
-    if (sectionTitles[2]) sectionTitles[2].textContent = labels.breakfastMenuSweetTitle || "Dulce";
-    if (sectionTitles[3]) sectionTitles[3].textContent = labels.breakfastMenuDrinksTitle || "Para acompañar";
+    if (sectionTitles[0]) sectionTitles[0].textContent = labels.breakfastMenuToastsTitle || "Tostadas a elegir";
+    if (sectionTitles[1]) sectionTitles[1].textContent = labels.breakfastMenuSweetTitle || "Dulce";
+    if (sectionTitles[2]) sectionTitles[2].textContent = labels.breakfastMenuDrinksTitle || "Para acompañar";
     if (itemLabels[0]) itemLabels[0].textContent = labels.breakfastMenuToast1 || "Tomate";
     if (itemLabels[1]) itemLabels[1].textContent = labels.breakfastMenuToast2 || "Tomate y jamón";
     if (itemLabels[2]) itemLabels[2].textContent = labels.breakfastMenuToast3 || "Aguacate y tomate";
@@ -388,9 +387,6 @@ function ensureSaturdayBreakfastMenuModal() {
       <p class="menu-modal__subtitle">${labels.saturdayBreakfastMenuSubtitle || "SÁBADO · 09:00–11:00"}</p>
       <h3 id="saturday-breakfast-menu-title" class="menu-modal__title">${labels.breakfastMenuTitle || "Desayuno"}</h3>
       <div class="menu-modal__blocks">
-        <article class="menu-modal__block">
-          <h4 class="menu-modal__block-title"><span aria-hidden="true">🌞</span> <span class="menu-modal__block-title-text">${labels.breakfastMenuIntroTitle || "Para empezar el día con calma"}</span></h4>
-        </article>
         <article class="menu-modal__block">
           <h4 class="menu-modal__block-title"><span aria-hidden="true">🍞</span> <span class="menu-modal__block-title-text">${labels.breakfastMenuToastsTitle || "Tostadas a elegir"}</span></h4>
           <ul class="menu-modal__list">
@@ -571,10 +567,9 @@ function ensureSundayBreakfastMenuModal() {
     if (closeButton) closeButton.setAttribute("aria-label", labels.closeMenuBtn || "Cerrar menú");
     if (subtitle) subtitle.textContent = labels.sundayBreakfastMenuSubtitle || "DOMINGO · 09:00–11:00";
     if (title) title.textContent = labels.breakfastMenuTitle || "Desayuno";
-    if (sectionTitles[0]) sectionTitles[0].textContent = labels.breakfastMenuIntroTitle || "Para empezar el día con calma";
-    if (sectionTitles[1]) sectionTitles[1].textContent = labels.breakfastMenuToastsTitle || "Tostadas a elegir";
-    if (sectionTitles[2]) sectionTitles[2].textContent = labels.breakfastMenuSweetTitle || "Dulce";
-    if (sectionTitles[3]) sectionTitles[3].textContent = labels.breakfastMenuDrinksTitle || "Para acompañar";
+    if (sectionTitles[0]) sectionTitles[0].textContent = labels.breakfastMenuToastsTitle || "Tostadas a elegir";
+    if (sectionTitles[1]) sectionTitles[1].textContent = labels.breakfastMenuSweetTitle || "Dulce";
+    if (sectionTitles[2]) sectionTitles[2].textContent = labels.breakfastMenuDrinksTitle || "Para acompañar";
     if (itemLabels[0]) itemLabels[0].textContent = labels.breakfastMenuToast1 || "Tomate";
     if (itemLabels[1]) itemLabels[1].textContent = labels.breakfastMenuToast2 || "Tomate y jamón";
     if (itemLabels[2]) itemLabels[2].textContent = labels.breakfastMenuToast3 || "Aguacate y tomate";
@@ -602,9 +597,6 @@ function ensureSundayBreakfastMenuModal() {
       <p class="menu-modal__subtitle">${labels.sundayBreakfastMenuSubtitle || "DOMINGO · 09:00–11:00"}</p>
       <h3 id="sunday-breakfast-menu-title" class="menu-modal__title">${labels.breakfastMenuTitle || "Desayuno"}</h3>
       <div class="menu-modal__blocks">
-        <article class="menu-modal__block">
-          <h4 class="menu-modal__block-title"><span aria-hidden="true">🌞</span> <span class="menu-modal__block-title-text">${labels.breakfastMenuIntroTitle || "Para empezar el día con calma"}</span></h4>
-        </article>
         <article class="menu-modal__block">
           <h4 class="menu-modal__block-title"><span aria-hidden="true">🍞</span> <span class="menu-modal__block-title-text">${labels.breakfastMenuToastsTitle || "Tostadas a elegir"}</span></h4>
           <ul class="menu-modal__list">
