@@ -270,7 +270,7 @@ window.WEDDING_APP_DATA = {
           tone: "strong"
         },
         {
-          day: "DOMINGO · MAÑANA",
+          day: "DOMINGO · 9:00-10:00",
           title: "Desayuno",
           text: "Desayuno, despedidas y fin del plan.",
           status: "Despedida",
