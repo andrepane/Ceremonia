@@ -657,7 +657,7 @@ window.WEDDING_APP_DATA = {
         },
         {
           day: "VENERDÌ · POMERIGGIO",
-          title: "Tempo libero",
+          title: "Momento libero",
           text: "Pomeriggio libero: relax, piscina, mini golf e padel.",
           status: "Riposo",
           tone: "soft"
@@ -678,7 +678,7 @@ window.WEDDING_APP_DATA = {
         },
         {
           day: "SABATO · MATTINA",
-          title: "Tempo libero",
+          title: "Momento libero",
           text: "Tempo libero per godersela senza orari.",
           status: "Riposo",
           tone: "soft"
