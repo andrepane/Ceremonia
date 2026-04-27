@@ -223,7 +223,7 @@ export function startPhotoUploadQueue() {
 
 const MOBILE_UPLOAD_PRESETS = {
   large: { maxEdge: 1920, quality: 0.84 },
-  thumb: { maxEdge: 480, quality: 0.74 }
+  thumb: { maxEdge: 320, quality: 0.58 }
 };
 
 function buildProcessedFileName(fileName = "", suffix = "") {
