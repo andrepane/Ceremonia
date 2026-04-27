@@ -220,13 +220,13 @@ export const HOME_DASHBOARD_COPY = {
         "Manca pochissimo: stiamo ultimando i preparativi.",
         "Stiamo scaldando i motori per un weekend indimenticabile.",
         "Modalità preparazione attivata: il grande momento si avvicina.",
-        "Arriva un fine settimana davvero speciale… quasi ci siamo!",
+        "Arriva un fine settimana davvero speciale… ci siamo quasi!",
         "Ogni dettaglio conta: siamo agli ultimi preparativi."
       ],
       live: [
-        "Siamo nel pieno del weekend di matrimonio: viviamocelo!",
+        "Siamo nel pieno delle nozze: viviamocelo!",
         "È arrivato il momento: godiamoci, condividiamo e festeggiamo.",
-        "Benvenuti nel cuore del fine settimana di matrimonio.",
+        "Benvenuti nel cuore del fine settimana.",
         "Adesso sì: siamo dentro il grande weekend.",
         "Tutto è in movimento: seguite il ritmo e godetevelo insieme."
       ]
