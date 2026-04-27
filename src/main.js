@@ -11,6 +11,7 @@ import { applyTranslations } from "./ui/translations.js";
 import { handleUsefulPhraseSpeakClick, renderAllDynamicSections, renderDictionary, renderGuestCards, renderHomeDashboard, updateAppHeaderForView, updateGuestHeaderMessage, updateProfileAvatar, updateWelcomeLabel } from "./ui/render.js";
 import { handleSpeakTranslation, handleTranslatorRequest } from "./features/translator.js";
 import { handlePhotoGridClick, handleUploadPhoto } from "./features/photos.js";
+import { startPhotoUploadQueue } from "./features/photo-upload-queue.js";
 import { renderTimeline, updateCountdown } from "./features/timeline.js";
 import { initFirebaseListeners } from "./integrations/firebase-sync.js";
 import {
@@ -1267,6 +1268,7 @@ window.addEventListener("beforeunload", () => {
 const isInstallGateBlocking = initInstallOnboardingGate();
 
 bindUIEvents();
+startPhotoUploadQueue();
 restoreSession();
 initHeroRotator();
 initHeroDateRotator();

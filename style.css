@@ -2262,3 +2262,11 @@ input {
 /* .guest-avatar {
   background: transparent !important;
 } */
+
+.upload-photo-progress {
+  margin: 10px 0 0;
+  min-height: 1.25rem;
+  font-size: 0.86rem;
+  color: var(--muted);
+  text-align: center;
+}

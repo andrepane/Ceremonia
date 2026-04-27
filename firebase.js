@@ -19,7 +19,7 @@ import {
 import {
   getStorage,
   ref,
-  uploadBytes,
+  uploadBytesResumable,
   getDownloadURL,
   deleteObject
 } from "https://www.gstatic.com/firebasejs/10.12.5/firebase-storage.js";
@@ -288,41 +288,120 @@ async function emitActivity(type, guestId, metadata = {}) {
   });
 }
 
-async function uploadPhoto({ file, thumbnailFile, width, height, guestId }) {
+function uploadFileResumable(storageRef, file, onProgress) {
+  return new Promise((resolve, reject) => {
+    const task = uploadBytesResumable(storageRef, file, {
+      contentType: file.type || "image/jpeg"
+    });
+
+    task.on(
+      "state_changed",
+      (snapshot) => {
+        if (typeof onProgress !== "function") return;
+        const progress = snapshot.totalBytes > 0
+          ? snapshot.bytesTransferred / snapshot.totalBytes
+          : 0;
+        onProgress(progress);
+      },
+      reject,
+      () => resolve(task.snapshot)
+    );
+  });
+}
+
+async function uploadPhoto({ file, thumbnailFile, width, height, guestId, uploadId, onProgress }) {
   const user = await ensureAuth();
   if (!db || !storage || !user) throw new Error("auth_required");
+  if (!guestId) throw new Error("guest_required");
+  const safeUploadId = String(uploadId || `${Date.now()}_${user.uid}`).replace(/[^a-zA-Z0-9_-]/g, "_");
+  const photoRef = eventDoc("photos", safeUploadId);
+  const existingPhotoSnap = await getDoc(photoRef);
+  const existingPhoto = existingPhotoSnap.exists() ? existingPhotoSnap.data() : null;
+
+  if (existingPhoto?.uploadState === "ready" && existingPhoto.downloadURL && existingPhoto.thumbnailURL) {
+    return safeUploadId;
+  }
 
   const ext = file.name.includes(".") ? file.name.split(".").pop() : "jpg";
   const safeExt = ext.toLowerCase().replace(/[^a-z0-9]/g, "") || "jpg";
-  const baseName = `${Date.now()}_${user.uid}`;
+  const baseName = `${safeUploadId}_${user.uid}`;
   const path = `events/${eventId}/photos/${baseName}.${safeExt}`;
   const thumbPath = `events/${eventId}/photos/${baseName}_thumb.jpg`;
 
-  const storageRef = ref(storage, path);
-  await uploadBytes(storageRef, file, { contentType: file.type || "image/jpeg" });
-  const downloadURL = await getDownloadURL(storageRef);
-  let thumbnailURL = downloadURL;
+  await setDoc(photoRef, {
+    id: safeUploadId,
+    uploadId: safeUploadId,
+    authorGuestId: guestId,
+    authorUid: user.uid,
+    likesCount: Number(existingPhoto?.likesCount) || 0,
+    likedByGuestIds: Array.isArray(existingPhoto?.likedByGuestIds) ? existingPhoto.likedByGuestIds : [],
+    uploadState: "uploading",
+    uploadPhase: "thumbnail",
+    uploadStartedAt: existingPhoto?.uploadStartedAt || serverTimestamp(),
+    updatedAt: serverTimestamp(),
+    storagePath: path,
+    thumbnailPath: thumbnailFile ? thumbPath : null,
+    width: Number(width) || null,
+    height: Number(height) || null
+  }, { merge: true });
+
+  let thumbnailURL = existingPhoto?.thumbnailURL || existingPhoto?.downloadURL || null;
   if (thumbnailFile) {
     const thumbRef = ref(storage, thumbPath);
-    await uploadBytes(thumbRef, thumbnailFile, { contentType: thumbnailFile.type || "image/jpeg" });
+    await uploadFileResumable(thumbRef, thumbnailFile, (progress) => {
+      if (typeof onProgress !== "function") return;
+      onProgress({
+        phase: "thumbnail",
+        progress,
+        overallProgress: progress * 0.4
+      });
+    });
     thumbnailURL = await getDownloadURL(thumbRef);
   }
 
-  const photoRef = await addDoc(eventCollection("photos"), {
+  await setDoc(photoRef, {
+    uploadPhase: "original",
+    thumbnailURL: thumbnailURL || null,
+    updatedAt: serverTimestamp()
+  }, { merge: true });
+
+  const storageRef = ref(storage, path);
+  await uploadFileResumable(storageRef, file, (progress) => {
+    if (typeof onProgress !== "function") return;
+    onProgress({
+      phase: "original",
+      progress,
+      overallProgress: 0.4 + (progress * 0.6)
+    });
+  });
+  const downloadURL = await getDownloadURL(storageRef);
+
+  await setDoc(photoRef, {
+    id: safeUploadId,
+    uploadId: safeUploadId,
     authorGuestId: guestId,
     authorUid: user.uid,
-    likesCount: 0,
-    createdAt: serverTimestamp(),
+    likesCount: Number(existingPhoto?.likesCount) || 0,
+    likedByGuestIds: Array.isArray(existingPhoto?.likedByGuestIds) ? existingPhoto.likedByGuestIds : [],
+    createdAt: existingPhoto?.createdAt || serverTimestamp(),
+    uploadCompletedAt: serverTimestamp(),
+    uploadState: "ready",
+    uploadPhase: "complete",
     storagePath: path,
     thumbnailPath: thumbnailFile ? thumbPath : null,
     downloadURL,
-    thumbnailURL,
+    thumbnailURL: thumbnailURL || downloadURL,
     width: Number(width) || null,
-    height: Number(height) || null
-  });
+    height: Number(height) || null,
+    updatedAt: serverTimestamp()
+  }, { merge: true });
 
-  await emitActivity("upload_photo", guestId, { photoId: photoRef.id });
-  return photoRef.id;
+  if (!existingPhoto?.activityEmitted) {
+    await emitActivity("upload_photo", guestId, { photoId: safeUploadId });
+    await setDoc(photoRef, { activityEmitted: true, updatedAt: serverTimestamp() }, { merge: true });
+  }
+
+  return safeUploadId;
 }
 
 async function togglePhotoLike(photoId, guestId) {

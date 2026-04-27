@@ -9,6 +9,8 @@ export const refs = {
   backToLanguage: document.getElementById("back-to-language"),
   changeProfile: document.getElementById("change-profile"),
   uploadPhotoBtn: document.getElementById("upload-photo-btn"),
+  uploadPhotoBtnLabel: document.getElementById("upload-photo-btn-label"),
+  uploadPhotoBtnProgressText: document.getElementById("upload-photo-progress-text"),
   guestGrid: document.getElementById("guest-grid"),
   bottomNav: document.querySelector(".bottom-nav"),
   navLiquidIndicator: document.querySelector(".nav-liquid-indicator"),
