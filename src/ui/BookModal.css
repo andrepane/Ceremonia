@@ -1,13 +1,19 @@
 .guestbook-modal {
+  --book-modal-gap: clamp(12px, 4vw, 28px);
   position: fixed;
   inset: 0;
   z-index: 140;
   display: grid;
   place-items: center;
-  padding: clamp(14px, 4vw, 28px);
+  padding:
+    max(var(--book-modal-gap), env(safe-area-inset-top))
+    max(var(--book-modal-gap), env(safe-area-inset-right))
+    max(var(--book-modal-gap), env(safe-area-inset-bottom))
+    max(var(--book-modal-gap), env(safe-area-inset-left));
   background: rgba(12, 7, 5, 0.68);
   backdrop-filter: blur(10px);
   -webkit-backdrop-filter: blur(10px);
+  overflow: auto;
 }
 
 .guestbook-modal[hidden] {
@@ -34,8 +40,10 @@
 
 .book {
   position: relative;
-  width: min(960px, 96vw);
+  width: min(960px, calc(100vw - (var(--book-modal-gap) * 2)));
+  max-width: 100%;
   min-height: min(72vh, 640px);
+  max-height: calc(100vh - (var(--book-modal-gap) * 2));
   display: flex;
   gap: clamp(8px, 2vw, 18px);
   perspective: 1800px;
@@ -203,8 +211,9 @@
 
 @media (max-width: 860px) {
   .book {
-    width: min(98vw, 730px);
+    width: min(100%, 730px);
     min-height: min(78vh, 720px);
+    max-height: calc(100vh - (var(--book-modal-gap) * 2));
     gap: 6px;
   }
 
