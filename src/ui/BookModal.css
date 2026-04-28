@@ -34,10 +34,13 @@
 
 .book {
   position: relative;
-  width: min(960px, 96vw);
-  min-height: min(72vh, 640px);
+  width: min(980px, calc(100vw - clamp(16px, 6vw, 56px)));
+  min-height: min(74vh, 680px);
+  max-height: calc(100vh - clamp(30px, 9vh, 100px));
   display: flex;
-  gap: clamp(8px, 2vw, 18px);
+  gap: 0;
+  overflow: hidden;
+  border-radius: 20px;
   perspective: 1800px;
   transform-style: preserve-3d;
   animation: bookAppear 600ms cubic-bezier(0.2, 0.65, 0.2, 1) both;
@@ -55,9 +58,10 @@
 
 .book-modal--left,
 .book-modal--right {
-  flex: 1;
+  flex: 1 1 50%;
+  min-width: 0;
   min-height: inherit;
-  border-radius: 14px;
+  border-radius: 16px;
   background: #fdf6e3;
   box-shadow: inset 0 0 0 1px rgba(84, 54, 29, 0.08), inset 0 20px 35px rgba(67, 44, 20, 0.07), 0 16px 40px rgba(0, 0, 0, 0.3);
   background-image:
@@ -65,17 +69,19 @@
     radial-gradient(circle at top left, rgba(255, 255, 255, 0.72), transparent 45%);
   background-size: 100% 32px, cover;
   background-position: 0 34px, center;
-  padding: 24px 22px 24px 34px;
+  padding: clamp(18px, 2.2vw, 24px) clamp(14px, 2vw, 22px) clamp(18px, 2.4vw, 24px) clamp(24px, 2.8vw, 34px);
   overflow: hidden;
 }
 
 .book-modal--left {
   position: relative;
   transform-origin: right center;
-  transform: rotateY(-92deg) rotateX(5deg);
+  transform: rotateY(-90deg) rotateX(5deg);
   transition: transform 600ms cubic-bezier(0.22, 1, 0.36, 1);
   font-family: "Playfair Display", "Cormorant Garamond", serif;
   color: rgba(66, 44, 26, 0.84);
+  border-top-right-radius: 4px;
+  border-bottom-right-radius: 4px;
 }
 
 .guestbook-modal--open .book-modal--left {
@@ -96,8 +102,10 @@
 .book-modal--right {
   position: relative;
   transform-origin: left center;
-  transform: rotateY(88deg) rotateX(4deg);
+  transform: rotateY(90deg) rotateX(4deg);
   transition: transform 600ms cubic-bezier(0.22, 1, 0.36, 1), box-shadow 180ms ease;
+  border-top-left-radius: 4px;
+  border-bottom-left-radius: 4px;
 }
 
 .guestbook-modal--open .book-modal--right {
@@ -118,6 +126,10 @@
   border-radius: 8px;
   background: linear-gradient(180deg, rgba(54, 37, 24, 0.25), rgba(36, 23, 14, 0.08));
   z-index: 2;
+}
+
+.book-modal--right .book-modal__subtitle {
+  margin-top: 24px;
 }
 
 .book-modal__title {
@@ -203,22 +215,47 @@
 
 @media (max-width: 860px) {
   .book {
-    width: min(98vw, 730px);
-    min-height: min(78vh, 720px);
-    gap: 6px;
+    width: min(96vw, 620px);
+    min-height: min(82vh, 760px);
+    max-height: calc(100vh - 24px);
+    border-radius: 14px;
+    padding-right: 12%;
   }
 
-  .book::before,
+  .book::before {
+    left: auto;
+    right: 9%;
+    width: 8px;
+    opacity: 0.7;
+  }
+
   .book-modal--left {
-    display: none;
+    flex-basis: 100%;
+    max-width: 100%;
+    transform: rotateY(0deg) rotateX(0deg) !important;
+    border-radius: 12px;
   }
 
   .book-modal--right {
+    position: absolute;
+    top: 8px;
+    right: 0;
+    bottom: 8px;
+    width: 14%;
+    min-width: 54px;
+    pointer-events: none;
     transform: rotateY(0deg) rotateX(0deg) !important;
+    border-radius: 10px;
+    opacity: 0.82;
+    box-shadow: inset 0 0 0 1px rgba(84, 54, 29, 0.06), inset 0 18px 20px rgba(67, 44, 20, 0.05), -8px 0 20px rgba(0, 0, 0, 0.1);
   }
 
   .book-modal--right,
   .book-modal--left {
     padding: 18px 14px 18px 28px;
+  }
+
+  .book-modal--right .book-modal__subtitle {
+    opacity: 0;
   }
 }
