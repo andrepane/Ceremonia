@@ -171,6 +171,18 @@ async function getGuestbookEntry(guestId) {
   return snapshot.exists() ? snapshot.data() : null;
 }
 
+function subscribeGuestbookEntries(onData, onError) {
+  if (!db) return () => {};
+  const q = query(eventCollection("guestbookEntries"), orderBy("timestamp", "asc"));
+  return onSnapshot(
+    q,
+    (snapshot) => {
+      onData(snapshot.docs.map((d) => ({ id: d.id, ...d.data() })));
+    },
+    onError
+  );
+}
+
 async function upsertGuestbookEntry(guestId, payload = {}) {
   const user = await ensureAuth();
   if (!db || !user || !guestId) throw new Error("auth_required");
@@ -179,10 +191,12 @@ async function upsertGuestbookEntry(guestId, payload = {}) {
     eventDoc("guestbookEntries", guestId),
     {
       id: guestId,
-      author: payload.author || "",
+      userId: payload.userId || guestId,
+      authorName: payload.authorName || payload.author || "",
+      author: payload.authorName || payload.author || "",
       content: payload.content || "",
       timestamp: payload.timestamp || Date.now(),
-      userId: user.uid,
+      authUid: user.uid,
       updatedAt: serverTimestamp(),
       updatedByUid: user.uid
     },
@@ -527,5 +541,6 @@ export {
   togglePhotoLike,
   upsertGuestDictionary,
   getGuestbookEntry,
+  subscribeGuestbookEntries,
   upsertGuestbookEntry
 };

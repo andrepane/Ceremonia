@@ -298,19 +298,23 @@
   <section id="guestbook-modal" class="guestbook-modal" hidden>
     <div class="book-modal__backdrop" data-book-backdrop aria-hidden="true"></div>
     <button id="guestbook-close" class="book-modal__close" type="button" aria-label="Cerrar libro" title="Cerrar libro">×</button>
-    <article class="book" data-book-shell role="dialog" aria-modal="true" aria-labelledby="guestbook-title">
-      <div class="book-modal--left" aria-hidden="true">
-        <h3 id="guestbook-title" class="book-modal__title">Libro de firmas</h3>
-        <p class="book-modal__subtitle">Un rincón íntimo para dejar recuerdos del fin de semana.</p>
-      </div>
-      <div class="book-modal--right">
-        <div class="book-modal__header">
-          <span>De:</span>
-          <span class="book-modal__author" contenteditable="true" spellcheck="false" data-book-author data-placeholder="Tu nombre"></span>
+    <div class="book-modal__viewport" data-book-viewport>
+      <article class="book" data-book-shell role="dialog" aria-modal="true" aria-labelledby="guestbook-title">
+        <div class="book-modal--left">
+          <h3 id="guestbook-title" class="book-modal__title" data-book-title>Libro de dedicatorias</h3>
+          <p class="book-modal__subtitle" data-book-subtitle>Un rincón íntimo para dejar recuerdos del fin de semana.</p>
+          <div class="book-modal__entries" data-book-entries aria-live="polite"></div>
         </div>
-        <div class="book-modal__content" contenteditable="true" spellcheck="true" data-book-content data-placeholder="Escribe aquí tu dedicatoria..."></div>
-      </div>
-    </article>
+        <div class="book-modal--right">
+          <div class="book-modal__watermark" aria-hidden="true">C&amp;A</div>
+          <div class="book-modal__header">
+            <span data-book-author-label>De:</span>
+            <span class="book-modal__author" spellcheck="false" data-book-author data-placeholder="Tu nombre"></span>
+          </div>
+          <div class="book-modal__content" contenteditable="true" spellcheck="true" data-book-content data-placeholder="Escribe aquí tu dedicatoria"></div>
+        </div>
+      </article>
+    </div>
   </section>
 
   <script src="data.js"></script>

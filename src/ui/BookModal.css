@@ -4,10 +4,11 @@
   z-index: 140;
   display: grid;
   place-items: center;
-  padding: clamp(14px, 4vw, 28px);
+  padding: max(12px, env(safe-area-inset-top)) max(10px, env(safe-area-inset-right)) max(12px, env(safe-area-inset-bottom)) max(10px, env(safe-area-inset-left));
   background: rgba(12, 7, 5, 0.68);
   backdrop-filter: blur(10px);
   -webkit-backdrop-filter: blur(10px);
+  overflow: hidden;
 }
 
 .guestbook-modal[hidden] {
@@ -32,14 +33,25 @@
   font-size: 1.4rem;
 }
 
+.book-modal__viewport {
+  position: relative;
+  z-index: 1;
+  width: 100%;
+  height: 100%;
+  display: grid;
+  place-items: center;
+}
+
 .book {
   position: relative;
-  width: min(960px, 96vw);
-  min-height: min(72vh, 640px);
-  display: flex;
-  gap: clamp(8px, 2vw, 18px);
+  width: 960px;
+  min-height: 640px;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
   perspective: 1800px;
   transform-style: preserve-3d;
+  transform-origin: center center;
   animation: bookAppear 600ms cubic-bezier(0.2, 0.65, 0.2, 1) both;
 }
 
@@ -47,30 +59,37 @@
   content: "";
   position: absolute;
   inset: auto 8% -18px;
-  height: 28px;
+  height: 30px;
   border-radius: 50%;
-  background: rgba(0, 0, 0, 0.35);
-  filter: blur(16px);
+  background: rgba(0, 0, 0, 0.4);
+  filter: blur(18px);
 }
 
 .book-modal--left,
 .book-modal--right {
-  flex: 1;
+  position: relative;
   min-height: inherit;
   border-radius: 14px;
-  background: #fdf6e3;
-  box-shadow: inset 0 0 0 1px rgba(84, 54, 29, 0.08), inset 0 20px 35px rgba(67, 44, 20, 0.07), 0 16px 40px rgba(0, 0, 0, 0.3);
+  border: 1px solid rgba(98, 70, 39, 0.18);
+  background: #f8edd9;
+  box-shadow:
+    inset 0 0 0 1px rgba(109, 73, 45, 0.06),
+    inset 0 14px 20px rgba(255, 255, 255, 0.35),
+    inset 0 -14px 26px rgba(104, 78, 54, 0.14),
+    inset 0 0 34px rgba(74, 54, 33, 0.08),
+    0 24px 42px rgba(0, 0, 0, 0.32);
   background-image:
-    linear-gradient(to bottom, rgba(0, 0, 0, 0.08) 1px, transparent 1px),
-    radial-gradient(circle at top left, rgba(255, 255, 255, 0.72), transparent 45%);
-  background-size: 100% 32px, cover;
-  background-position: 0 34px, center;
+    linear-gradient(to bottom, rgba(139, 102, 63, 0.14) 1px, transparent 1px),
+    radial-gradient(circle at 20% 0, rgba(255, 255, 255, 0.74), transparent 42%),
+    radial-gradient(circle at 85% 95%, rgba(198, 170, 128, 0.2), transparent 38%),
+    repeating-linear-gradient(45deg, rgba(117, 88, 56, 0.028) 0 2px, rgba(255, 255, 255, 0.035) 2px 5px);
+  background-size: 100% 34px, cover, cover, cover;
+  background-position: 0 36px, center, center, center;
   padding: 24px 22px 24px 34px;
   overflow: hidden;
 }
 
 .book-modal--left {
-  position: relative;
   transform-origin: right center;
   transform: rotateY(-92deg) rotateX(5deg);
   transition: transform 600ms cubic-bezier(0.22, 1, 0.36, 1);
@@ -79,7 +98,7 @@
 }
 
 .guestbook-modal--open .book-modal--left {
-  transform: rotateY(-12deg) rotateX(1deg);
+  transform: rotateY(-10deg) rotateX(0.7deg);
 }
 
 .book-modal--left::before,
@@ -90,46 +109,102 @@
   bottom: 0;
   left: 20px;
   width: 2px;
-  background: rgba(177, 38, 24, 0.45);
+  background: rgba(158, 79, 45, 0.26);
 }
 
 .book-modal--right {
-  position: relative;
   transform-origin: left center;
   transform: rotateY(88deg) rotateX(4deg);
   transition: transform 600ms cubic-bezier(0.22, 1, 0.36, 1), box-shadow 180ms ease;
 }
 
 .guestbook-modal--open .book-modal--right {
-  transform: rotateY(8deg) rotateX(0deg);
-}
-
-.book-modal--right:hover {
-  box-shadow: inset 0 0 0 1px rgba(84, 54, 29, 0.12), inset 0 20px 35px rgba(67, 44, 20, 0.07), 0 16px 44px rgba(0, 0, 0, 0.36);
+  transform: rotateY(7deg) rotateX(0deg);
 }
 
 .book::before {
   content: "";
   position: absolute;
-  left: calc(50% - 5px);
-  top: 16px;
-  bottom: 16px;
-  width: 10px;
+  left: calc(50% - 6px);
+  top: 12px;
+  bottom: 12px;
+  width: 12px;
   border-radius: 8px;
-  background: linear-gradient(180deg, rgba(54, 37, 24, 0.25), rgba(36, 23, 14, 0.08));
+  background: linear-gradient(180deg, rgba(62, 42, 28, 0.42), rgba(42, 27, 16, 0.12));
   z-index: 2;
+  box-shadow: inset 0 0 8px rgba(0, 0, 0, 0.24);
 }
 
 .book-modal__title {
   margin: 0;
   padding-top: 2px;
-  font-size: clamp(1.5rem, 2.4vw, 2.1rem);
+  font-size: 2rem;
 }
 
 .book-modal__subtitle {
   margin-top: 14px;
   max-width: 28ch;
-  line-height: 1.6;
+  line-height: 1.55;
+}
+
+.book-modal__entries {
+  margin-top: 18px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  max-height: 430px;
+  overflow: auto;
+  padding-right: 4px;
+}
+
+.book-entry-chip {
+  border: 1px solid rgba(122, 89, 58, 0.2);
+  background: rgba(255, 248, 236, 0.84);
+  color: #5a3922;
+  border-radius: 10px;
+  padding: 10px 12px;
+  text-align: left;
+  display: grid;
+  gap: 3px;
+}
+
+.book-entry-chip--active {
+  border-color: rgba(145, 91, 53, 0.45);
+  background: rgba(252, 240, 220, 0.96);
+}
+
+.book-entry-chip__page {
+  font-size: 0.75rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.book-entry-chip__author {
+  font-family: "Playfair Display", "Cormorant Garamond", serif;
+  font-size: 1rem;
+}
+
+.book-entry-chip__date {
+  font-size: 0.78rem;
+  opacity: 0.72;
+}
+
+.book-modal__entries-empty {
+  margin: 0;
+  opacity: 0.7;
+}
+
+.book-modal__watermark {
+  position: absolute;
+  inset: 50% 0 auto 0;
+  transform: translateY(-40%);
+  text-align: center;
+  font-family: "Playfair Display", "Cormorant Garamond", serif;
+  font-size: clamp(4.3rem, 9vw, 6.7rem);
+  letter-spacing: 0.08em;
+  color: rgba(88, 52, 26, 0.07);
+  pointer-events: none;
+  user-select: none;
 }
 
 .book-modal__header {
@@ -149,35 +224,36 @@
   z-index: 1;
   outline: none;
   border: 0;
-  cursor: text;
-  font-family: "Caveat", "Patrick Hand", "Brush Script MT", cursive;
-  color: #4d301d;
-  -webkit-user-modify: read-write-plaintext-only;
 }
 
 .book-modal__author {
-  min-width: 120px;
-  max-width: 60%;
-  min-height: 28px;
-  font-size: clamp(1.4rem, 2.4vw, 1.85rem);
+  min-height: 32px;
+  font-family: "Caveat", "Patrick Hand", "Brush Script MT", cursive;
+  font-size: clamp(1.45rem, 2.4vw, 1.9rem);
+  color: #4d301d;
 }
 
-.book-modal__author:empty::before,
 .book-modal__content:empty::before {
   content: attr(data-placeholder);
   opacity: 0.42;
 }
 
 .book-modal__content {
-  min-height: clamp(300px, 48vh, 470px);
-  max-height: min(50vh, 500px);
-  padding-right: 6px;
-  overflow: auto;
-  line-height: 32px;
-  font-size: clamp(1.35rem, 2.2vw, 1.8rem);
+  min-height: 500px;
+  line-height: 34px;
+  font-size: clamp(1.32rem, 2.2vw, 1.78rem);
   white-space: pre-wrap;
   word-break: break-word;
-  -webkit-overflow-scrolling: touch;
+  overflow-wrap: anywhere;
+  font-family: "Caveat", "Patrick Hand", "Brush Script MT", cursive;
+  color: #4d301d;
+  -webkit-user-modify: read-write-plaintext-only;
+  caret-color: #57331b;
+  padding-right: 6px;
+}
+
+.book-modal__content[contenteditable="false"] {
+  cursor: default;
 }
 
 .book--writing .book-modal__content,
@@ -198,27 +274,5 @@
   to {
     opacity: 1;
     transform: translateY(0) scale(1);
-  }
-}
-
-@media (max-width: 860px) {
-  .book {
-    width: min(98vw, 730px);
-    min-height: min(78vh, 720px);
-    gap: 6px;
-  }
-
-  .book::before,
-  .book-modal--left {
-    display: none;
-  }
-
-  .book-modal--right {
-    transform: rotateY(0deg) rotateX(0deg) !important;
-  }
-
-  .book-modal--right,
-  .book-modal--left {
-    padding: 18px 14px 18px 28px;
   }
 }

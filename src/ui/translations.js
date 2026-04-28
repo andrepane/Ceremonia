@@ -29,6 +29,18 @@ export function applyTranslations() {
   document.getElementById("txt-hello-prefix").textContent = labels.hello;
   refs.changeProfile.setAttribute("aria-label", labels.changeProfile);
   refs.changeProfile.setAttribute("title", labels.changeProfile);
+  refs.guestbookTrigger?.setAttribute("aria-label", labels.guestbookOpen || "");
+  refs.guestbookTrigger?.setAttribute("title", labels.guestbookOpen || "");
+  refs.guestbookClose?.setAttribute("aria-label", labels.guestbookClose || "");
+  refs.guestbookClose?.setAttribute("title", labels.guestbookClose || "");
+  const guestbookTitle = document.querySelector("[data-book-title]");
+  const guestbookSubtitle = document.querySelector("[data-book-subtitle]");
+  const guestbookFromLabel = document.querySelector("[data-book-author-label]");
+  const guestbookContent = document.querySelector("[data-book-content]");
+  if (guestbookTitle) guestbookTitle.textContent = labels.guestbookTitle || "";
+  if (guestbookSubtitle) guestbookSubtitle.textContent = labels.guestbookSubtitleGuest || "";
+  if (guestbookFromLabel) guestbookFromLabel.textContent = labels.guestbookFromLabel || "";
+  if (guestbookContent) guestbookContent.setAttribute("data-placeholder", labels.guestbookPlaceholder || "");
   document.getElementById("txt-countdown-label").textContent = labels.countdownLabel;
   refs.countdownHintElement.textContent = labels.countdownHint;
   refs.countdownNextEventLabelElement.textContent = getHomeCopy().nextEventLabel;
