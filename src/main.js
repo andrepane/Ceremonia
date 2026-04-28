@@ -1109,10 +1109,26 @@ function restoreSession() {
   showScreen(savedLang ? refs.screenGuest : refs.screenLanguage);
 }
 
+function openAvatarBookModal() {
+  if (!refs.avatarBookModalElement) return;
+  refs.avatarBookModalElement.removeAttribute("hidden");
+  refs.avatarBookModalElement.setAttribute("aria-hidden", "false");
+}
+
+function closeAvatarBookModal() {
+  if (!refs.avatarBookModalElement || refs.avatarBookModalElement.hasAttribute("hidden")) return;
+  refs.avatarBookModalElement.setAttribute("hidden", "");
+  refs.avatarBookModalElement.setAttribute("aria-hidden", "true");
+}
+
 function bindUIEvents() {
   refs.btnEs.addEventListener("click", () => setLanguage("es"));
   refs.btnIt.addEventListener("click", () => setLanguage("it"));
   refs.backToLanguage.addEventListener("click", () => showScreen(refs.screenLanguage));
+  refs.profileAvatarElement.addEventListener("click", () => {
+    if (!state.currentGuestId) return;
+    openAvatarBookModal();
+  });
   refs.changeProfile.addEventListener("click", async () => {
     const previousGuestId = state.currentGuestId;
     if (isFirebaseConfigured() && previousGuestId) {
@@ -1195,7 +1211,12 @@ function bindUIEvents() {
       return;
     }
     const closePrivateDinnerButton = event.target.closest("[data-close-private-dinner-surprise]");
-    if (closePrivateDinnerButton) closePrivateDinnerSurpriseModal();
+    if (closePrivateDinnerButton) {
+      closePrivateDinnerSurpriseModal();
+      return;
+    }
+    const closeAvatarBookButton = event.target.closest("[data-close-avatar-book-modal]");
+    if (closeAvatarBookButton || event.target === refs.avatarBookModalElement) closeAvatarBookModal();
   });
 
   document.addEventListener("keydown", (event) => {
@@ -1205,6 +1226,7 @@ function bindUIEvents() {
       closeSaturdayMenuModal();
       closeSundayBreakfastMenuModal();
       closePrivateDinnerSurpriseModal();
+      closeAvatarBookModal();
     }
   });
 

@@ -8,6 +8,38 @@ const appTitleSeparatorNode = Array.from(appTitleElement?.childNodes || []).find
   (node) => node.nodeType === Node.TEXT_NODE && node.textContent.includes(",")
 );
 const appTitleDefaultSeparator = appTitleSeparatorNode?.textContent || ", ";
+const PROFILE_AVATAR_SWAP_MS = 5000;
+let profileAvatarSwapIntervalId = null;
+let profileAvatarBookVisible = false;
+
+function clearProfileAvatarSwapInterval() {
+  if (!profileAvatarSwapIntervalId) return;
+  window.clearInterval(profileAvatarSwapIntervalId);
+  profileAvatarSwapIntervalId = null;
+}
+
+function animateProfileAvatarSwap() {
+  const inner = refs.profileAvatarElement?.querySelector(".avatar-inner");
+  if (!inner) return;
+  inner.classList.remove("avatar-inner--animating");
+  void inner.offsetWidth;
+  inner.classList.add("avatar-inner--animating");
+}
+
+function setProfileAvatarBookVisibility(showBook, { animate = true } = {}) {
+  const inner = refs.profileAvatarElement?.querySelector(".avatar-inner");
+  if (!inner) return;
+  profileAvatarBookVisible = showBook;
+  inner.classList.toggle("avatar-inner--book", showBook);
+  if (animate) animateProfileAvatarSwap();
+}
+
+function startProfileAvatarSwapInterval() {
+  clearProfileAvatarSwapInterval();
+  profileAvatarSwapIntervalId = window.setInterval(() => {
+    setProfileAvatarBookVisibility(!profileAvatarBookVisible);
+  }, PROFILE_AVATAR_SWAP_MS);
+}
 
 function getActiveViewName() {
   const activeView = document.querySelector(".view--active");
@@ -61,6 +93,8 @@ export function updateProfileAvatar() {
   if (!refs.profileAvatarElement) return;
   const guest = findGuestById(state.currentGuestId);
   if (!guest) {
+    clearProfileAvatarSwapInterval();
+    profileAvatarBookVisible = false;
     refs.profileAvatarElement.innerHTML = "";
     refs.profileAvatarElement.hidden = true;
     refs.profileAvatarElement.classList.remove("header-profile-avatar--image");
@@ -69,12 +103,14 @@ export function updateProfileAvatar() {
 
   const avatarImage = getGuestAvatarImage(guest);
   if (avatarImage) {
-    refs.profileAvatarElement.innerHTML = `<img class="header-profile-avatar__image" src="${avatarImage}" alt="Avatar de ${guest.name}" loading="lazy" decoding="async" onerror="this.parentElement.classList.remove('header-profile-avatar--image');this.outerHTML='${guest.avatar}';">`;
+    refs.profileAvatarElement.innerHTML = `<span class="avatar-inner"><span class="avatar-face avatar-image"><img class="header-profile-avatar__image" src="${avatarImage}" alt="Avatar de ${guest.name}" loading="lazy" decoding="async" onerror="this.closest('.header-profile-avatar').classList.remove('header-profile-avatar--image');this.closest('.avatar-face').innerHTML='${guest.avatar}';"></span><span class="avatar-face avatar-book" aria-hidden="true"><span class="avatar-book-icon" aria-hidden="true">📖</span></span></span>`;
     refs.profileAvatarElement.classList.add("header-profile-avatar--image");
   } else {
-    refs.profileAvatarElement.innerHTML = guest.avatar;
+    refs.profileAvatarElement.innerHTML = `<span class="avatar-inner"><span class="avatar-face avatar-image">${guest.avatar}</span><span class="avatar-face avatar-book" aria-hidden="true"><span class="avatar-book-icon" aria-hidden="true">📖</span></span></span>`;
     refs.profileAvatarElement.classList.remove("header-profile-avatar--image");
   }
+  setProfileAvatarBookVisibility(false, { animate: false });
+  startProfileAvatarSwapInterval();
   refs.profileAvatarElement.hidden = false;
 }
 

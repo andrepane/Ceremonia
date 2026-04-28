@@ -18,6 +18,7 @@ export const refs = {
   views: document.querySelectorAll(".view"),
   selectedGuestName: document.getElementById("selected-guest-name"),
   profileAvatarElement: document.getElementById("profile-avatar"),
+  avatarBookModalElement: document.getElementById("avatar-book-modal"),
   countdownElement: document.getElementById("countdown"),
   countdownHintElement: document.getElementById("txt-countdown-hint"),
   countdownNextEventLabelElement: document.getElementById("txt-next-event-label"),

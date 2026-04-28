@@ -106,7 +106,7 @@
           </div>
 
           <div class="app-header__actions">
-            <div id="profile-avatar" class="header-profile-avatar" aria-hidden="true"></div>
+            <button id="profile-avatar" class="header-profile-avatar avatar-button" type="button" aria-label="Abrir libro de dedicatorias"></button>
             <button id="change-profile" class="chip-btn chip-btn--icon" type="button" aria-label="Cambiar perfil" title="Cambiar perfil">
               <i class="fa-solid fa-right-from-bracket" aria-hidden="true"></i>
             </button>
@@ -286,7 +286,13 @@
         </nav>
       </div>
     </section>
-    </div>
+  </div>
+
+  <div id="avatar-book-modal" class="avatar-book-modal" hidden aria-hidden="true">
+    <section class="avatar-book-modal__dialog" role="dialog" aria-modal="true" aria-label="Libro de dedicatorias">
+      <button type="button" class="avatar-book-modal__close" data-close-avatar-book-modal="true" aria-label="Cerrar">×</button>
+    </section>
+  </div>
   </div>
 
   <script src="data.js"></script>
