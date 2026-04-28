@@ -3,6 +3,7 @@ import { enqueuePhotoUpload } from "./photo-upload-queue.js";
 import { refs, state, getHomeCopy } from "../state.js";
 
 let photoViewerEl = null;
+let highlightCleanupTimeoutId = null;
 
 function getPhotoViewer() {
   if (photoViewerEl) return photoViewerEl;
@@ -39,6 +40,44 @@ function closePhotoViewer() {
   image.src = "";
   photoViewerEl.hidden = true;
   document.body.classList.remove("photo-viewer-open");
+}
+
+function focusAndHighlightPhotoCard(photoId, activityType) {
+  const photoCard = document.querySelector(`[data-photo-card-id="${photoId}"]`);
+  if (!photoCard) return false;
+
+  if (highlightCleanupTimeoutId) {
+    window.clearTimeout(highlightCleanupTimeoutId);
+    highlightCleanupTimeoutId = null;
+  }
+
+  document
+    .querySelectorAll(".photo-card--activity-highlight, .photo-card--reaction-highlight")
+    .forEach((card) => card.classList.remove("photo-card--activity-highlight", "photo-card--reaction-highlight"));
+
+  photoCard.scrollIntoView({ behavior: "smooth", block: "center" });
+  photoCard.classList.add("photo-card--activity-highlight");
+  if (activityType === "react_photo") {
+    photoCard.classList.add("photo-card--reaction-highlight");
+  }
+  highlightCleanupTimeoutId = window.setTimeout(() => {
+    photoCard.classList.remove("photo-card--activity-highlight", "photo-card--reaction-highlight");
+    highlightCleanupTimeoutId = null;
+  }, 1900);
+  return true;
+}
+
+export function highlightPhotoFromActivity(photoId, activityType) {
+  if (!photoId) return;
+  let attempts = 0;
+  const maxAttempts = 12;
+  const tick = () => {
+    const found = focusAndHighlightPhotoCard(photoId, activityType);
+    if (found || attempts >= maxAttempts) return;
+    attempts += 1;
+    window.setTimeout(tick, 180);
+  };
+  tick();
 }
 
 export async function handleUploadPhoto() {

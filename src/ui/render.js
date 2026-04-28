@@ -101,7 +101,11 @@ function renderActivityFeed() {
     const guest = findGuestById(item.guestId);
     const name = guest ? guest.name : item.guestId;
     const template = copy.activityTemplates[item.type] || "{name}";
-    return `<li class="activity-item"><span class="activity-item__text">${template.replace("{name}", name)}</span><span class="activity-item__time">${formatRelativeTimeFromDate(item.createdAt)}</span></li>`;
+    const photoId = item?.metadata?.photoId || "";
+    const isPhotoActivity = Boolean(photoId);
+    const activityContent = `<span class="activity-item__text">${template.replace("{name}", name)}</span><span class="activity-item__time">${formatRelativeTimeFromDate(item.createdAt)}</span>`;
+    if (!isPhotoActivity) return `<li class="activity-item">${activityContent}</li>`;
+    return `<li class="activity-item"><button type="button" class="activity-item activity-item--interactive" data-activity-photo-id="${photoId}" data-activity-type="${item.type}" aria-label="${template.replace("{name}", name)}">${activityContent}</button></li>`;
   }).join("");
 }
 
@@ -232,7 +236,7 @@ export function renderPhotos() {
     const imageMarkup = previewUrl
       ? `<img src="${previewUrl}" data-photo-open="${fullUrl}" alt="photo" class="photo-img ${photo.downloadURL ? "" : "photo-img--preview-only"}" loading="lazy" />`
       : `<div class="photo-placeholder">Subiendo...</div>`;
-    return `<article class="photo-card">${imageMarkup}<div class="photo-meta"><div class="photo-actions"><button type="button" class="photo-like-btn ${photo.likedByGuestIds?.includes(state.currentGuestId) ? "photo-like-btn--liked" : ""}" data-photo-like="${photo.id}" aria-pressed="${photo.likedByGuestIds?.includes(state.currentGuestId) ? "true" : "false"}"><span class="photo-like-btn__icon">${photo.likedByGuestIds?.includes(state.currentGuestId) ? "♥" : "♡"}</span><span>${photo.likesCount || 0}</span></button>${photo.authorUid === state.authUid ? `<button type="button" class="photo-delete-btn" data-photo-delete="${photo.id}" aria-label="${copy.deletePhoto}" title="${copy.deletePhoto}">🗑</button>` : ""}</div></div></article>`;
+    return `<article class="photo-card" data-photo-card-id="${photo.id}">${imageMarkup}<div class="photo-meta"><div class="photo-actions"><button type="button" class="photo-like-btn ${photo.likedByGuestIds?.includes(state.currentGuestId) ? "photo-like-btn--liked" : ""}" data-photo-like="${photo.id}" aria-pressed="${photo.likedByGuestIds?.includes(state.currentGuestId) ? "true" : "false"}"><span class="photo-like-btn__icon">${photo.likedByGuestIds?.includes(state.currentGuestId) ? "♥" : "♡"}</span><span>${photo.likesCount || 0}</span></button>${photo.authorUid === state.authUid ? `<button type="button" class="photo-delete-btn" data-photo-delete="${photo.id}" aria-label="${copy.deletePhoto}" title="${copy.deletePhoto}">🗑</button>` : ""}</div></div></article>`;
   }).join("");
 }
 

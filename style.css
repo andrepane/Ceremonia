@@ -1384,6 +1384,28 @@ input {
   font-size: 0.95rem;
 }
 
+button.activity-item {
+  width: 100%;
+  border: 0;
+  background: transparent;
+  padding: 0;
+  text-align: left;
+  color: inherit;
+  font: inherit;
+}
+
+.activity-item--interactive {
+  border-radius: 10px;
+  transition: background-color 180ms ease, transform 180ms ease;
+}
+
+.activity-item--interactive:hover,
+.activity-item--interactive:focus-visible {
+  background: rgba(255, 255, 255, 0.48);
+  transform: translateX(2px);
+  outline: none;
+}
+
 .activity-item__time {
   color: var(--muted);
   font-size: 0.82rem;
@@ -1704,6 +1726,14 @@ input {
     0 0 26px -12px var(--glass-glow);
 }
 
+.photo-card--activity-highlight {
+  animation: photo-activity-highlight 1600ms ease;
+}
+
+.photo-card--reaction-highlight .photo-like-btn {
+  animation: like-pop 620ms ease 2;
+}
+
 .photo-img {
   width: 92%;
   aspect-ratio: 1 / 1;
@@ -1793,6 +1823,25 @@ input {
   }
   100% {
     transform: scale(1);
+  }
+}
+
+@keyframes photo-activity-highlight {
+  0% {
+    transform: scale(0.98);
+    box-shadow: 0 0 0 0 rgba(229, 57, 80, 0.52);
+  }
+  35% {
+    transform: scale(1.02);
+    box-shadow:
+      0 0 0 10px rgba(229, 57, 80, 0.2),
+      0 22px 40px rgba(56, 37, 23, 0.24);
+  }
+  100% {
+    transform: scale(1);
+    box-shadow:
+      0 16px 34px rgba(56, 37, 23, 0.14),
+      0 1px 0 rgba(255, 255, 255, 0.42) inset;
   }
 }
 

@@ -10,7 +10,7 @@ import { APP_DATA, refs, state, setState, findGuestById, getHomeCopy, getLocale 
 import { applyTranslations } from "./ui/translations.js";
 import { handleUsefulPhraseSpeakClick, renderAllDynamicSections, renderDictionary, renderGuestCards, renderHomeDashboard, updateAppHeaderForView, updateGuestHeaderMessage, updateProfileAvatar, updateWelcomeLabel } from "./ui/render.js";
 import { handleSpeakTranslation, handleTranslatorRequest } from "./features/translator.js";
-import { handlePhotoGridClick, handleUploadPhoto } from "./features/photos.js";
+import { handlePhotoGridClick, handleUploadPhoto, highlightPhotoFromActivity } from "./features/photos.js";
 import { startPhotoUploadQueue } from "./features/photo-upload-queue.js";
 import { renderTimeline, updateCountdown } from "./features/timeline.js";
 import { initFirebaseListeners } from "./integrations/firebase-sync.js";
@@ -1133,6 +1133,14 @@ function bindUIEvents() {
   refs.homeInfoStack.addEventListener("click", (event) => {
     const targetButton = event.target.closest("[data-target-view]");
     if (targetButton) activateView(targetButton.dataset.targetView);
+
+    const activityPhotoButton = event.target.closest("[data-activity-photo-id]");
+    if (activityPhotoButton) {
+      activateView("photos");
+      highlightPhotoFromActivity(activityPhotoButton.dataset.activityPhotoId, activityPhotoButton.dataset.activityType);
+      return;
+    }
+
     const detailToggle = event.target.closest("[data-home-toggle-details]");
     if (detailToggle) {
       setState({ isWeekendFormatExpanded: detailToggle.dataset.homeToggleDetails === "expand" });
