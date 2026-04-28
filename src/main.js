@@ -31,6 +31,7 @@ const SATURDAY_MENU_MODAL_ID = "saturday-menu-modal";
 const SUNDAY_BREAKFAST_MENU_MODAL_ID = "sunday-breakfast-menu-modal";
 const PRIVATE_DINNER_SURPRISE_MODAL_ID = "private-dinner-surprise-modal";
 const INSTALL_ONBOARDING_COMPLETED_KEY = "install_onboarding_completed";
+const AVATAR_BOOK_MODAL_ID = "avatar-book-modal";
 
 const INSTALL_ONBOARDING_COPY = {
   es: {
@@ -1081,6 +1082,42 @@ async function setGuest(guestId) {
   }
 }
 
+function getAvatarBookModal() {
+  return document.getElementById(AVATAR_BOOK_MODAL_ID);
+}
+
+function ensureAvatarBookModal() {
+  const existingModal = getAvatarBookModal();
+  if (existingModal) return existingModal;
+
+  const modal = document.createElement("div");
+  modal.id = AVATAR_BOOK_MODAL_ID;
+  modal.className = "avatar-book-modal";
+  modal.setAttribute("hidden", "");
+  modal.setAttribute("aria-hidden", "true");
+  modal.innerHTML = `
+    <div class="avatar-book-modal__backdrop" data-close-avatar-book-modal="true"></div>
+    <section class="avatar-book-modal__panel" role="dialog" aria-modal="true" aria-label="Libro de dedicatorias">
+      <button class="avatar-book-modal__close" type="button" aria-label="Cerrar" data-close-avatar-book-modal="true">×</button>
+    </section>
+  `;
+  document.body.append(modal);
+  return modal;
+}
+
+function openAvatarBookModal() {
+  const modal = ensureAvatarBookModal();
+  modal.removeAttribute("hidden");
+  modal.setAttribute("aria-hidden", "false");
+}
+
+function closeAvatarBookModal() {
+  const modal = getAvatarBookModal();
+  if (!modal || modal.hasAttribute("hidden")) return;
+  modal.setAttribute("hidden", "");
+  modal.setAttribute("aria-hidden", "true");
+}
+
 function restoreSession() {
   restoreDictionaryCache();
   const savedLang = localStorage.getItem("wedding_lang");
@@ -1149,6 +1186,17 @@ function bindUIEvents() {
   });
 
   document.addEventListener("click", (event) => {
+    const openAvatarBookButton = event.target.closest("[data-open-avatar-book-modal]");
+    if (openAvatarBookButton) {
+      event.preventDefault();
+      openAvatarBookModal();
+      return;
+    }
+    const closeAvatarBookButton = event.target.closest("[data-close-avatar-book-modal]");
+    if (closeAvatarBookButton) {
+      closeAvatarBookModal();
+      return;
+    }
     const openFridayDinnerButton = event.target.closest("[data-open-friday-dinner-menu]");
     if (openFridayDinnerButton) {
       openFridayDinnerMenuModal();
@@ -1205,6 +1253,7 @@ function bindUIEvents() {
       closeSaturdayMenuModal();
       closeSundayBreakfastMenuModal();
       closePrivateDinnerSurpriseModal();
+      closeAvatarBookModal();
     }
   });
 
@@ -1241,6 +1290,8 @@ function bindUIEvents() {
   };
 
   refs.guestGrid.addEventListener("click", async (event) => {
+    const avatarButton = event.target.closest("[data-open-avatar-book-modal]");
+    if (avatarButton) return;
     const enterButton = event.target.closest("[data-guest-enter]");
     if (enterButton) {
       if (enterButton.disabled) return;

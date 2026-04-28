@@ -53,8 +53,8 @@ function getGuestAvatarImage(guest) {
 
 function renderGuestAvatar(guest) {
   const avatarImage = getGuestAvatarImage(guest);
-  if (avatarImage) return `<img class="guest-avatar__image" src="${avatarImage}" alt="Avatar de ${guest.name}" loading="lazy" decoding="async" onerror="this.parentElement.classList.remove('guest-avatar--image');this.outerHTML='${guest.avatar}';">`;
-  return guest.avatar;
+  if (avatarImage) return `<img class="guest-avatar__image avatar-image" src="${avatarImage}" alt="Avatar de ${guest.name}" loading="lazy" decoding="async" onerror="this.closest('.guest-avatar')?.classList.remove('guest-avatar--image');this.outerHTML='${guest.avatar}';">`;
+  return `<span class="avatar-image">${guest.avatar}</span>`;
 }
 
 export function updateProfileAvatar() {
@@ -86,7 +86,7 @@ export function renderGuestCards() {
     const lockedByOther = Boolean(lockInfo.lockedByUid && lockInfo.lockedByUid !== state.authUid);
     const lockBadge = lockedByOther ? `<span class="guest-lock-badge">${state.currentLanguage === "it" ? "Occupato" : "Bloqueado"}</span>` : "";
     const enterLabel = lockedByOther ? (state.currentLanguage === "it" ? "Profilo occupato" : "Perfil ocupado") : locale.labels.enterCard;
-    return `<article class="guest-card ${lockedByOther ? "guest-card--locked" : ""}" data-guest-id="${guest.id}" tabindex="0" role="button" aria-pressed="false" aria-label="${guest.name}"><div class="guest-card__inner"><div class="guest-card__face guest-card__face--front">${lockBadge}<div class="guest-avatar ${avatarImage ? "guest-avatar--image" : ""}">${renderGuestAvatar(guest)}</div><span class="guest-name">${guest.name}</span></div><div class="guest-card__face guest-card__face--back"><span class="guest-role">${locale.roles[guest.roleKey] || ""}</span><button class="guest-enter-btn primary-btn" type="button" data-guest-enter="${guest.id}" ${lockedByOther ? "disabled" : ""}>${enterLabel}</button></div></div></article>`;
+    return `<article class="guest-card ${lockedByOther ? "guest-card--locked" : ""}" data-guest-id="${guest.id}" tabindex="0" role="button" aria-pressed="false" aria-label="${guest.name}"><div class="guest-card__inner"><div class="guest-card__face guest-card__face--front">${lockBadge}<button class="guest-avatar avatar-button ${avatarImage ? "guest-avatar--image" : ""}" type="button" data-open-avatar-book-modal="true" aria-label="Abrir libro de dedicatorias"><span class="avatar-inner"><span class="avatar-face">${renderGuestAvatar(guest)}</span><span class="avatar-book" aria-hidden="true"><i class="fa-solid fa-book-open-reader" aria-hidden="true"></i></span></span></button><span class="guest-name">${guest.name}</span></div><div class="guest-card__face guest-card__face--back"><span class="guest-role">${locale.roles[guest.roleKey] || ""}</span><button class="guest-enter-btn primary-btn" type="button" data-guest-enter="${guest.id}" ${lockedByOther ? "disabled" : ""}>${enterLabel}</button></div></div></article>`;
   }).join("");
 }
 
