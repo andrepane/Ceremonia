@@ -272,7 +272,8 @@ export const state = {
   lastTranslatedLanguage: "it",
   translationHistoryByGuest: {},
   currentTranslationByGuest: {},
-  unsubscribeDictionary: () => {}
+  unsubscribeDictionary: () => {},
+  guestbookEntries: []
 };
 
 export const setState = (updates) => Object.assign(state, updates);

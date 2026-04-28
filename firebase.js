@@ -164,6 +164,32 @@ async function upsertGuestDictionary(guestId, payload = {}) {
     { merge: true }
   );
 }
+async function getGuestbookEntry(guestId) {
+  if (!db || !guestId) return null;
+
+  const snapshot = await getDoc(eventDoc("guestbookEntries", guestId));
+  return snapshot.exists() ? snapshot.data() : null;
+}
+
+async function upsertGuestbookEntry(guestId, payload = {}) {
+  const user = await ensureAuth();
+  if (!db || !user || !guestId) throw new Error("auth_required");
+
+  await setDoc(
+    eventDoc("guestbookEntries", guestId),
+    {
+      id: guestId,
+      author: payload.author || "",
+      content: payload.content || "",
+      timestamp: payload.timestamp || Date.now(),
+      userId: user.uid,
+      updatedAt: serverTimestamp(),
+      updatedByUid: user.uid
+    },
+    { merge: true }
+  );
+}
+
 
 async function lockGuestProfile(guestId) {
   const user = await ensureAuth();
@@ -499,5 +525,7 @@ export {
   uploadPhoto,
   deletePhoto,
   togglePhotoLike,
-  upsertGuestDictionary
+  upsertGuestDictionary,
+  getGuestbookEntry,
+  upsertGuestbookEntry
 };
