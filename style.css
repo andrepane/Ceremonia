@@ -1442,6 +1442,11 @@ input {
   background: rgba(255, 255, 255, 0.74);
 }
 
+.activity-item__hint i {
+  font-size: 0.72rem;
+  line-height: 1;
+}
+
 .activity-item--placeholder,
 .activity-item--skeleton {
   border-bottom-style: solid;
