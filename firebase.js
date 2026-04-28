@@ -148,6 +148,19 @@ function subscribeGuestDictionary(guestId, onData, onError) {
   );
 }
 
+function subscribeGuestbookEntries(onData, onError) {
+  if (!db) return () => {};
+
+  const q = query(eventCollection("guestbookEntries"), orderBy("timestamp", "desc"), limit(200));
+  return onSnapshot(
+    q,
+    (snapshot) => {
+      onData(snapshot.docs.map((d) => ({ id: d.id, ...d.data() })));
+    },
+    onError
+  );
+}
+
 async function upsertGuestDictionary(guestId, payload = {}) {
   const user = await ensureAuth();
   if (!db || !user || !guestId) throw new Error("auth_required");
@@ -526,6 +539,7 @@ export {
   deletePhoto,
   togglePhotoLike,
   upsertGuestDictionary,
+  subscribeGuestbookEntries,
   getGuestbookEntry,
   upsertGuestbookEntry
 };

@@ -1,7 +1,14 @@
-import { getAuthUid, isFirebaseConfigured, upsertGuestbookEntry, getGuestbookEntry } from "../../firebase.js";
+import {
+  getAuthUid,
+  isFirebaseConfigured,
+  upsertGuestbookEntry,
+  getGuestbookEntry,
+  subscribeGuestbookEntries
+} from "../../firebase.js";
 import { refs, state, setState, findGuestById } from "../state.js";
 
 const AUTOSAVE_DEBOUNCE_MS = 500;
+const COUPLE_GUEST_IDS = new Set(["cintia_novia", "andrea_novio"]);
 
 function normalizeEditableText(value = "") {
   return String(value)
@@ -25,6 +32,7 @@ export class BookModal {
     this.closeEl = refs.guestbookClose || null;
     this.debounceId = null;
     this.isBootstrapping = false;
+    this.liveFeedUnsub = null;
     this.entries = [];
 
     if (!refs.guestbookModal || !this.authorEl || !this.contentEl) return;
@@ -47,6 +55,7 @@ export class BookModal {
     });
 
     const onEdit = () => {
+      if (this.isReadOnlyViewer()) return;
       if (this.isBootstrapping) return;
       this.scheduleAutosave();
       this.bookEl?.classList.add("book--writing");
@@ -70,22 +79,52 @@ export class BookModal {
       refs.guestbookModal?.classList.add("guestbook-modal--open");
     });
 
+    this.applyEditingMode();
     await this.loadEntry();
 
-    window.setTimeout(() => {
-      this.contentEl?.focus({ preventScroll: true });
-      this.placeCaretAtEnd(this.contentEl);
-    }, 340);
+    if (!this.isReadOnlyViewer()) {
+      window.setTimeout(() => {
+        this.contentEl?.focus({ preventScroll: true });
+        this.placeCaretAtEnd(this.contentEl);
+      }, 340);
+    }
   }
 
   close() {
     if (!refs.guestbookModal || refs.guestbookModal.hidden) return;
     refs.guestbookModal.classList.remove("guestbook-modal--open");
     refs.guestbookModal.hidden = true;
+    if (this.liveFeedUnsub) {
+      this.liveFeedUnsub();
+      this.liveFeedUnsub = null;
+    }
     document.body.classList.remove("body--menu-modal-open");
   }
 
+  isReadOnlyViewer() {
+    return COUPLE_GUEST_IDS.has(state.currentGuestId);
+  }
+
+  applyEditingMode() {
+    const readOnly = this.isReadOnlyViewer();
+    this.authorEl.setAttribute("contenteditable", readOnly ? "false" : "true");
+    this.contentEl.setAttribute("contenteditable", readOnly ? "false" : "true");
+    this.authorEl.setAttribute("data-placeholder", readOnly ? "" : "Tu nombre");
+    this.contentEl.setAttribute(
+      "data-placeholder",
+      readOnly ? "Aquí aparecerán las dedicatorias en tiempo real." : "Escribe aquí tu dedicatoria..."
+    );
+  }
+
   async loadEntry() {
+    if (this.isReadOnlyViewer()) {
+      this.authorEl.textContent = "Dedicatorias de los invitados";
+      this.contentEl.innerHTML = "<p>Actualizando…</p>";
+      this.startLiveGuestbookFeed();
+      this.isBootstrapping = false;
+      return;
+    }
+
     const fallbackAuthor = findGuestById(state.currentGuestId)?.name || "";
     this.isBootstrapping = true;
 
@@ -113,6 +152,40 @@ export class BookModal {
     this.isBootstrapping = false;
   }
 
+  startLiveGuestbookFeed() {
+    if (!isFirebaseConfigured()) {
+      this.contentEl.innerHTML = "<p>No hay conexión con Firebase para mostrar dedicatorias.</p>";
+      return;
+    }
+
+    if (this.liveFeedUnsub) this.liveFeedUnsub();
+    this.liveFeedUnsub = subscribeGuestbookEntries(
+      (entries) => {
+        this.entries = entries;
+        setState({ guestbookEntries: entries });
+        this.renderReadOnlyFeed(entries);
+      },
+      () => {
+        this.contentEl.innerHTML = "<p>No se pudieron cargar las dedicatorias.</p>";
+      }
+    );
+  }
+
+  renderReadOnlyFeed(entries) {
+    if (!Array.isArray(entries) || entries.length === 0) {
+      this.contentEl.innerHTML = "<p>Aún no hay dedicatorias.</p>";
+      return;
+    }
+
+    this.contentEl.innerHTML = entries
+      .map((entry) => {
+        const author = normalizeEditableText(entry?.author || findGuestById(entry?.id)?.name || "Invitado");
+        const content = normalizeEditableHtml(entry?.content || "");
+        return `<p><strong>${author}:</strong></p><div>${content || "—"}</div><br/>`;
+      })
+      .join("");
+  }
+
   scheduleAutosave() {
     window.clearTimeout(this.debounceId);
     this.debounceId = window.setTimeout(() => {
@@ -121,6 +194,7 @@ export class BookModal {
   }
 
   async persistCurrentEntry() {
+    if (this.isReadOnlyViewer()) return;
     if (!state.currentGuestId) return;
 
     const payload = {
