@@ -31,6 +31,9 @@ const SATURDAY_MENU_MODAL_ID = "saturday-menu-modal";
 const SUNDAY_BREAKFAST_MENU_MODAL_ID = "sunday-breakfast-menu-modal";
 const PRIVATE_DINNER_SURPRISE_MODAL_ID = "private-dinner-surprise-modal";
 const INSTALL_ONBOARDING_COMPLETED_KEY = "install_onboarding_completed";
+const GUESTBOOK_ICON_SWAP_MS = 2800;
+
+let guestbookIconSwapIntervalId = null;
 
 const INSTALL_ONBOARDING_COPY = {
   es: {
@@ -1061,6 +1064,7 @@ async function setGuest(guestId) {
   const guest = findGuestById(guestId);
   refs.selectedGuestName.textContent = guest ? guest.name : "Invitado";
   updateProfileAvatar();
+  startGuestbookIconAlternation();
   await withAppUpdate(async () => {
     updateWelcomeLabel();
     updateGuestHeaderMessage();
@@ -1109,6 +1113,37 @@ function restoreSession() {
   showScreen(savedLang ? refs.screenGuest : refs.screenLanguage);
 }
 
+function openGuestbookModal() {
+  if (!refs.guestbookModal) return;
+  refs.guestbookModal.hidden = false;
+  document.body.classList.add("body--menu-modal-open");
+}
+
+function closeGuestbookModal() {
+  if (!refs.guestbookModal || refs.guestbookModal.hidden) return;
+  refs.guestbookModal.hidden = true;
+  document.body.classList.remove("body--menu-modal-open");
+}
+
+function stopGuestbookIconAlternation() {
+  if (guestbookIconSwapIntervalId) {
+    window.clearInterval(guestbookIconSwapIntervalId);
+    guestbookIconSwapIntervalId = null;
+  }
+}
+
+function startGuestbookIconAlternation() {
+  if (!refs.guestbookTrigger || refs.guestbookTrigger.hidden) {
+    stopGuestbookIconAlternation();
+    return;
+  }
+  stopGuestbookIconAlternation();
+  refs.guestbookTrigger.classList.remove("guestbook-trigger--show-book");
+  guestbookIconSwapIntervalId = window.setInterval(() => {
+    refs.guestbookTrigger?.classList.toggle("guestbook-trigger--show-book");
+  }, GUESTBOOK_ICON_SWAP_MS);
+}
+
 function bindUIEvents() {
   refs.btnEs.addEventListener("click", () => setLanguage("es"));
   refs.btnIt.addEventListener("click", () => setLanguage("it"));
@@ -1124,9 +1159,15 @@ function bindUIEvents() {
     updateWelcomeLabel();
     updateGuestHeaderMessage();
     updateProfileAvatar();
+    stopGuestbookIconAlternation();
     renderGuestCards();
     showScreen(refs.screenGuest);
   });
+  refs.guestbookTrigger?.addEventListener("click", () => {
+    refs.guestbookTrigger.classList.add("guestbook-trigger--show-book");
+    openGuestbookModal();
+  });
+  refs.guestbookClose?.addEventListener("click", closeGuestbookModal);
 
   refs.navButtons.forEach((button) => button.addEventListener("click", () => activateView(button.dataset.view)));
 
@@ -1200,6 +1241,7 @@ function bindUIEvents() {
 
   document.addEventListener("keydown", (event) => {
     if (event.key === "Escape") {
+      closeGuestbookModal();
       closeFridayDinnerMenuModal();
       closeSaturdayBreakfastMenuModal();
       closeSaturdayMenuModal();
@@ -1269,6 +1311,7 @@ function bindUIEvents() {
 }
 
 window.addEventListener("beforeunload", () => {
+  stopGuestbookIconAlternation();
   if (!isFirebaseConfigured() || !state.currentGuestId || !state.hasActiveGuestLock) return;
   releaseGuestProfileLock(state.currentGuestId).catch(() => {});
 });
@@ -1278,6 +1321,7 @@ const isInstallGateBlocking = initInstallOnboardingGate();
 bindUIEvents();
 startPhotoUploadQueue();
 restoreSession();
+startGuestbookIconAlternation();
 initHeroRotator();
 initHeroDateRotator();
 activateView("home");

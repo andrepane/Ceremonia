@@ -63,6 +63,7 @@ export function updateProfileAvatar() {
   if (!guest) {
     refs.profileAvatarElement.innerHTML = "";
     refs.profileAvatarElement.hidden = true;
+    if (refs.guestbookTrigger) refs.guestbookTrigger.hidden = true;
     refs.profileAvatarElement.classList.remove("header-profile-avatar--image");
     return;
   }
@@ -76,6 +77,7 @@ export function updateProfileAvatar() {
     refs.profileAvatarElement.classList.remove("header-profile-avatar--image");
   }
   refs.profileAvatarElement.hidden = false;
+  if (refs.guestbookTrigger) refs.guestbookTrigger.hidden = false;
 }
 
 export function renderGuestCards() {
