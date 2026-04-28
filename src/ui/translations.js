@@ -1,6 +1,14 @@
 import { APP_DATA, refs, state, constants, getLocale, getHomeCopy } from "../state.js";
 import { updateAppHeaderForView } from "./render.js";
 
+function formatHeroTitle(title) {
+  if (typeof title !== "string" || !title.includes("&")) return title;
+  const [leftSide, ...rightParts] = title.split("&");
+  const rightSide = rightParts.join("&");
+  if (!rightSide.length) return title;
+  return `${leftSide.trimEnd()} <span class="hero-title__ampersand" aria-hidden="true">&amp;</span> ${rightSide.trimStart()}`;
+}
+
 export function applyTranslations() {
   const locale = getLocale();
   const labels = locale.labels;
@@ -10,7 +18,7 @@ export function applyTranslations() {
 
   document.getElementById("txt-weekend").textContent = spanishLabels.weekend;
   document.getElementById("txt-weekend-translation").textContent = italianLabels.weekend;
-  document.getElementById("txt-hero-title").textContent = labels.heroTitle;
+  document.getElementById("txt-hero-title").innerHTML = formatHeroTitle(labels.heroTitle);
   document.getElementById("txt-hero-month-es").textContent = "septiembre";
   document.getElementById("txt-hero-month-it").textContent = "settembre";
   refs.backToLanguage.setAttribute("aria-label", labels.back);

@@ -356,6 +356,12 @@ input {
   text-align: center;
 }
 
+.hero-title__ampersand {
+  display: inline-block;
+  margin-left: 0.08em;
+  margin-right: 0.01em;
+}
+
 .hero-divider {
   width: min(148px, 34vw);
   height: 1px;
