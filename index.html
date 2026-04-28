@@ -295,7 +295,41 @@
   </div>
 
   <section id="guestbook-modal" class="guestbook-modal" hidden>
+    <div class="guestbook-modal__vellum" aria-hidden="true"></div>
+    <div class="guestbook-modal__grain" aria-hidden="true"></div>
     <button id="guestbook-close" class="guestbook-modal__close" type="button" aria-label="Cerrar libro" title="Cerrar libro">×</button>
+    <article class="guestbook-book" role="dialog" aria-modal="true" aria-labelledby="guestbook-title">
+      <div class="guestbook-book__ornament" aria-hidden="true">❦</div>
+      <p class="guestbook-book__kicker">Libro de firmas</p>
+      <h3 id="guestbook-title" class="guestbook-book__title">Dedicatorias para Cintia &amp; Andrea</h3>
+      <p class="guestbook-book__subtitle">
+        Deja unas palabras para los novios. Este rincón está pensado para guardar cada recuerdo bonito del fin de semana.
+      </p>
+      <span class="guestbook-book__divider" aria-hidden="true"></span>
+
+      <form class="guestbook-form" autocomplete="off">
+        <label class="guestbook-form__label" for="guestbook-signature">Tu nombre</label>
+        <input
+          id="guestbook-signature"
+          class="guestbook-form__input"
+          type="text"
+          placeholder="Firma aquí tu nombre"
+        />
+
+        <label class="guestbook-form__label" for="guestbook-message">Tu dedicatoria</label>
+        <textarea
+          id="guestbook-message"
+          class="guestbook-form__textarea"
+          placeholder="Escribe una dedicatoria especial para los novios..."
+          rows="7"
+        ></textarea>
+
+        <div class="guestbook-form__footer">
+          <p class="guestbook-form__hint">Con cariño, respeto y mucha alegría ✨</p>
+          <button class="guestbook-form__seal" type="button">Guardar dedicatoria</button>
+        </div>
+      </form>
+    </article>
   </section>
 
   <script src="data.js"></script>
