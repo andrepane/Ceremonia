@@ -14,6 +14,7 @@ import { handlePhotoGridClick, handleUploadPhoto, highlightPhotoFromActivity } f
 import { startPhotoUploadQueue } from "./features/photo-upload-queue.js";
 import { renderTimeline, updateCountdown } from "./features/timeline.js";
 import { initFirebaseListeners } from "./integrations/firebase-sync.js";
+import { getBookModal } from "./ui/BookModal.js";
 import {
   renderCurrentTranslationForGuest,
   restoreDictionaryCache,
@@ -1114,15 +1115,11 @@ function restoreSession() {
 }
 
 function openGuestbookModal() {
-  if (!refs.guestbookModal) return;
-  refs.guestbookModal.hidden = false;
-  document.body.classList.add("body--menu-modal-open");
+  getBookModal().open();
 }
 
 function closeGuestbookModal() {
-  if (!refs.guestbookModal || refs.guestbookModal.hidden) return;
-  refs.guestbookModal.hidden = true;
-  document.body.classList.remove("body--menu-modal-open");
+  getBookModal().close();
 }
 
 function stopGuestbookIconAlternation() {

@@ -17,7 +17,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link
-    href="https://fonts.googleapis.com/css2?family=Alex+Brush&family=Cormorant+Garamond:wght@500;600;700&family=Inter:wght@400;500;600;700&display=swap"
+    href="https://fonts.googleapis.com/css2?family=Alex+Brush&family=Caveat:wght@400;600&family=Cormorant+Garamond:wght@500;600;700&family=Inter:wght@400;500;600;700&family=Patrick+Hand&family=Playfair+Display:wght@500;700&display=swap"
     rel="stylesheet"
   />
   <link
@@ -28,6 +28,7 @@
     referrerpolicy="no-referrer"
   />
   <link rel="stylesheet" href="style.css" />
+  <link rel="stylesheet" href="src/ui/BookModal.css" />
 </head>
 <body>
   <div id="onboarding" class="install-onboarding" hidden></div>
@@ -295,40 +296,20 @@
   </div>
 
   <section id="guestbook-modal" class="guestbook-modal" hidden>
-    <div class="guestbook-modal__vellum" aria-hidden="true"></div>
-    <div class="guestbook-modal__grain" aria-hidden="true"></div>
-    <button id="guestbook-close" class="guestbook-modal__close" type="button" aria-label="Cerrar libro" title="Cerrar libro">×</button>
-    <article class="guestbook-book" role="dialog" aria-modal="true" aria-labelledby="guestbook-title">
-      <div class="guestbook-book__ornament" aria-hidden="true">❦</div>
-      <p class="guestbook-book__kicker">Libro de firmas</p>
-      <h3 id="guestbook-title" class="guestbook-book__title">Dedicatorias para Cintia &amp; Andrea</h3>
-      <p class="guestbook-book__subtitle">
-        Deja unas palabras para los novios. Este rincón está pensado para guardar cada recuerdo bonito del fin de semana.
-      </p>
-      <span class="guestbook-book__divider" aria-hidden="true"></span>
-
-      <form class="guestbook-form" autocomplete="off">
-        <label class="guestbook-form__label" for="guestbook-signature">Tu nombre</label>
-        <input
-          id="guestbook-signature"
-          class="guestbook-form__input"
-          type="text"
-          placeholder="Firma aquí tu nombre"
-        />
-
-        <label class="guestbook-form__label" for="guestbook-message">Tu dedicatoria</label>
-        <textarea
-          id="guestbook-message"
-          class="guestbook-form__textarea"
-          placeholder="Escribe una dedicatoria especial para los novios..."
-          rows="7"
-        ></textarea>
-
-        <div class="guestbook-form__footer">
-          <p class="guestbook-form__hint">Con cariño, respeto y mucha alegría ✨</p>
-          <button class="guestbook-form__seal" type="button">Guardar dedicatoria</button>
+    <div class="book-modal__backdrop" data-book-backdrop aria-hidden="true"></div>
+    <button id="guestbook-close" class="book-modal__close" type="button" aria-label="Cerrar libro" title="Cerrar libro">×</button>
+    <article class="book" data-book-shell role="dialog" aria-modal="true" aria-labelledby="guestbook-title">
+      <div class="book-modal--left" aria-hidden="true">
+        <h3 id="guestbook-title" class="book-modal__title">Libro de firmas</h3>
+        <p class="book-modal__subtitle">Un rincón íntimo para dejar recuerdos del fin de semana.</p>
+      </div>
+      <div class="book-modal--right">
+        <div class="book-modal__header">
+          <span>De:</span>
+          <span class="book-modal__author" contenteditable="true" spellcheck="false" data-book-author data-placeholder="Tu nombre"></span>
         </div>
-      </form>
+        <div class="book-modal__content" contenteditable="true" spellcheck="true" data-book-content data-placeholder="Escribe aquí tu dedicatoria..."></div>
+      </div>
     </article>
   </section>
 
