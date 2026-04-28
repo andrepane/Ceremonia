@@ -31,6 +31,7 @@ const SATURDAY_MENU_MODAL_ID = "saturday-menu-modal";
 const SUNDAY_BREAKFAST_MENU_MODAL_ID = "sunday-breakfast-menu-modal";
 const PRIVATE_DINNER_SURPRISE_MODAL_ID = "private-dinner-surprise-modal";
 const INSTALL_ONBOARDING_COMPLETED_KEY = "install_onboarding_completed";
+const GUESTBOOK_ANIMATION_RESET_MS = 580;
 
 const INSTALL_ONBOARDING_COPY = {
   es: {
@@ -1109,6 +1110,18 @@ function restoreSession() {
   showScreen(savedLang ? refs.screenGuest : refs.screenLanguage);
 }
 
+function openGuestbookModal() {
+  if (!refs.guestbookModal) return;
+  refs.guestbookModal.hidden = false;
+  document.body.classList.add("body--menu-modal-open");
+}
+
+function closeGuestbookModal() {
+  if (!refs.guestbookModal || refs.guestbookModal.hidden) return;
+  refs.guestbookModal.hidden = true;
+  document.body.classList.remove("body--menu-modal-open");
+}
+
 function bindUIEvents() {
   refs.btnEs.addEventListener("click", () => setLanguage("es"));
   refs.btnIt.addEventListener("click", () => setLanguage("it"));
@@ -1127,6 +1140,14 @@ function bindUIEvents() {
     renderGuestCards();
     showScreen(refs.screenGuest);
   });
+  refs.guestbookTrigger?.addEventListener("click", () => {
+    refs.guestbookTrigger.classList.remove("guestbook-trigger--rolling");
+    void refs.guestbookTrigger.offsetWidth;
+    refs.guestbookTrigger.classList.add("guestbook-trigger--rolling");
+    window.setTimeout(() => refs.guestbookTrigger?.classList.remove("guestbook-trigger--rolling"), GUESTBOOK_ANIMATION_RESET_MS);
+    openGuestbookModal();
+  });
+  refs.guestbookClose?.addEventListener("click", closeGuestbookModal);
 
   refs.navButtons.forEach((button) => button.addEventListener("click", () => activateView(button.dataset.view)));
 
@@ -1200,6 +1221,7 @@ function bindUIEvents() {
 
   document.addEventListener("keydown", (event) => {
     if (event.key === "Escape") {
+      closeGuestbookModal();
       closeFridayDinnerMenuModal();
       closeSaturdayBreakfastMenuModal();
       closeSaturdayMenuModal();
