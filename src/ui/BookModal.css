@@ -66,13 +66,14 @@
   flex: 1;
   min-height: inherit;
   border-radius: 14px;
-  background: #fdf6e3;
-  box-shadow: inset 0 0 0 1px rgba(84, 54, 29, 0.08), inset 0 20px 35px rgba(67, 44, 20, 0.07), 0 16px 40px rgba(0, 0, 0, 0.3);
+  background: #f8efdf;
+  box-shadow: inset 0 0 0 1px rgba(109, 82, 56, 0.1), inset 0 20px 35px rgba(86, 60, 35, 0.07), 0 16px 40px rgba(0, 0, 0, 0.3);
   background-image:
-    linear-gradient(to bottom, rgba(0, 0, 0, 0.08) 1px, transparent 1px),
-    radial-gradient(circle at top left, rgba(255, 255, 255, 0.72), transparent 45%);
-  background-size: 100% 32px, cover;
-  background-position: 0 34px, center;
+    radial-gradient(circle at 14% 9%, rgba(255, 255, 255, 0.7), transparent 48%),
+    radial-gradient(circle at 82% 90%, rgba(233, 209, 177, 0.28), transparent 46%),
+    linear-gradient(180deg, rgba(223, 197, 160, 0.28) 0%, rgba(248, 238, 223, 0.94) 14%, rgba(244, 231, 212, 0.95) 100%);
+  background-size: cover;
+  background-position: center;
   padding: 24px 22px 24px 34px;
   overflow: hidden;
 }
@@ -90,22 +91,41 @@
   transform: rotateY(-12deg) rotateX(1deg);
 }
 
-.book-modal--left::before,
-.book-modal--right::before {
-  content: "";
-  position: absolute;
-  top: 0;
-  bottom: 0;
-  left: 20px;
-  width: 2px;
-  background: rgba(177, 38, 24, 0.45);
-}
-
 .book-modal--right {
   position: relative;
   transform-origin: left center;
   transform: rotateY(88deg) rotateX(4deg);
   transition: transform 600ms cubic-bezier(0.22, 1, 0.36, 1), box-shadow 180ms ease;
+}
+
+.book-modal--right::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background:
+    repeating-linear-gradient(
+      180deg,
+      rgba(170, 147, 120, 0.22) 0,
+      rgba(170, 147, 120, 0.22) 1px,
+      transparent 1px,
+      transparent 42px
+    );
+  background-position: 0 38px;
+}
+
+.book-modal--right::after {
+  content: "C&A";
+  position: absolute;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  pointer-events: none;
+  font-family: "Playfair Display", "Cormorant Garamond", serif;
+  font-size: clamp(3.2rem, 9vw, 6rem);
+  letter-spacing: 0.08em;
+  color: rgba(136, 105, 73, 0.12);
+  transform: translateY(8px);
 }
 
 .guestbook-modal--open .book-modal--right {
@@ -158,7 +178,7 @@
   outline: none;
   border: 0;
   cursor: text;
-  font-family: "Caveat", "Patrick Hand", "Brush Script MT", cursive;
+  font-family: "Cormorant Garamond", "Playfair Display", serif;
   color: #4d301d;
   -webkit-user-modify: read-write-plaintext-only;
 }
@@ -167,7 +187,8 @@
   min-width: 120px;
   max-width: 60%;
   min-height: 28px;
-  font-size: clamp(1.4rem, 2.4vw, 1.85rem);
+  font-family: "Alex Brush", "Cormorant Garamond", serif;
+  font-size: clamp(1.55rem, 2.6vw, 2rem);
 }
 
 .book-modal__author:empty::before,
@@ -181,8 +202,8 @@
   max-height: min(50vh, 500px);
   padding-right: 6px;
   overflow: auto;
-  line-height: 32px;
-  font-size: clamp(1.35rem, 2.2vw, 1.8rem);
+  line-height: 42px;
+  font-size: clamp(1.15rem, 1.9vw, 1.45rem);
   white-space: pre-wrap;
   word-break: break-word;
   -webkit-overflow-scrolling: touch;
