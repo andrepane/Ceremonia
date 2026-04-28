@@ -1846,6 +1846,61 @@ input {
   animation: like-pop 380ms ease;
 }
 
+.reaction-menu {
+  position: fixed;
+  z-index: 95;
+  width: 200px;
+  height: 200px;
+  transform: translate(-50%, -50%);
+  pointer-events: auto;
+}
+
+.reaction-menu[hidden] {
+  display: none;
+}
+
+.reaction-menu::before {
+  content: "";
+  position: absolute;
+  inset: 32px;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.95);
+  border: 1px solid rgba(178, 149, 126, 0.35);
+  box-shadow: 0 16px 36px rgba(39, 23, 14, 0.24);
+}
+
+.reaction-menu__item {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 42px;
+  height: 42px;
+  border-radius: 999px;
+  border: 1px solid rgba(173, 139, 115, 0.35);
+  background: rgba(255, 255, 255, 0.98);
+  --rx: 0px;
+  --ry: 0px;
+  transform: translate(-50%, -50%) translate(var(--rx), var(--ry));
+  display: grid;
+  place-items: center;
+  font-size: 1.2rem;
+  line-height: 1;
+}
+
+.reaction-menu__item:nth-child(1) { --rx: 0px; --ry: -76px; }
+.reaction-menu__item:nth-child(2) { --rx: 54px; --ry: -54px; }
+.reaction-menu__item:nth-child(3) { --rx: 76px; --ry: 0px; }
+.reaction-menu__item:nth-child(4) { --rx: 54px; --ry: 54px; }
+.reaction-menu__item:nth-child(5) { --rx: 0px; --ry: 76px; }
+.reaction-menu__item:nth-child(6) { --rx: -54px; --ry: 54px; }
+.reaction-menu__item:nth-child(7) { --rx: -76px; --ry: 0px; }
+.reaction-menu__item:nth-child(8) { --rx: -54px; --ry: -54px; }
+
+.reaction-menu__item:hover,
+.reaction-menu__item:focus-visible {
+  transform: translate(-50%, -50%) translate(var(--rx), var(--ry)) scale(1.12);
+}
+
 @keyframes like-pop {
   0% {
     transform: scale(1);

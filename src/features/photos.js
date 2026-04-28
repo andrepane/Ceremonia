@@ -1,9 +1,12 @@
-import { deletePhoto, togglePhotoLike } from "../../firebase.js";
+import { deletePhoto, setPhotoReaction } from "../../firebase.js";
 import { enqueuePhotoUpload } from "./photo-upload-queue.js";
 import { refs, state, getHomeCopy } from "../state.js";
 
 let photoViewerEl = null;
 let highlightCleanupTimeoutId = null;
+let reactionMenuEl = null;
+let reactionMenuPhotoId = "";
+const PHOTO_REACTIONS = ["❤️", "😂", "😮", "🔥", "😍", "👏", "🤯", "🫶"];
 
 function getPhotoViewer() {
   if (photoViewerEl) return photoViewerEl;
@@ -118,22 +121,11 @@ export async function handleUploadPhoto() {
 
 export async function handlePhotoGridClick(event) {
   const likeBtn = event.target.closest("[data-photo-like]");
-  if (likeBtn && state.currentGuestId && state.firebaseOnline) {
+  if (likeBtn) {
+    if (!state.currentGuestId || !state.firebaseOnline) return;
     const photoId = likeBtn.dataset.photoLike;
     if (!photoId || state.pendingPhotoLikes.has(photoId)) return;
-
-    state.pendingPhotoLikes.add(photoId);
-    likeBtn.disabled = true;
-    likeBtn.classList.add("photo-like-btn--pulse");
-    try {
-      await togglePhotoLike(photoId, state.currentGuestId);
-    } catch {
-      alert(getHomeCopy().likeError);
-    } finally {
-      state.pendingPhotoLikes.delete(photoId);
-      likeBtn.disabled = false;
-      likeBtn.classList.remove("photo-like-btn--pulse");
-    }
+    openReactionMenu(likeBtn, photoId);
     return;
   }
 
@@ -152,4 +144,77 @@ export async function handlePhotoGridClick(event) {
   if (openPhotoEl) {
     openPhotoViewer(openPhotoEl.dataset.photoOpen);
   }
+}
+
+function getReactionMenu() {
+  if (reactionMenuEl) return reactionMenuEl;
+  reactionMenuEl = document.createElement("div");
+  reactionMenuEl.className = "reaction-menu";
+  reactionMenuEl.hidden = true;
+  reactionMenuEl.setAttribute("role", "menu");
+  reactionMenuEl.innerHTML = PHOTO_REACTIONS.map(
+    (emoji) => `<button type="button" class="reaction-menu__item" data-photo-reaction="${emoji}" aria-label="${emoji}">${emoji}</button>`
+  ).join("");
+  document.body.appendChild(reactionMenuEl);
+
+  reactionMenuEl.addEventListener("click", async (event) => {
+    const reactionBtn = event.target.closest("[data-photo-reaction]");
+    if (!reactionBtn) return;
+    const reaction = reactionBtn.dataset.photoReaction;
+    if (!reaction || !reactionMenuPhotoId || !state.currentGuestId || !state.firebaseOnline) {
+      closeReactionMenu();
+      return;
+    }
+
+    const currentLikeBtn = document.querySelector(`[data-photo-like="${reactionMenuPhotoId}"]`);
+    if (!currentLikeBtn || state.pendingPhotoLikes.has(reactionMenuPhotoId)) {
+      closeReactionMenu();
+      return;
+    }
+
+    state.pendingPhotoLikes.add(reactionMenuPhotoId);
+    currentLikeBtn.disabled = true;
+    currentLikeBtn.classList.add("photo-like-btn--pulse");
+    try {
+      await setPhotoReaction(reactionMenuPhotoId, state.currentGuestId, reaction);
+    } catch {
+      alert(getHomeCopy().likeError);
+    } finally {
+      state.pendingPhotoLikes.delete(reactionMenuPhotoId);
+      currentLikeBtn.disabled = false;
+      currentLikeBtn.classList.remove("photo-like-btn--pulse");
+      closeReactionMenu();
+    }
+  });
+
+  document.addEventListener("click", (event) => {
+    if (!reactionMenuEl || reactionMenuEl.hidden) return;
+    if (event.target.closest("[data-photo-like]")) return;
+    if (event.target.closest(".reaction-menu")) return;
+    closeReactionMenu();
+  });
+  document.addEventListener("scroll", () => closeReactionMenu(), true);
+  window.addEventListener("resize", () => closeReactionMenu());
+  document.addEventListener("keydown", (event) => {
+    if (event.key === "Escape") closeReactionMenu();
+  });
+  return reactionMenuEl;
+}
+
+function openReactionMenu(anchorEl, photoId) {
+  const menu = getReactionMenu();
+  reactionMenuPhotoId = photoId;
+  const rect = anchorEl.getBoundingClientRect();
+  const centerX = rect.left + (rect.width / 2);
+  const centerY = rect.top + (rect.height / 2);
+
+  menu.style.left = `${centerX}px`;
+  menu.style.top = `${centerY}px`;
+  menu.hidden = false;
+}
+
+function closeReactionMenu() {
+  if (!reactionMenuEl) return;
+  reactionMenuPhotoId = "";
+  reactionMenuEl.hidden = true;
 }

@@ -336,6 +336,8 @@ async function uploadPhoto({ file, thumbnailFile, width, height, guestId, upload
     createdAt: existingPhoto?.createdAt || serverTimestamp(),
     likesCount: Number(existingPhoto?.likesCount) || 0,
     likedByGuestIds: Array.isArray(existingPhoto?.likedByGuestIds) ? existingPhoto.likedByGuestIds : [],
+    reactionCounts: existingPhoto?.reactionCounts && typeof existingPhoto.reactionCounts === "object" ? existingPhoto.reactionCounts : {},
+    reactionsByGuestIds: existingPhoto?.reactionsByGuestIds && typeof existingPhoto.reactionsByGuestIds === "object" ? existingPhoto.reactionsByGuestIds : {},
     uploadState: "uploading",
     uploadPhase: "thumbnail",
     uploadStartedAt: existingPhoto?.uploadStartedAt || serverTimestamp(),
@@ -384,6 +386,8 @@ async function uploadPhoto({ file, thumbnailFile, width, height, guestId, upload
     authorUid: user.uid,
     likesCount: Number(existingPhoto?.likesCount) || 0,
     likedByGuestIds: Array.isArray(existingPhoto?.likedByGuestIds) ? existingPhoto.likedByGuestIds : [],
+    reactionCounts: existingPhoto?.reactionCounts && typeof existingPhoto.reactionCounts === "object" ? existingPhoto.reactionCounts : {},
+    reactionsByGuestIds: existingPhoto?.reactionsByGuestIds && typeof existingPhoto.reactionsByGuestIds === "object" ? existingPhoto.reactionsByGuestIds : {},
     createdAt: existingPhoto?.createdAt || serverTimestamp(),
     uploadCompletedAt: serverTimestamp(),
     uploadState: "ready",
@@ -405,10 +409,13 @@ async function uploadPhoto({ file, thumbnailFile, width, height, guestId, upload
   return safeUploadId;
 }
 
-async function togglePhotoLike(photoId, guestId) {
+const PHOTO_REACTIONS = ["❤️", "😂", "😮", "🔥", "😍", "👏", "🤯", "🫶"];
+
+async function setPhotoReaction(photoId, guestId, reaction) {
   const user = await ensureAuth();
   if (!db || !user) throw new Error("auth_required");
   if (!guestId) throw new Error("guest_required");
+  if (!PHOTO_REACTIONS.includes(reaction)) throw new Error("reaction_invalid");
 
   const photoRef = eventDoc("photos", photoId);
   const likeRef = doc(db, "events", eventId, "photos", photoId, "likes", guestId);
@@ -422,26 +429,42 @@ async function togglePhotoLike(photoId, guestId) {
     const currentLikedBy = Array.isArray(photoData.likedByGuestIds)
       ? photoData.likedByGuestIds
       : [];
+    const currentReactionCounts = photoData.reactionCounts && typeof photoData.reactionCounts === "object"
+      ? { ...photoData.reactionCounts }
+      : {};
+    const currentReactionsByGuest = photoData.reactionsByGuestIds && typeof photoData.reactionsByGuestIds === "object"
+      ? { ...photoData.reactionsByGuestIds }
+      : {};
+    const fallbackPreviousReaction = currentLikedBy.includes(guestId) ? "❤️" : null;
+    const previousReaction = currentReactionsByGuest[guestId] || fallbackPreviousReaction;
 
-    if (likeSnap.exists()) {
-      tx.delete(likeRef);
-      tx.update(photoRef, {
-        likesCount: increment(-1),
-        likedByGuestIds: currentLikedBy.filter((id) => id !== guestId)
-      });
-      return true;
+    if (previousReaction === reaction) {
+      return false;
     }
 
     tx.set(likeRef, {
       uid: user.uid,
       guestId,
+      reaction,
       createdAt: serverTimestamp()
-    });
+    }, { merge: true });
+
+    if (previousReaction && currentReactionCounts[previousReaction]) {
+      currentReactionCounts[previousReaction] = Math.max(0, Number(currentReactionCounts[previousReaction]) - 1);
+      if (!currentReactionCounts[previousReaction]) delete currentReactionCounts[previousReaction];
+    }
+    currentReactionCounts[reaction] = Number(currentReactionCounts[reaction] || 0) + 1;
+    currentReactionsByGuest[guestId] = reaction;
+
+    const nextLikedByGuestIds = currentLikedBy.includes(guestId)
+      ? currentLikedBy
+      : [...currentLikedBy, guestId];
+
     tx.update(photoRef, {
-      likesCount: increment(1),
-      likedByGuestIds: currentLikedBy.includes(guestId)
-        ? currentLikedBy
-        : [...currentLikedBy, guestId]
+      likesCount: Number(photoData.likesCount || 0) + (previousReaction ? 0 : 1),
+      likedByGuestIds: nextLikedByGuestIds,
+      reactionCounts: currentReactionCounts,
+      reactionsByGuestIds: currentReactionsByGuest
     });
     return true;
   });
@@ -498,6 +521,6 @@ export {
   releaseGuestProfileLock,
   uploadPhoto,
   deletePhoto,
-  togglePhotoLike,
+  setPhotoReaction,
   upsertGuestDictionary
 };
