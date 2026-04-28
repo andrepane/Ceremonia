@@ -2,6 +2,8 @@ import { getAuthUid, isFirebaseConfigured, upsertGuestbookEntry, getGuestbookEnt
 import { refs, state, setState, findGuestById } from "../state.js";
 
 const AUTOSAVE_DEBOUNCE_MS = 500;
+const BOOK_BASE_WIDTH = 980;
+const BOOK_BASE_HEIGHT = 620;
 
 function normalizeEditableText(value = "") {
   return String(value)
@@ -26,6 +28,7 @@ export class BookModal {
     this.debounceId = null;
     this.isBootstrapping = false;
     this.entries = [];
+    this.resizeHandler = () => this.updateBookScale();
 
     if (!refs.guestbookModal || !this.authorEl || !this.contentEl) return;
     this.bindEvents();
@@ -58,12 +61,15 @@ export class BookModal {
 
     this.authorEl.addEventListener("input", onEdit);
     this.contentEl.addEventListener("input", onEdit);
+    window.addEventListener("resize", this.resizeHandler, { passive: true });
+    window.addEventListener("orientationchange", this.resizeHandler, { passive: true });
   }
 
   async open() {
     if (!refs.guestbookModal) return;
 
     refs.guestbookModal.hidden = false;
+    this.updateBookScale();
     refs.guestbookModal.classList.remove("guestbook-modal--open");
     document.body.classList.add("body--menu-modal-open");
     window.requestAnimationFrame(() => {
@@ -76,6 +82,19 @@ export class BookModal {
       this.contentEl?.focus({ preventScroll: true });
       this.placeCaretAtEnd(this.contentEl);
     }, 340);
+  }
+
+  updateBookScale() {
+    if (!this.bookEl || !refs.guestbookModal) return;
+    const modalStyle = window.getComputedStyle(refs.guestbookModal);
+    const paddingX = (parseFloat(modalStyle.paddingLeft) || 0) + (parseFloat(modalStyle.paddingRight) || 0);
+    const paddingY = (parseFloat(modalStyle.paddingTop) || 0) + (parseFloat(modalStyle.paddingBottom) || 0);
+    const availableWidth = Math.max(220, window.innerWidth - paddingX);
+    const availableHeight = Math.max(320, window.innerHeight - paddingY);
+    const widthScale = availableWidth / BOOK_BASE_WIDTH;
+    const heightScale = availableHeight / BOOK_BASE_HEIGHT;
+    const scale = Math.min(1, widthScale, heightScale);
+    this.bookEl.style.setProperty("--book-scale", scale.toFixed(4));
   }
 
   close() {

@@ -5,6 +5,7 @@
   display: grid;
   place-items: center;
   padding: clamp(14px, 4vw, 28px);
+  overflow: hidden;
   background: rgba(12, 7, 5, 0.68);
   backdrop-filter: blur(10px);
   -webkit-backdrop-filter: blur(10px);
@@ -33,53 +34,56 @@
 }
 
 .book {
+  --book-scale: 1;
   position: relative;
-  width: min(960px, 96vw);
-  min-height: min(72vh, 640px);
+  width: 980px;
+  min-height: 620px;
   display: flex;
-  gap: clamp(8px, 2vw, 18px);
+  gap: 0;
   perspective: 1800px;
   transform-style: preserve-3d;
+  transform: scale(var(--book-scale));
+  transform-origin: center center;
   animation: bookAppear 600ms cubic-bezier(0.2, 0.65, 0.2, 1) both;
 }
 
 .book::after {
   content: "";
   position: absolute;
-  inset: auto 8% -18px;
-  height: 28px;
+  inset: auto 10% -30px;
+  height: 34px;
   border-radius: 50%;
-  background: rgba(0, 0, 0, 0.35);
-  filter: blur(16px);
+  background: rgba(0, 0, 0, 0.4);
+  filter: blur(18px);
 }
 
 .book-modal--left,
 .book-modal--right {
   flex: 1;
   min-height: inherit;
-  border-radius: 14px;
+  border-radius: 18px;
   background: #fdf6e3;
-  box-shadow: inset 0 0 0 1px rgba(84, 54, 29, 0.08), inset 0 20px 35px rgba(67, 44, 20, 0.07), 0 16px 40px rgba(0, 0, 0, 0.3);
+  box-shadow: inset 0 0 0 1px rgba(84, 54, 29, 0.1), inset 0 20px 35px rgba(67, 44, 20, 0.09), 0 18px 44px rgba(0, 0, 0, 0.34);
   background-image:
-    linear-gradient(to bottom, rgba(0, 0, 0, 0.08) 1px, transparent 1px),
+    linear-gradient(to bottom, rgba(112, 86, 56, 0.11) 1px, transparent 1px),
     radial-gradient(circle at top left, rgba(255, 255, 255, 0.72), transparent 45%);
   background-size: 100% 32px, cover;
   background-position: 0 34px, center;
-  padding: 24px 22px 24px 34px;
+  padding: 26px 24px 24px 38px;
   overflow: hidden;
 }
 
 .book-modal--left {
   position: relative;
   transform-origin: right center;
-  transform: rotateY(-92deg) rotateX(5deg);
+  transform: rotateY(-96deg) rotateX(6deg) translateZ(-4px);
   transition: transform 600ms cubic-bezier(0.22, 1, 0.36, 1);
   font-family: "Playfair Display", "Cormorant Garamond", serif;
   color: rgba(66, 44, 26, 0.84);
 }
 
 .guestbook-modal--open .book-modal--left {
-  transform: rotateY(-12deg) rotateX(1deg);
+  transform: rotateY(-8deg) rotateX(0.8deg) translateZ(0);
 }
 
 .book-modal--left::before,
@@ -88,20 +92,20 @@
   position: absolute;
   top: 0;
   bottom: 0;
-  left: 20px;
+  left: 24px;
   width: 2px;
-  background: rgba(177, 38, 24, 0.45);
+  background: rgba(185, 63, 45, 0.36);
 }
 
 .book-modal--right {
   position: relative;
   transform-origin: left center;
-  transform: rotateY(88deg) rotateX(4deg);
+  transform: rotateY(90deg) rotateX(4deg) translateZ(8px);
   transition: transform 600ms cubic-bezier(0.22, 1, 0.36, 1), box-shadow 180ms ease;
 }
 
 .guestbook-modal--open .book-modal--right {
-  transform: rotateY(8deg) rotateX(0deg);
+  transform: rotateY(4deg) rotateX(0deg) translateZ(6px);
 }
 
 .book-modal--right:hover {
@@ -111,12 +115,13 @@
 .book::before {
   content: "";
   position: absolute;
-  left: calc(50% - 5px);
-  top: 16px;
-  bottom: 16px;
-  width: 10px;
+  left: calc(50% - 8px);
+  top: 14px;
+  bottom: 14px;
+  width: 16px;
   border-radius: 8px;
-  background: linear-gradient(180deg, rgba(54, 37, 24, 0.25), rgba(36, 23, 14, 0.08));
+  background: linear-gradient(180deg, rgba(54, 37, 24, 0.38), rgba(36, 23, 14, 0.12));
+  box-shadow: inset 0 0 8px rgba(20, 12, 7, 0.3);
   z-index: 2;
 }
 
@@ -141,6 +146,20 @@
   margin-bottom: 14px;
   font-family: "Playfair Display", "Cormorant Garamond", serif;
   color: rgba(74, 49, 30, 0.9);
+}
+
+.book-modal--right::after {
+  content: "C&A";
+  position: absolute;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  font-family: "Alex Brush", cursive;
+  font-size: clamp(4.6rem, 7.5vw, 5.4rem);
+  color: #69422d;
+  opacity: 0.05;
+  pointer-events: none;
+  z-index: 0;
 }
 
 .book-modal__author,
@@ -170,9 +189,10 @@
 
 .book-modal__content {
   min-height: clamp(300px, 48vh, 470px);
-  max-height: min(50vh, 500px);
+  max-height: min(49vh, 500px);
   padding-right: 6px;
-  overflow: auto;
+  overflow-x: hidden;
+  overflow-y: auto;
   line-height: 32px;
   font-size: clamp(1.35rem, 2.2vw, 1.8rem);
   white-space: pre-wrap;
@@ -193,32 +213,37 @@
 @keyframes bookAppear {
   from {
     opacity: 0;
-    transform: translateY(10px) scale(0.98);
+    transform: translateY(10px) scale(calc(var(--book-scale) * 0.98));
   }
   to {
     opacity: 1;
-    transform: translateY(0) scale(1);
+    transform: translateY(0) scale(var(--book-scale));
   }
 }
 
 @media (max-width: 860px) {
   .book {
-    width: min(98vw, 730px);
-    min-height: min(78vh, 720px);
-    gap: 6px;
+    width: 980px;
+    min-height: 620px;
   }
 
-  .book::before,
-  .book-modal--left {
-    display: none;
-  }
-
+  .book-modal--left,
   .book-modal--right {
-    transform: rotateY(0deg) rotateX(0deg) !important;
+    padding: 20px 18px 18px 34px;
   }
 
-  .book-modal--right,
-  .book-modal--left {
-    padding: 18px 14px 18px 28px;
+  .book-modal__content {
+    min-height: clamp(260px, 40vh, 440px);
+  }
+}
+
+@media (max-width: 640px) {
+  .guestbook-modal {
+    padding: 12px;
+  }
+
+  .book::before {
+    width: 12px;
+    left: calc(50% - 6px);
   }
 }
