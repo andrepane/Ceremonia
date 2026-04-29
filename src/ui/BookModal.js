@@ -3,6 +3,25 @@ import { refs, state, setState, findGuestById } from "../state.js";
 
 const AUTOSAVE_DEBOUNCE_MS = 500;
 
+
+const GUEST_DEDICATION_FONTS = {
+  manolo: '"Allura", "Cormorant Garamond", serif',
+  ana_madre_novia: '"Alex Brush", "Cormorant Garamond", serif',
+  simona: '"Sacramento", "Cormorant Garamond", serif',
+  gigi: '"Parisienne", "Cormorant Garamond", serif',
+  jesus: '"Dancing Script", "Cormorant Garamond", serif',
+  irene: '"Marck Script", "Cormorant Garamond", serif',
+  rachele: '"Satisfy", "Cormorant Garamond", serif',
+  lisa: '"Yellowtail", "Cormorant Garamond", serif',
+  rosa: '"Kaushan Script", "Cormorant Garamond", serif',
+  josefina: '"Tangerine", "Cormorant Garamond", serif',
+  marina: '"Mr Dafoe", "Cormorant Garamond", serif',
+  alicia: '"Pinyon Script", "Cormorant Garamond", serif',
+  gabri: '"Bad Script", "Cormorant Garamond", serif',
+  ana_amiga_novia: '"Courgette", "Cormorant Garamond", serif',
+  tito: '"Caveat", "Cormorant Garamond", serif'
+};
+
 function isCoupleGuest(guestId) {
   return guestId === "cintia_novia" || guestId === "andrea_novio";
 }
@@ -137,6 +156,7 @@ export class BookModal {
       this.entries = normalizedEntries;
       setState({ guestbookEntries: normalizedEntries });
       this.authorEl.textContent = "";
+      this.applyGuestFont(state.currentGuestId);
       this.setReadOnlyMode(true);
       this.toggleCoupleHeader(false);
       this.contentEl.innerHTML = renderCoupleGuestbookContent(normalizedEntries);
@@ -150,6 +170,12 @@ export class BookModal {
     this.contentEl.classList.toggle("book-modal__content--readonly", isReadOnly);
   }
 
+  applyGuestFont(guestId) {
+    const fontFamily = GUEST_DEDICATION_FONTS[guestId] || '"Cormorant Garamond", "Playfair Display", serif';
+    this.authorEl.style.fontFamily = fontFamily;
+    this.contentEl.style.fontFamily = fontFamily;
+  }
+
   toggleCoupleHeader(show) {
     if (this.fromLabelEl) this.fromLabelEl.hidden = !show;
     this.authorEl.hidden = !show;
@@ -161,6 +187,7 @@ export class BookModal {
 
     if (isCoupleGuest(state.currentGuestId)) {
       this.authorEl.textContent = "";
+      this.applyGuestFont(state.currentGuestId);
       this.setReadOnlyMode(true);
       this.toggleCoupleHeader(false);
       this.contentEl.innerHTML = "";
@@ -170,6 +197,7 @@ export class BookModal {
     }
 
     this.stopCoupleGuestbookSubscription();
+    this.applyGuestFont(state.currentGuestId);
     this.setReadOnlyMode(false);
     this.toggleCoupleHeader(true);
 
