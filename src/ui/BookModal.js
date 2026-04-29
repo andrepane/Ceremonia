@@ -26,11 +26,18 @@ function isCoupleGuest(guestId) {
   return guestId === "cintia_novia" || guestId === "andrea_novio";
 }
 
+function getGuestDedicationFont(guestId) {
+  return GUEST_DEDICATION_FONTS[guestId] || '"Cormorant Garamond", "Playfair Display", serif';
+}
+
 function renderCoupleGuestbookContent(entries = []) {
   if (!entries.length) return "";
 
   return entries
-    .map((entry) => `<article class="book-modal__dedication"><p class="book-modal__dedication-from">De: ${entry.fromName || "Invitado"}</p><p class="book-modal__dedication-text">${entry.content || ""}</p></article>`)
+    .map((entry) => {
+      const fontFamily = getGuestDedicationFont(entry.fromGuestId || entry.id);
+      return `<article class="book-modal__dedication" style="font-family: ${fontFamily};"><p class="book-modal__dedication-from">De: ${entry.fromName || "Invitado"}</p><p class="book-modal__dedication-text">${entry.content || ""}</p></article>`;
+    })
     .join("");
 }
 
@@ -171,7 +178,7 @@ export class BookModal {
   }
 
   applyGuestFont(guestId) {
-    const fontFamily = GUEST_DEDICATION_FONTS[guestId] || '"Cormorant Garamond", "Playfair Display", serif';
+    const fontFamily = getGuestDedicationFont(guestId);
     this.authorEl.style.fontFamily = fontFamily;
     this.contentEl.style.fontFamily = fontFamily;
   }
