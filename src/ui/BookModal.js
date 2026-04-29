@@ -1,7 +1,20 @@
-import { getAuthUid, isFirebaseConfigured, upsertGuestbookEntry, getGuestbookEntry } from "../../firebase.js";
+import { getAuthUid, isFirebaseConfigured, upsertGuestbookEntry, getGuestbookEntry, subscribeCoupleGuestbook } from "../../firebase.js";
 import { refs, state, setState, findGuestById } from "../state.js";
 
 const AUTOSAVE_DEBOUNCE_MS = 500;
+
+function isCoupleGuest(guestId) {
+  return guestId === "cintia_novia" || guestId === "andrea_novio";
+}
+
+function renderCoupleGuestbookContent(entries = []) {
+  if (!entries.length) return "";
+
+  return entries
+    .map((entry) => `<p><strong>${entry.fromName || "Invitado"}:</strong> ${entry.content || ""}</p>`)
+    .join("");
+}
+
 
 function normalizeEditableText(value = "") {
   return String(value)
@@ -28,6 +41,7 @@ export class BookModal {
     this.coverTimeoutId = null;
     this.isBootstrapping = false;
     this.entries = [];
+    this.coupleGuestbookUnsub = null;
 
     if (!refs.guestbookModal || !this.authorEl || !this.contentEl) return;
     this.bindEvents();
@@ -83,6 +97,7 @@ export class BookModal {
 
   close() {
     if (!refs.guestbookModal || refs.guestbookModal.hidden) return;
+    this.stopCoupleGuestbookSubscription();
     window.clearTimeout(this.coverTimeoutId);
     refs.guestbookModal.classList.remove("guestbook-modal--open");
     refs.guestbookModal.hidden = true;
@@ -100,9 +115,38 @@ export class BookModal {
     }, 3000);
   }
 
+
+  stopCoupleGuestbookSubscription() {
+    if (this.coupleGuestbookUnsub) {
+      this.coupleGuestbookUnsub();
+      this.coupleGuestbookUnsub = null;
+    }
+  }
+
+  startCoupleGuestbookSubscription() {
+    this.stopCoupleGuestbookSubscription();
+    this.coupleGuestbookUnsub = subscribeCoupleGuestbook((entries) => {
+      const normalizedEntries = Array.isArray(entries) ? entries : [];
+      this.entries = normalizedEntries;
+      setState({ guestbookEntries: normalizedEntries });
+      this.authorEl.textContent = "Invitados";
+      this.contentEl.innerHTML = renderCoupleGuestbookContent(normalizedEntries);
+    });
+  }
+
   async loadEntry() {
     const fallbackAuthor = findGuestById(state.currentGuestId)?.name || "";
     this.isBootstrapping = true;
+
+    if (isCoupleGuest(state.currentGuestId)) {
+      this.authorEl.textContent = "Invitados";
+      this.contentEl.innerHTML = "";
+      this.startCoupleGuestbookSubscription();
+      this.isBootstrapping = false;
+      return;
+    }
+
+    this.stopCoupleGuestbookSubscription();
 
     let entry = null;
     if (isFirebaseConfigured() && state.currentGuestId) {
@@ -136,7 +180,7 @@ export class BookModal {
   }
 
   async persistCurrentEntry() {
-    if (!state.currentGuestId) return;
+    if (!state.currentGuestId || isCoupleGuest(state.currentGuestId)) return;
 
     const payload = {
       id: state.currentGuestId,
