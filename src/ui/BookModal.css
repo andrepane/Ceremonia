@@ -375,6 +375,11 @@
   opacity: 0.42;
 }
 
+.book-modal__author--readonly:empty::before,
+.book-modal__content--readonly:empty::before {
+  content: "";
+}
+
 .book-modal__content {
   min-height: clamp(300px, 48vh, 470px);
   max-height: min(50vh, 500px);
