@@ -351,17 +351,20 @@
 }
 
 .book-modal__dedication {
-  margin-bottom: 20px;
-}
-
-.book-modal__dedication-from {
-  margin: 0 0 4px;
-  font-weight: 700;
-  color: rgba(76, 47, 27, 0.95);
+  margin-bottom: 26px;
 }
 
 .book-modal__dedication-text {
   margin: 0;
+  text-align: left;
+  line-height: 1.7;
+}
+
+.book-modal__dedication-signature {
+  margin: 18px 0 0;
+  text-align: right;
+  font-size: clamp(1.35rem, 2.3vw, 1.75rem);
+  color: #2f3d68;
 }
 
 .book-modal__author {
