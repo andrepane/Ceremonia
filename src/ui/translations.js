@@ -9,6 +9,19 @@ function formatHeroTitle(title) {
   return `${leftSide.trimEnd()} <span class="hero-title__ampersand" aria-hidden="true">&amp;</span> ${rightSide.trimStart()}`;
 }
 
+
+function formatGuestbookTitle(title) {
+  if (typeof title !== "string") return "";
+  const words = title.trim().split(/\s+/).filter(Boolean);
+  if (!words.length) return "";
+  if (words.length === 1) {
+    return `<span class="book-modal__entry-title-main">${words[0]}</span>`;
+  }
+
+  const topLine = words.slice(0, -1).join(" ").toUpperCase();
+  const mainLine = words[words.length - 1];
+  return `<span class="book-modal__entry-title-top">${topLine}</span> <span class="book-modal__entry-title-main">${mainLine}</span>`;
+}
 export function applyTranslations() {
   const locale = getLocale();
   const labels = locale.labels;
@@ -51,7 +64,7 @@ export function applyTranslations() {
   document.getElementById("map-route-image").alt = labels.mapImageAlt;
   refs.uploadPhotoBtn.textContent = labels.uploadPhoto;
   const guestbookTitleEl = refs.guestbookModal?.querySelector('[data-i18n="guestbookTitle"]');
-  if (guestbookTitleEl) guestbookTitleEl.textContent = labels.guestbookTitle;
+  if (guestbookTitleEl) guestbookTitleEl.innerHTML = formatGuestbookTitle(labels.guestbookTitle);
   const guestbookSubtitleEl = refs.guestbookModal?.querySelector('[data-i18n="guestbookSubtitle"]');
   if (guestbookSubtitleEl) guestbookSubtitleEl.textContent = labels.guestbookSubtitle;
   const guestbookFromLabelEl = refs.guestbookModal?.querySelector('[data-i18n="guestbookFromLabel"]');
