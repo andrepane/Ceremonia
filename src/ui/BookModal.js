@@ -36,7 +36,7 @@ function renderCoupleGuestbookContent(entries = []) {
   return entries
     .map((entry) => {
       const fontFamily = getGuestDedicationFont(entry.fromGuestId || entry.id);
-      return `<article class="book-modal__dedication" style="font-family: ${fontFamily};"><p class="book-modal__dedication-from">De: ${entry.fromName || "Invitado"}</p><p class="book-modal__dedication-text">${entry.content || ""}</p></article>`;
+      return `<article class="book-modal__dedication" style='font-family: ${fontFamily};'><p class="book-modal__dedication-from">De: ${entry.fromName || "Invitado"}</p><p class="book-modal__dedication-text">${entry.content || ""}</p></article>`;
     })
     .join("");
 }
