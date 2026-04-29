@@ -117,6 +117,20 @@ export async function handleUploadPhoto() {
 }
 
 export async function handlePhotoGridClick(event) {
+  const downloadBtn = event.target.closest("[data-photo-download]");
+  if (downloadBtn) {
+    const downloadUrl = downloadBtn.dataset.photoDownload;
+    if (!downloadUrl) return;
+    const downloadLink = document.createElement("a");
+    downloadLink.href = downloadUrl;
+    downloadLink.download = "foto";
+    downloadLink.rel = "noopener";
+    document.body.appendChild(downloadLink);
+    downloadLink.click();
+    downloadLink.remove();
+    return;
+  }
+
   const likeBtn = event.target.closest("[data-photo-like]");
   if (likeBtn && state.currentGuestId && state.firebaseOnline) {
     const photoId = likeBtn.dataset.photoLike;

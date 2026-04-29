@@ -2140,6 +2140,26 @@ input {
   animation: like-pop 380ms ease;
 }
 
+.photo-download-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 36px;
+  min-width: 36px;
+  padding: 0;
+  font-size: 0.95rem;
+  color: #5a504c;
+  border-color: rgba(90, 80, 76, 0.24);
+  background: rgba(255, 255, 255, 0.8);
+  transition: transform 0.2s ease, background 0.2s ease, color 0.2s ease;
+}
+
+.photo-download-btn:hover {
+  transform: translateY(-1px);
+  background: rgba(255, 255, 255, 0.96);
+  color: #3e3633;
+}
+
 @keyframes like-pop {
   0% {
     transform: scale(1);
