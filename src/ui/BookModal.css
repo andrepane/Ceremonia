@@ -71,14 +71,23 @@
   text-align: center;
   color: #f7ece3;
   background:
-    linear-gradient(160deg, rgba(255, 255, 255, 0.22) 0%, rgba(255, 255, 255, 0) 28%),
-    linear-gradient(20deg, rgba(0, 0, 0, 0.28) 0%, rgba(0, 0, 0, 0) 34%),
-    linear-gradient(146deg, #4a281c 0%, #6b3a28 32%, #5a3123 58%, #3d2118 100%);
+    radial-gradient(circle at 18% 14%, rgba(255, 243, 229, 0.2) 0%, rgba(255, 243, 229, 0) 38%),
+    radial-gradient(circle at 80% 86%, rgba(35, 17, 12, 0.28) 0%, rgba(35, 17, 12, 0) 52%),
+    linear-gradient(160deg, rgba(255, 255, 255, 0.2) 0%, rgba(255, 255, 255, 0) 28%),
+    linear-gradient(20deg, rgba(0, 0, 0, 0.34) 0%, rgba(0, 0, 0, 0) 36%),
+    linear-gradient(148deg, #412217 0%, #5f3424 33%, #6f3f2d 58%, #542d20 76%, #3a1f16 100%);
+  background-size:
+    100% 100%,
+    100% 100%,
+    100% 100%,
+    100% 100%,
+    100% 100%;
   box-shadow:
-    inset 0 0 0 1px rgba(255, 233, 212, 0.2),
-    inset 0 2px 0 rgba(255, 246, 238, 0.26),
-    inset 18px 0 26px rgba(0, 0, 0, 0.2),
-    inset -18px 0 22px rgba(255, 239, 224, 0.08),
+    inset 0 0 0 1px rgba(255, 233, 212, 0.14),
+    inset 0 1px 0 rgba(255, 246, 238, 0.2),
+    inset 18px 0 28px rgba(0, 0, 0, 0.22),
+    inset -18px 0 24px rgba(255, 239, 224, 0.06),
+    inset 0 0 0 200px rgba(255, 255, 255, 0.02),
     0 28px 58px rgba(0, 0, 0, 0.46);
   transform-origin: left center;
   transform-style: preserve-3d;
@@ -90,9 +99,9 @@
 .book-modal__cover::before {
   content: "";
   position: absolute;
-  inset: 14px;
+  inset: 16px;
   border-radius: 12px;
-  border: 1px solid rgba(243, 210, 183, 0.24);
+  border: 1px solid rgba(243, 210, 183, 0.2);
   pointer-events: none;
 }
 
@@ -102,55 +111,53 @@
   left: 0;
   top: 0;
   bottom: 0;
-  width: clamp(20px, 3vw, 34px);
+  width: clamp(14px, 2.2vw, 22px);
   border-radius: 16px 0 0 16px;
   background:
-    repeating-linear-gradient(
-      180deg,
-      rgba(243, 216, 190, 0.2) 0,
-      rgba(243, 216, 190, 0.2) 2px,
-      rgba(102, 57, 40, 0.22) 2px,
-      rgba(102, 57, 40, 0.22) 8px
-    );
-  box-shadow: inset -2px 0 0 rgba(19, 9, 5, 0.3);
+    linear-gradient(180deg, rgba(249, 224, 198, 0.16) 0%, rgba(110, 62, 43, 0.24) 100%);
+  box-shadow:
+    inset -2px 0 0 rgba(19, 9, 5, 0.28),
+    inset 1px 0 0 rgba(255, 241, 225, 0.1);
   pointer-events: none;
 }
 
 .book-modal__cover-art {
-  width: clamp(170px, 28vw, 260px);
-  aspect-ratio: 1;
+  width: clamp(170px, 30vw, 280px);
+  aspect-ratio: 1.15;
   margin: 0 auto;
-  border-radius: 50%;
+  border-radius: 14px;
   position: relative;
   display: grid;
   place-items: center;
-  font-family: "Playfair Display", "Cormorant Garamond", serif;
-  font-size: clamp(2.8rem, 6.8vw, 5.2rem);
-  font-weight: 700;
-  letter-spacing: 0.08em;
-  color: rgba(252, 232, 213, 0.96);
+  font-family: "Cormorant Garamond", "Playfair Display", "Times New Roman", serif;
+  font-size: clamp(3rem, 7.2vw, 5.5rem);
+  font-weight: 600;
+  letter-spacing: 0.12em;
+  color: rgba(235, 195, 142, 0.98);
   text-shadow:
-    0 1px 0 rgba(86, 48, 34, 0.65),
-    0 10px 22px rgba(18, 9, 6, 0.45);
-  background:
-    radial-gradient(circle at 30% 22%, rgba(255, 244, 230, 0.28), rgba(255, 244, 230, 0) 52%),
-    linear-gradient(145deg, rgba(243, 205, 170, 0.2), rgba(105, 58, 40, 0.24));
-  box-shadow:
-    inset 0 0 0 1px rgba(247, 217, 191, 0.42),
-    inset 0 16px 24px rgba(255, 247, 238, 0.08),
-    0 18px 34px rgba(16, 7, 5, 0.34);
+    0 1px 0 rgba(255, 236, 213, 0.45),
+    0 0 1px rgba(104, 63, 42, 0.5),
+    0 8px 16px rgba(18, 9, 6, 0.3);
 }
 
 .book-modal__cover-art::before {
   content: "C&A";
+  position: relative;
+  z-index: 2;
+  background: linear-gradient(152deg, #f8e5c6 0%, #ddb57d 35%, #ba8847 56%, #f4dfbc 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  filter: drop-shadow(0 1px 0 rgba(255, 236, 210, 0.5));
 }
 
 .book-modal__cover-art::after {
   content: "";
   position: absolute;
-  inset: 14px;
-  border-radius: 50%;
-  border: 1px solid rgba(249, 222, 199, 0.5);
+  inset: 8px 2px;
+  border-radius: 10px;
+  border: 1px solid rgba(249, 222, 199, 0.16);
+  opacity: 0.65;
 }
 
 .book-modal__cover--hidden {
