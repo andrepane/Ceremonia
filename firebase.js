@@ -171,23 +171,60 @@ async function getGuestbookEntry(guestId) {
   return snapshot.exists() ? snapshot.data() : null;
 }
 
+
+function isCoupleGuest(guestId) {
+  return guestId === "cintia_novia" || guestId === "andrea_novio";
+}
+
+function buildCoupleGuestbookPayload(guestId, payload, uid) {
+  return {
+    fromGuestId: guestId,
+    fromName: payload.author || "",
+    content: payload.content || "",
+    timestamp: payload.timestamp || Date.now(),
+    forCouple: true,
+    createdByUid: uid,
+    updatedAt: serverTimestamp(),
+    updatedByUid: uid
+  };
+}
+
+function subscribeCoupleGuestbook(onData, onError) {
+  if (!db) return () => {};
+
+  const q = query(eventCollection("coupleGuestbook"), orderBy("timestamp", "desc"), limit(200));
+  return onSnapshot(
+    q,
+    (snapshot) => {
+      onData(snapshot.docs.map((d) => ({ id: d.id, ...d.data() })));
+    },
+    onError
+  );
+}
+
 async function upsertGuestbookEntry(guestId, payload = {}) {
   const user = await ensureAuth();
   if (!db || !user || !guestId) throw new Error("auth_required");
 
-  await setDoc(
-    eventDoc("guestbookEntries", guestId),
-    {
-      id: guestId,
-      author: payload.author || "",
-      content: payload.content || "",
-      timestamp: payload.timestamp || Date.now(),
-      userId: user.uid,
-      updatedAt: serverTimestamp(),
-      updatedByUid: user.uid
-    },
-    { merge: true }
-  );
+  const basePayload = {
+    id: guestId,
+    author: payload.author || "",
+    content: payload.content || "",
+    timestamp: payload.timestamp || Date.now(),
+    userId: user.uid,
+    updatedAt: serverTimestamp(),
+    updatedByUid: user.uid
+  };
+
+  await setDoc(eventDoc("guestbookEntries", guestId), basePayload, { merge: true });
+
+  if (!isCoupleGuest(guestId)) {
+    await setDoc(
+      eventDoc("coupleGuestbook", guestId),
+      buildCoupleGuestbookPayload(guestId, payload, user.uid),
+      { merge: true }
+    );
+  }
 }
 
 
@@ -527,5 +564,6 @@ export {
   togglePhotoLike,
   upsertGuestDictionary,
   getGuestbookEntry,
-  upsertGuestbookEntry
+  upsertGuestbookEntry,
+  subscribeCoupleGuestbook
 };
