@@ -11,7 +11,7 @@ function renderCoupleGuestbookContent(entries = []) {
   if (!entries.length) return "";
 
   return entries
-    .map((entry) => `<article class="book-modal__dedication"><p class="book-modal__dedication-from">De: ${entry.fromName || "Invitado"}</p><p class="book-modal__dedication-text">${entry.content || ""}</p></article>`)
+    .map((entry) => `<article class="book-modal__dedication"><p class="book-modal__dedication-from">${entry.fromName || "Invitado"}</p><p class="book-modal__dedication-text">${entry.content || ""}</p></article>`)
     .join("");
 }
 
@@ -44,6 +44,7 @@ export class BookModal {
     this.closeEl = refs.guestbookClose || null;
     this.coverEl = refs.guestbookModal?.querySelector("[data-book-cover]") || null;
     this.fromLabelEl = refs.guestbookModal?.querySelector('[data-i18n="guestbookFromLabel"]') || null;
+    this.contentPlaceholder = this.contentEl?.dataset.placeholder || "";
     this.debounceId = null;
     this.coverTimeoutId = null;
     this.isBootstrapping = false;
@@ -153,6 +154,10 @@ export class BookModal {
   toggleCoupleHeader(show) {
     if (this.fromLabelEl) this.fromLabelEl.hidden = !show;
     this.authorEl.hidden = !show;
+    if (this.contentEl) {
+      if (show) this.contentEl.dataset.placeholder = this.contentPlaceholder;
+      else this.contentEl.removeAttribute("data-placeholder");
+    }
   }
 
   async loadEntry() {
