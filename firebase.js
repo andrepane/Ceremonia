@@ -206,10 +206,22 @@ async function upsertGuestbookEntry(guestId, payload = {}) {
   const user = await ensureAuth();
   if (!db || !user || !guestId) throw new Error("auth_required");
 
+  const sanitizedAuthor = String(payload.author || "").trim();
+  const sanitizedContent = String(payload.content || "").trim();
+  const shouldDelete = !sanitizedAuthor && !sanitizedContent;
+
+  if (shouldDelete) {
+    await deleteDoc(eventDoc("guestbookEntries", guestId));
+    if (!isCoupleGuest(guestId)) {
+      await deleteDoc(eventDoc("coupleGuestbook", guestId));
+    }
+    return;
+  }
+
   const basePayload = {
     id: guestId,
-    author: payload.author || "",
-    content: payload.content || "",
+    author: sanitizedAuthor,
+    content: sanitizedContent,
     timestamp: payload.timestamp || Date.now(),
     userId: user.uid,
     updatedAt: serverTimestamp(),
@@ -221,7 +233,7 @@ async function upsertGuestbookEntry(guestId, payload = {}) {
   if (!isCoupleGuest(guestId)) {
     await setDoc(
       eventDoc("coupleGuestbook", guestId),
-      buildCoupleGuestbookPayload(guestId, payload, user.uid),
+      buildCoupleGuestbookPayload(guestId, { ...payload, author: sanitizedAuthor, content: sanitizedContent }, user.uid),
       { merge: true }
     );
   }

@@ -336,6 +336,31 @@
   -webkit-user-modify: read-write-plaintext-only;
 }
 
+.book-modal__author--readonly,
+.book-modal__content--readonly {
+  cursor: default;
+  -webkit-user-modify: read-only;
+}
+
+.book-modal__author--readonly:empty::before,
+.book-modal__content--readonly:empty::before {
+  content: "";
+}
+
+.book-modal__dedication {
+  margin-bottom: 20px;
+}
+
+.book-modal__dedication-from {
+  margin: 0 0 4px;
+  font-weight: 700;
+  color: rgba(76, 47, 27, 0.95);
+}
+
+.book-modal__dedication-text {
+  margin: 0;
+}
+
 .book-modal__author {
   min-width: 120px;
   max-width: 60%;
