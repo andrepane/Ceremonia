@@ -23,7 +23,9 @@ export class BookModal {
     this.bookEl = refs.guestbookModal?.querySelector("[data-book-shell]") || null;
     this.backdropEl = refs.guestbookModal?.querySelector("[data-book-backdrop]") || null;
     this.closeEl = refs.guestbookClose || null;
+    this.coverEl = refs.guestbookModal?.querySelector("[data-book-cover]") || null;
     this.debounceId = null;
+    this.coverTimeoutId = null;
     this.isBootstrapping = false;
     this.entries = [];
 
@@ -65,6 +67,7 @@ export class BookModal {
 
     refs.guestbookModal.hidden = false;
     refs.guestbookModal.classList.remove("guestbook-modal--open");
+    this.showCover();
     document.body.classList.add("body--menu-modal-open");
     window.requestAnimationFrame(() => {
       refs.guestbookModal?.classList.add("guestbook-modal--open");
@@ -80,9 +83,21 @@ export class BookModal {
 
   close() {
     if (!refs.guestbookModal || refs.guestbookModal.hidden) return;
+    window.clearTimeout(this.coverTimeoutId);
     refs.guestbookModal.classList.remove("guestbook-modal--open");
     refs.guestbookModal.hidden = true;
     document.body.classList.remove("body--menu-modal-open");
+  }
+
+
+
+  showCover() {
+    if (!this.coverEl) return;
+    window.clearTimeout(this.coverTimeoutId);
+    this.coverEl.classList.remove("book-modal__cover--hidden");
+    this.coverTimeoutId = window.setTimeout(() => {
+      this.coverEl?.classList.add("book-modal__cover--hidden");
+    }, 3000);
   }
 
   async loadEntry() {
