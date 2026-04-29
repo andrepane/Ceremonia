@@ -137,7 +137,7 @@
   position: relative;
   display: grid;
   place-items: center;
-  font-family: "Cormorant Garamond", "Playfair Display", "Times New Roman", serif;
+  font-family: "Playfair Display", "Cormorant Garamond", serif;
   font-size: clamp(3rem, 7.2vw, 5.5rem);
   font-weight: 600;
   letter-spacing: 0.1em;
