@@ -298,11 +298,26 @@
 
 .book-modal__entry-title {
   margin: 0;
-  font-family: "Playfair Display", "Cormorant Garamond", "Times New Roman", serif;
-  font-size: clamp(1.25rem, 2.1vw, 1.7rem);
-  font-weight: 600;
-  letter-spacing: 0.03em;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.1rem;
   color: rgba(72, 46, 28, 0.92);
+}
+
+.book-modal__entry-title-top {
+  font-family: "Cormorant Garamond", "Times New Roman", serif;
+  font-size: clamp(0.85rem, 1.35vw, 1rem);
+  font-weight: 600;
+  letter-spacing: 0.22em;
+}
+
+.book-modal__entry-title-main {
+  font-family: "Great Vibes", "Alex Brush", cursive;
+  font-size: clamp(2rem, 4vw, 2.9rem);
+  font-weight: 400;
+  line-height: 0.95;
+  letter-spacing: 0.02em;
 }
 
 .book-modal__entry-subtitle {
