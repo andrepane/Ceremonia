@@ -11,7 +11,7 @@ function renderCoupleGuestbookContent(entries = []) {
   if (!entries.length) return "";
 
   return entries
-    .map((entry) => `<p><strong>${entry.fromName || "Invitado"}:</strong> ${entry.content || ""}</p>`)
+    .map((entry) => `<article class="book-modal__dedication"><p class="book-modal__dedication-from">De: ${entry.fromName || "Invitado"}</p><p class="book-modal__dedication-text">${entry.content || ""}</p></article>`)
     .join("");
 }
 
@@ -37,6 +37,7 @@ export class BookModal {
     this.backdropEl = refs.guestbookModal?.querySelector("[data-book-backdrop]") || null;
     this.closeEl = refs.guestbookClose || null;
     this.coverEl = refs.guestbookModal?.querySelector("[data-book-cover]") || null;
+    this.fromLabelEl = refs.guestbookModal?.querySelector('[data-i18n="guestbookFromLabel"]') || null;
     this.debounceId = null;
     this.coverTimeoutId = null;
     this.isBootstrapping = false;
@@ -129,9 +130,23 @@ export class BookModal {
       const normalizedEntries = Array.isArray(entries) ? entries : [];
       this.entries = normalizedEntries;
       setState({ guestbookEntries: normalizedEntries });
-      this.authorEl.textContent = "Invitados";
+      this.authorEl.textContent = "";
+      this.setReadOnlyMode(true);
+      this.toggleCoupleHeader(Boolean(normalizedEntries.length));
       this.contentEl.innerHTML = renderCoupleGuestbookContent(normalizedEntries);
     });
+  }
+
+  setReadOnlyMode(isReadOnly) {
+    this.authorEl.setAttribute("contenteditable", isReadOnly ? "false" : "true");
+    this.contentEl.setAttribute("contenteditable", isReadOnly ? "false" : "true");
+    this.authorEl.classList.toggle("book-modal__author--readonly", isReadOnly);
+    this.contentEl.classList.toggle("book-modal__content--readonly", isReadOnly);
+  }
+
+  toggleCoupleHeader(show) {
+    if (this.fromLabelEl) this.fromLabelEl.hidden = !show;
+    this.authorEl.hidden = !show;
   }
 
   async loadEntry() {
@@ -139,7 +154,9 @@ export class BookModal {
     this.isBootstrapping = true;
 
     if (isCoupleGuest(state.currentGuestId)) {
-      this.authorEl.textContent = "Invitados";
+      this.authorEl.textContent = "";
+      this.setReadOnlyMode(true);
+      this.toggleCoupleHeader(false);
       this.contentEl.innerHTML = "";
       this.startCoupleGuestbookSubscription();
       this.isBootstrapping = false;
@@ -147,6 +164,8 @@ export class BookModal {
     }
 
     this.stopCoupleGuestbookSubscription();
+    this.setReadOnlyMode(false);
+    this.toggleCoupleHeader(true);
 
     let entry = null;
     if (isFirebaseConfigured() && state.currentGuestId) {
