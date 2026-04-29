@@ -138,7 +138,7 @@ export class BookModal {
       setState({ guestbookEntries: normalizedEntries });
       this.authorEl.textContent = "";
       this.setReadOnlyMode(true);
-      this.toggleCoupleHeader(Boolean(normalizedEntries.length));
+      this.toggleCoupleHeader(false);
       this.contentEl.innerHTML = renderCoupleGuestbookContent(normalizedEntries);
     });
   }
