@@ -50,6 +50,16 @@ export function applyTranslations() {
   document.getElementById("map-open-link").textContent = labels.mapOpenMaps;
   document.getElementById("map-route-image").alt = labels.mapImageAlt;
   refs.uploadPhotoBtn.textContent = labels.uploadPhoto;
+  const guestbookTitleEl = refs.guestbookModal?.querySelector('[data-i18n="guestbookTitle"]');
+  if (guestbookTitleEl) guestbookTitleEl.textContent = labels.guestbookTitle;
+  const guestbookSubtitleEl = refs.guestbookModal?.querySelector('[data-i18n="guestbookSubtitle"]');
+  if (guestbookSubtitleEl) guestbookSubtitleEl.textContent = labels.guestbookSubtitle;
+  const guestbookFromLabelEl = refs.guestbookModal?.querySelector('[data-i18n="guestbookFromLabel"]');
+  if (guestbookFromLabelEl) guestbookFromLabelEl.textContent = labels.guestbookFromLabel;
+  if (refs.guestbookModal) {
+    const contentEl = refs.guestbookModal.querySelector('[data-book-content]');
+    if (contentEl) contentEl.setAttribute('data-placeholder', labels.guestbookPlaceholder);
+  }
   const navLabelsById = {
     "nav-home": labels.navHome,
     "nav-guide": labels.navGuide,

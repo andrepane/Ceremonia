@@ -303,15 +303,19 @@
         <div class="book-modal__cover-art" aria-hidden="true"></div>
       </div>
       <div class="book-modal--left" aria-hidden="true">
-        <h3 id="guestbook-title" class="book-modal__title">Libro de firmas</h3>
+        <h3 class="book-modal__title">Libro de firmas</h3>
         <p class="book-modal__subtitle">Un rincón íntimo para dejar recuerdos del fin de semana.</p>
       </div>
       <div class="book-modal--right">
+        <div class="book-modal__intro">
+          <h3 id="guestbook-title" class="book-modal__entry-title" data-i18n="guestbookTitle">Libro de dedicatorias</h3>
+          <p class="book-modal__entry-subtitle" data-i18n="guestbookSubtitle">Deja tu dedicatoria para los novios</p>
+        </div>
         <div class="book-modal__header">
-          <span>De:</span>
+          <span data-i18n="guestbookFromLabel">De:</span>
           <span class="book-modal__author" contenteditable="true" spellcheck="false" data-book-author data-placeholder="Tu nombre"></span>
         </div>
-        <div class="book-modal__content" contenteditable="true" spellcheck="true" data-book-content data-placeholder="Escribe aquí tu dedicatoria..."></div>
+        <div class="book-modal__content" contenteditable="true" spellcheck="true" data-book-content data-placeholder="Escribe aquí tu dedicatoria"></div>
       </div>
     </article>
   </section>
