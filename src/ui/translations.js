@@ -65,8 +65,6 @@ export function applyTranslations() {
   refs.uploadPhotoBtn.textContent = labels.uploadPhoto;
   const guestbookTitleEl = refs.guestbookModal?.querySelector('[data-i18n="guestbookTitle"]');
   if (guestbookTitleEl) guestbookTitleEl.innerHTML = formatGuestbookTitle(labels.guestbookTitle);
-  const guestbookSubtitleEl = refs.guestbookModal?.querySelector('[data-i18n="guestbookSubtitle"]');
-  if (guestbookSubtitleEl) guestbookSubtitleEl.textContent = labels.guestbookSubtitle;
   const guestbookFromLabelEl = refs.guestbookModal?.querySelector('[data-i18n="guestbookFromLabel"]');
   if (guestbookFromLabelEl) guestbookFromLabelEl.textContent = labels.guestbookFromLabel;
   if (refs.guestbookModal) {

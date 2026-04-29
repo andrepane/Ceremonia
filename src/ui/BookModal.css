@@ -227,6 +227,7 @@
   transform: rotateY(88deg) rotateX(4deg);
   transition: transform 600ms cubic-bezier(0.22, 1, 0.36, 1), box-shadow 180ms ease;
   padding-top: clamp(26px, 5vh, 52px);
+  font-family: "Cormorant Garamond", "Times New Roman", serif;
 }
 
 .book-modal--right::before {
@@ -234,15 +235,7 @@
   position: absolute;
   inset: 0;
   pointer-events: none;
-  background:
-    repeating-linear-gradient(
-      180deg,
-      rgba(170, 147, 120, 0.22) 0,
-      rgba(170, 147, 120, 0.22) 1px,
-      transparent 1px,
-      transparent 42px
-    );
-  background-position: 0 38px;
+  background: radial-gradient(circle at 18% 12%, rgba(255, 255, 255, 0.48), transparent 52%);
 }
 
 .book-modal--right::after {
@@ -307,25 +300,18 @@
 
 .book-modal__entry-title-top {
   font-family: "Cormorant Garamond", "Times New Roman", serif;
-  font-size: clamp(0.85rem, 1.35vw, 1rem);
+  font-size: clamp(0.78rem, 1.15vw, 0.94rem);
   font-weight: 600;
-  letter-spacing: 0.22em;
+  letter-spacing: 0.28em;
+  text-transform: uppercase;
 }
 
 .book-modal__entry-title-main {
-  font-family: "Great Vibes", "Alex Brush", cursive;
-  font-size: clamp(2rem, 4vw, 2.9rem);
-  font-weight: 400;
-  line-height: 0.95;
-  letter-spacing: 0.02em;
-}
-
-.book-modal__entry-subtitle {
-  margin: 8px auto 0;
-  max-width: 34ch;
-  font-size: clamp(0.9rem, 1.35vw, 1rem);
-  line-height: 1.45;
-  color: rgba(88, 62, 41, 0.78);
+  font-family: "Cormorant Garamond", "Times New Roman", serif;
+  font-size: clamp(2.2rem, 4.5vw, 3.15rem);
+  font-weight: 500;
+  line-height: 0.97;
+  letter-spacing: 0.03em;
 }
 
 .book-modal__header {
@@ -335,7 +321,7 @@
   gap: 8px;
   align-items: baseline;
   margin-bottom: 14px;
-  font-family: "Playfair Display", "Cormorant Garamond", serif;
+  font-family: "Cormorant Garamond", "Times New Roman", serif;
   color: rgba(74, 49, 30, 0.9);
 }
 
@@ -346,7 +332,7 @@
   outline: none;
   border: 0;
   cursor: text;
-  font-family: "Cormorant Garamond", "Playfair Display", serif;
+  font-family: "Cormorant Garamond", "Times New Roman", serif;
   color: #4d301d;
   -webkit-user-modify: read-write-plaintext-only;
 }
@@ -380,7 +366,7 @@
   min-width: 120px;
   max-width: 60%;
   min-height: 28px;
-  font-family: "Alex Brush", "Cormorant Garamond", serif;
+  font-family: "Great Vibes", "Alex Brush", cursive;
   font-size: clamp(1.55rem, 2.6vw, 2rem);
 }
 
