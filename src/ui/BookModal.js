@@ -15,6 +15,12 @@ function renderCoupleGuestbookContent(entries = []) {
     .join("");
 }
 
+function hasVisibleDedication(entry) {
+  if (!entry) return false;
+  const normalizedContent = normalizeEditableHtml(entry.content || "");
+  return Boolean(normalizedContent && normalizedContent.replace(/<br\s*\/?>/gi, "").trim());
+}
+
 
 function normalizeEditableText(value = "") {
   return String(value)
@@ -127,7 +133,7 @@ export class BookModal {
   startCoupleGuestbookSubscription() {
     this.stopCoupleGuestbookSubscription();
     this.coupleGuestbookUnsub = subscribeCoupleGuestbook((entries) => {
-      const normalizedEntries = Array.isArray(entries) ? entries : [];
+      const normalizedEntries = (Array.isArray(entries) ? entries : []).filter(hasVisibleDedication);
       this.entries = normalizedEntries;
       setState({ guestbookEntries: normalizedEntries });
       this.authorEl.textContent = "";
