@@ -112,6 +112,7 @@ export const HOME_DASHBOARD_COPY = {
     activityLabel: "Últimas acciones del grupo",
     activityTemplates: {
       upload_photo: "{name} ha subido una foto",
+      delete_photo: "{name} ha borrado una foto",
       react_photo: "{name} ha reaccionado a una foto",
       write_dedication: "{name} ha escrito una dedicatoria a los novios"
     },
@@ -201,6 +202,7 @@ export const HOME_DASHBOARD_COPY = {
     activityLabel: "Ultime azioni del gruppo",
     activityTemplates: {
       upload_photo: "{name} ha caricato una foto",
+      delete_photo: "{name} ha eliminato una foto",
       react_photo: "{name} ha reagito a una foto",
       write_dedication: "{name} ha scritto una dedica agli sposi"
     },
