@@ -255,13 +255,13 @@ function ensureFridayDinnerMenuModal() {
   if (existingModal) {
     const closeButton = existingModal.querySelector(".menu-modal__close-btn");
     const subtitle = existingModal.querySelector(".menu-modal__subtitle");
-    const coverTitle = existingModal.querySelector(".menu-modal__cover-title");
+    const title = existingModal.querySelector(".menu-modal__title");
     const sectionTitles = existingModal.querySelectorAll(".menu-modal__block-title-text");
     const itemLabels = existingModal.querySelectorAll(".menu-modal__item-text");
 
     if (closeButton) closeButton.setAttribute("aria-label", labels.closeMenuBtn || "Cerrar menú");
     if (subtitle) subtitle.textContent = labels.fridayDinnerMenuSubtitle || "VIERNES · 21:30";
-    if (coverTitle) coverTitle.textContent = labels.fridayDinnerMenuTitle || "Menú Pescaito";
+    if (title) title.textContent = labels.fridayDinnerMenuTitle || "Menú Pescaito";
     if (sectionTitles[0]) sectionTitles[0].textContent = labels.fridayDinnerMenuStarter || "Entrante";
     if (sectionTitles[1]) sectionTitles[1].textContent = labels.fridayDinnerMenuMain || "Plato principal";
     if (sectionTitles[2]) sectionTitles[2].textContent = labels.fridayDinnerMenuDessert || "Postre";
@@ -292,15 +292,10 @@ function ensureFridayDinnerMenuModal() {
   modal.setAttribute("aria-hidden", "true");
   modal.innerHTML = `
     <div class="menu-modal__backdrop" data-close-friday-dinner-menu="true"></div>
-    <section class="menu-modal__dialog menu-modal__dialog--with-cover" role="dialog" aria-modal="true" aria-label="${labels.fridayDinnerMenuTitle || "Menú Pescaito"}">
+    <section class="menu-modal__dialog" role="dialog" aria-modal="true" aria-labelledby="friday-dinner-menu-title">
       <button class="menu-modal__close-btn" type="button" aria-label="${labels.closeMenuBtn || "Cerrar menú"}" data-close-friday-dinner-menu="true">×</button>
-      <div class="menu-modal__cover" data-menu-cover aria-hidden="true">
-        <div class="menu-modal__cover-art" aria-hidden="true">
-          <p class="menu-modal__cover-kicker">Carta</p>
-          <h3 class="menu-modal__cover-title">${labels.fridayDinnerMenuTitle || "Menú Pescaito"}</h3>
-        </div>
-      </div>
       <p class="menu-modal__subtitle">${labels.fridayDinnerMenuSubtitle || "VIERNES · 21:30"}</p>
+      <h3 id="friday-dinner-menu-title" class="menu-modal__title">${labels.fridayDinnerMenuTitle || "Menú Pescaito"}</h3>
       <div class="menu-modal__blocks">
         <article class="menu-modal__block">
           <h4 class="menu-modal__block-title"><span aria-hidden="true">🥣</span> <span class="menu-modal__block-title-text">${labels.fridayDinnerMenuStarter || "Entrante"}</span></h4>
@@ -352,15 +347,8 @@ function ensureFridayDinnerMenuModal() {
 
 function openFridayDinnerMenuModal() {
   const modal = ensureFridayDinnerMenuModal();
-  const coverEl = modal.querySelector("[data-menu-cover]");
   modal.removeAttribute("hidden");
   modal.setAttribute("aria-hidden", "false");
-  if (coverEl) {
-    coverEl.classList.remove("menu-modal__cover--hidden");
-    window.setTimeout(() => {
-      coverEl.classList.add("menu-modal__cover--hidden");
-    }, 80);
-  }
   document.body.classList.add("body--menu-modal-open");
   refs.bottomNav?.classList.add("bottom-nav--hidden");
 }
