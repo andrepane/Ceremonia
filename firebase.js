@@ -245,6 +245,7 @@ async function upsertGuestbookEntry(guestId, payload = {}) {
         guestId,
         metadata: { target: "guestbook" },
         createdAt: serverTimestamp(),
+        createdByUid: user.uid,
         updatedByUid: user.uid
       },
       { merge: true }
