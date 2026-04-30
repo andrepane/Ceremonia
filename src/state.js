@@ -112,7 +112,8 @@ export const HOME_DASHBOARD_COPY = {
     activityLabel: "Últimas acciones del grupo",
     activityTemplates: {
       upload_photo: "{name} ha subido una foto",
-      react_photo: "{name} ha reaccionado a una foto"
+      react_photo: "{name} ha reaccionado a una foto",
+      write_dedication: "{name} ha escrito una dedicatoria a los novios"
     },
     activityEmpty: "Aún no hay actividad compartida.",
     activityEmptyElegant: "Sé el primero en subir una foto.",
@@ -200,7 +201,8 @@ export const HOME_DASHBOARD_COPY = {
     activityLabel: "Ultime azioni del gruppo",
     activityTemplates: {
       upload_photo: "{name} ha caricato una foto",
-      react_photo: "{name} ha reagito a una foto"
+      react_photo: "{name} ha reagito a una foto",
+      write_dedication: "{name} ha scritto una dedica agli sposi"
     },
     activityEmpty: "Non ci sono ancora attività condivise.",
     activityEmptyElegant: "Sii il primo a caricare una foto.",
