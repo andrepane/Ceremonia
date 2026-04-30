@@ -296,50 +296,52 @@ function ensureFridayDinnerMenuModal() {
       <div class="menu-modal__cover" data-menu-cover aria-hidden="true">
         <div class="menu-modal__cover-art" aria-hidden="true"></div>
       </div>
-      <button class="menu-modal__close-btn" type="button" aria-label="${labels.closeMenuBtn || "Cerrar menú"}" data-close-friday-dinner-menu="true">×</button>
-      <p class="menu-modal__subtitle">${labels.fridayDinnerMenuSubtitle || "VIERNES · 21:30"}</p>
-      <h3 id="friday-dinner-menu-title" class="menu-modal__title">${labels.fridayDinnerMenuTitle || "Menú Pescaito"}</h3>
-      <div class="menu-modal__blocks">
-        <article class="menu-modal__block">
-          <h4 class="menu-modal__block-title"><span aria-hidden="true">🥣</span> <span class="menu-modal__block-title-text">${labels.fridayDinnerMenuStarter || "Entrante"}</span></h4>
-          <ul class="menu-modal__list">
-            <li><span class="menu-modal__item-text">${labels.fridayDinnerMenuStarter1 || "Ensalada caprese con mozzarella y albahaca fresca."}</span></li>
-          </ul>
-        </article>
-        <article class="menu-modal__block">
-          <h4 class="menu-modal__block-title"><span aria-hidden="true">🍤</span> <span class="menu-modal__block-title-text">${labels.fridayDinnerMenuMain || "Plato principal"}</span></h4>
-          <ul class="menu-modal__list">
-            <li><span class="menu-modal__item-text">${labels.fridayDinnerMenuMain1 || "Noche de pescadito frito con limón y hierbas aromáticas."}</span></li>
-          </ul>
-        </article>
-        <article class="menu-modal__block">
-          <h4 class="menu-modal__block-title"><span aria-hidden="true">🍰</span> <span class="menu-modal__block-title-text">${labels.fridayDinnerMenuDessert || "Postre"}</span></h4>
-          <ul class="menu-modal__list">
-            <li><span class="menu-modal__item-text">${labels.fridayDinnerMenuDessert1 || "Postre de la casa"}</span></li>
-          </ul>
-        </article>
-        <article class="menu-modal__block">
-          <h4 class="menu-modal__block-title"><span aria-hidden="true">☕</span> <span class="menu-modal__block-title-text">${labels.fridayDinnerMenuCoffee || "Cafés"}</span></h4>
-          <ul class="menu-modal__list">
-            <li><span class="menu-modal__item-text">${labels.fridayDinnerMenuCoffee1 || "Café solo"}</span></li>
-            <li><span class="menu-modal__item-text">${labels.fridayDinnerMenuCoffee2 || "Café con leche"}</span></li>
-            <li><span class="menu-modal__item-text">${labels.fridayDinnerMenuCoffee3 || "Cortado"}</span></li>
-            <li><span class="menu-modal__item-text">${labels.fridayDinnerMenuCoffee4 || "Carajillo"}</span></li>
-            <li><span class="menu-modal__item-text">${labels.fridayDinnerMenuCoffee5 || "Café con hielo"}</span></li>
-            <li><span class="menu-modal__item-text">${labels.fridayDinnerMenuCoffee6 || "Bombón"}</span></li>
-          </ul>
-        </article>
-        <article class="menu-modal__block">
-          <h4 class="menu-modal__block-title"><span aria-hidden="true">🍷</span> <span class="menu-modal__block-title-text">${labels.fridayDinnerMenuDrinks || "Bebidas"}</span></h4>
-          <ul class="menu-modal__list">
-            <li><span class="menu-modal__item-text">${labels.fridayDinnerMenuDrink1 || "Vino"}</span></li>
-            <li><span class="menu-modal__item-text">${labels.fridayDinnerMenuDrink2 || "Cerveza"}</span></li>
-            <li><span class="menu-modal__item-text">${labels.fridayDinnerMenuDrink3 || "Agua"}</span></li>
-            <li><span class="menu-modal__item-text">${labels.fridayDinnerMenuDrink4 || "Refrescos"}</span></li>
-            <li><span class="menu-modal__item-text">${labels.fridayDinnerMenuDrink5 || "Tinto de verano"}</span></li>
-            <li><span class="menu-modal__item-text">${labels.fridayDinnerMenuDrink6 || "Vermut"}</span></li>
-          </ul>
-        </article>
+      <div class="menu-modal__scroll">
+        <button class="menu-modal__close-btn" type="button" aria-label="${labels.closeMenuBtn || "Cerrar menú"}" data-close-friday-dinner-menu="true">×</button>
+        <p class="menu-modal__subtitle">${labels.fridayDinnerMenuSubtitle || "VIERNES · 21:30"}</p>
+        <h3 id="friday-dinner-menu-title" class="menu-modal__title">${labels.fridayDinnerMenuTitle || "Menú Pescaito"}</h3>
+        <div class="menu-modal__blocks">
+          <article class="menu-modal__block">
+            <h4 class="menu-modal__block-title"><span aria-hidden="true">🥣</span> <span class="menu-modal__block-title-text">${labels.fridayDinnerMenuStarter || "Entrante"}</span></h4>
+            <ul class="menu-modal__list">
+              <li><span class="menu-modal__item-text">${labels.fridayDinnerMenuStarter1 || "Ensalada caprese con mozzarella y albahaca fresca."}</span></li>
+            </ul>
+          </article>
+          <article class="menu-modal__block">
+            <h4 class="menu-modal__block-title"><span aria-hidden="true">🍤</span> <span class="menu-modal__block-title-text">${labels.fridayDinnerMenuMain || "Plato principal"}</span></h4>
+            <ul class="menu-modal__list">
+              <li><span class="menu-modal__item-text">${labels.fridayDinnerMenuMain1 || "Noche de pescadito frito con limón y hierbas aromáticas."}</span></li>
+            </ul>
+          </article>
+          <article class="menu-modal__block">
+            <h4 class="menu-modal__block-title"><span aria-hidden="true">🍰</span> <span class="menu-modal__block-title-text">${labels.fridayDinnerMenuDessert || "Postre"}</span></h4>
+            <ul class="menu-modal__list">
+              <li><span class="menu-modal__item-text">${labels.fridayDinnerMenuDessert1 || "Postre de la casa"}</span></li>
+            </ul>
+          </article>
+          <article class="menu-modal__block">
+            <h4 class="menu-modal__block-title"><span aria-hidden="true">☕</span> <span class="menu-modal__block-title-text">${labels.fridayDinnerMenuCoffee || "Cafés"}</span></h4>
+            <ul class="menu-modal__list">
+              <li><span class="menu-modal__item-text">${labels.fridayDinnerMenuCoffee1 || "Café solo"}</span></li>
+              <li><span class="menu-modal__item-text">${labels.fridayDinnerMenuCoffee2 || "Café con leche"}</span></li>
+              <li><span class="menu-modal__item-text">${labels.fridayDinnerMenuCoffee3 || "Cortado"}</span></li>
+              <li><span class="menu-modal__item-text">${labels.fridayDinnerMenuCoffee4 || "Carajillo"}</span></li>
+              <li><span class="menu-modal__item-text">${labels.fridayDinnerMenuCoffee5 || "Café con hielo"}</span></li>
+              <li><span class="menu-modal__item-text">${labels.fridayDinnerMenuCoffee6 || "Bombón"}</span></li>
+            </ul>
+          </article>
+          <article class="menu-modal__block">
+            <h4 class="menu-modal__block-title"><span aria-hidden="true">🍷</span> <span class="menu-modal__block-title-text">${labels.fridayDinnerMenuDrinks || "Bebidas"}</span></h4>
+            <ul class="menu-modal__list">
+              <li><span class="menu-modal__item-text">${labels.fridayDinnerMenuDrink1 || "Vino"}</span></li>
+              <li><span class="menu-modal__item-text">${labels.fridayDinnerMenuDrink2 || "Cerveza"}</span></li>
+              <li><span class="menu-modal__item-text">${labels.fridayDinnerMenuDrink3 || "Agua"}</span></li>
+              <li><span class="menu-modal__item-text">${labels.fridayDinnerMenuDrink4 || "Refrescos"}</span></li>
+              <li><span class="menu-modal__item-text">${labels.fridayDinnerMenuDrink5 || "Tinto de verano"}</span></li>
+              <li><span class="menu-modal__item-text">${labels.fridayDinnerMenuDrink6 || "Vermut"}</span></li>
+            </ul>
+          </article>
+        </div>
       </div>
     </section>
   `;
