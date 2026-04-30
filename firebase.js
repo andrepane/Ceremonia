@@ -570,6 +570,7 @@ async function deletePhoto(photoId) {
     }
   }
 
+  await emitActivity("delete_photo", photoData.authorGuestId, { photoId });
   await deleteDoc(photoRef);
 }
 
