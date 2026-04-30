@@ -843,11 +843,7 @@ input {
   min-height: 196px;
   padding: 0;
   position: relative;
-  perspective: 1600px;
-  -webkit-perspective: 1600px;
   --guest-flip: 0deg;
-  --guest-tilt-x: 0deg;
-  --guest-tilt-y: 0deg;
   background: transparent;
   border: 0;
   border-radius: var(--radius-lg);
@@ -862,8 +858,6 @@ input {
 
 .guest-card:hover {
   transform: none;
-  --guest-tilt-x: -4deg;
-  --guest-tilt-y: 5deg;
 }
 
 .guest-card__inner {
@@ -876,16 +870,11 @@ input {
   box-shadow: 0 18px 34px rgba(59, 37, 24, 0.14);
   transform-style: preserve-3d;
   -webkit-transform-style: preserve-3d;
-  will-change: transform;
   transition: transform 1.12s cubic-bezier(0.22, 0.61, 0.36, 1), box-shadow 0.28s ease;
   transform:
-    rotateX(var(--guest-tilt-x))
-    rotateY(calc(var(--guest-flip) + var(--guest-tilt-y)))
-    translateZ(0);
+    rotateY(var(--guest-flip));
   -webkit-transform:
-    rotateX(var(--guest-tilt-x))
-    rotateY(calc(var(--guest-flip) + var(--guest-tilt-y)))
-    translateZ(0);
+    rotateY(var(--guest-flip));
 }
 
 .guest-card:hover .guest-card__inner {
@@ -943,19 +932,19 @@ input {
   inset: 8px;
   border-radius: calc(var(--radius-lg) - 8px);
   border: 1px solid rgba(255, 255, 255, 0.32);
-  transform: translateZ(2px);
-  -webkit-transform: translateZ(2px);
+  transform: none;
+  -webkit-transform: none;
   pointer-events: none;
 }
 
 .guest-card__face--front {
-  transform: rotateY(0deg) translateZ(1px);
-  -webkit-transform: rotateY(0deg) translateZ(1px);
+  transform: rotateY(0deg);
+  -webkit-transform: rotateY(0deg);
 }
 
 .guest-card__face--back {
-  transform: rotateY(180deg) translateZ(1px);
-  -webkit-transform: rotateY(180deg) translateZ(1px);
+  transform: rotateY(180deg);
+  -webkit-transform: rotateY(180deg);
   gap: 14px;
   background: var(--accent-strong);
 }
@@ -976,8 +965,8 @@ input {
   font-size: 1.4rem;
   font-family: "Cormorant Garamond", serif;
   overflow: hidden;
-  transform: translateZ(28px);
-  -webkit-transform: translateZ(28px);
+  transform: none;
+  -webkit-transform: none;
 }
 
 .guest-avatar--image {
@@ -1007,8 +996,8 @@ input {
 .guest-name {
   font-weight: 700;
   text-align: center;
-  transform: translateZ(22px);
-  -webkit-transform: translateZ(22px);
+  transform: none;
+  -webkit-transform: none;
 }
 
 .guest-role {
@@ -1016,8 +1005,8 @@ input {
   color: var(--muted);
   text-align: center;
   font-weight: 600;
-  transform: translateZ(22px);
-  -webkit-transform: translateZ(22px);
+  transform: none;
+  -webkit-transform: none;
 }
 
 .guest-enter-btn {
