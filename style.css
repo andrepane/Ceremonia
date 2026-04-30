@@ -2446,6 +2446,8 @@ input {
 
 .menu-modal__dialog--with-cover {
   position: relative;
+  perspective: 2200px;
+  transform-style: preserve-3d;
 }
 
 .menu-modal__cover {
@@ -2457,6 +2459,11 @@ input {
   place-items: center;
   text-align: center;
   color: #f7ece3;
+  transform-origin: left center;
+  transform: rotateY(0deg);
+  backface-visibility: hidden;
+  transition: transform 2s cubic-bezier(0.2, 0.8, 0.2, 1), opacity 2s ease;
+  will-change: transform, opacity;
   background:
     radial-gradient(circle at 14% 18%, rgba(255, 235, 210, 0.16) 0%, rgba(255, 235, 210, 0) 40%),
     radial-gradient(circle at 84% 80%, rgba(41, 20, 13, 0.24) 0%, rgba(41, 20, 13, 0) 54%),
@@ -2469,6 +2476,7 @@ input {
 
 .menu-modal__cover--hidden {
   opacity: 0;
+  transform: rotateY(-165deg);
   pointer-events: none;
 }
 
