@@ -2461,11 +2461,13 @@ input {
   align-items: center;
   gap: 12px;
   text-align: center;
-  color: #e8d8c3;
-  background: linear-gradient(160deg, #1e1410 0%, #2b1c15 100%);
+  color: #6e5f57;
+  background:
+    radial-gradient(120% 90% at 22% 14%, rgba(255, 255, 255, 0.5) 0%, rgba(255, 255, 255, 0) 52%),
+    linear-gradient(155deg, #f7f1eb 0%, #efe8e1 46%, #e6ddd5 100%);
   box-shadow:
-    0 30px 60px rgba(0, 0, 0, 0.5),
-    inset 0 1px 0 rgba(255, 255, 255, 0.08);
+    0 24px 48px rgba(90, 76, 67, 0.22),
+    inset 0 1px 0 rgba(255, 255, 255, 0.58);
   transform-origin: left center;
   transform-style: preserve-3d;
   backface-visibility: hidden;
@@ -2477,7 +2479,7 @@ input {
   position: absolute;
   inset: 12px;
   border-radius: 20px;
-  border: 1px solid rgba(255, 255, 255, 0.08);
+  border: 1px solid rgba(122, 105, 94, 0.2);
   pointer-events: none;
 }
 
@@ -2506,7 +2508,7 @@ input {
   font-size: clamp(2.4rem, 6.4vw, 4.6rem);
   font-weight: 500;
   letter-spacing: 0.08em;
-  color: #e8d8c3;
+  color: #74645b;
   text-transform: uppercase;
   text-shadow: none;
 }
@@ -2517,7 +2519,7 @@ input {
   position: relative;
   z-index: 2;
   line-height: 1.2;
-  color: #e8d8c3;
+  color: #74645b;
 }
 
 .menu-modal__cover-art::after {
