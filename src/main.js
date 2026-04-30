@@ -521,11 +521,15 @@ function ensureSaturdayMenuModal() {
   modal.setAttribute("aria-hidden", "true");
   modal.innerHTML = `
     <div class="menu-modal__backdrop" data-close-saturday-menu="true"></div>
-    <section class="menu-modal__dialog" role="dialog" aria-modal="true" aria-labelledby="menu-modal-title">
-      <button class="menu-modal__close-btn" type="button" aria-label="${labels.closeMenuBtn || "Cerrar menú"}" data-close-saturday-menu="true">×</button>
-      <p class="menu-modal__subtitle">${labels.saturdayMenuSubtitle || "SÁBADO · 14:00"}</p>
-      <h3 id="menu-modal-title" class="menu-modal__title">${labels.saturdayMenuTitle || "Menú Paella"}</h3>
-      <div class="menu-modal__blocks">
+    <section class="menu-modal__dialog menu-modal__dialog--with-cover" role="dialog" aria-modal="true" aria-labelledby="menu-modal-title">
+      <div class="menu-modal__cover" data-menu-cover aria-hidden="true">
+        <div class="menu-modal__cover-art" aria-hidden="true"></div>
+      </div>
+      <div class="menu-modal__scroll">
+        <button class="menu-modal__close-btn" type="button" aria-label="${labels.closeMenuBtn || "Cerrar menú"}" data-close-saturday-menu="true">×</button>
+        <p class="menu-modal__subtitle">${labels.saturdayMenuSubtitle || "SÁBADO · 14:00"}</p>
+        <h3 id="menu-modal-title" class="menu-modal__title">${labels.saturdayMenuTitle || "Menú Paella"}</h3>
+        <div class="menu-modal__blocks">
         <article class="menu-modal__block">
           <h4 class="menu-modal__block-title"><span aria-hidden="true">🥣</span> <span class="menu-modal__block-title-text">${labels.saturdayMenuStarters || "Entrantes al centro"}</span></h4>
           <ul class="menu-modal__list">
@@ -567,6 +571,7 @@ function ensureSaturdayMenuModal() {
             <li><span class="menu-modal__item-text">${labels.saturdayMenuDrink6 || "Vermut"}</span></li>
           </ul>
         </article>
+        </div>
       </div>
     </section>
   `;
@@ -577,8 +582,13 @@ function ensureSaturdayMenuModal() {
 
 function openSaturdayMenuModal() {
   const modal = ensureSaturdayMenuModal();
+  const coverEl = modal.querySelector("[data-menu-cover]");
   modal.removeAttribute("hidden");
   modal.setAttribute("aria-hidden", "false");
+  coverEl?.classList.remove("menu-modal__cover--hidden");
+  window.setTimeout(() => {
+    coverEl?.classList.add("menu-modal__cover--hidden");
+  }, 1800);
   document.body.classList.add("body--menu-modal-open");
   refs.bottomNav?.classList.add("bottom-nav--hidden");
 }
