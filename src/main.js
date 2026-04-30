@@ -300,7 +300,8 @@ function ensureFridayDinnerMenuModal() {
         <button class="menu-modal__close-btn" type="button" aria-label="${labels.closeMenuBtn || "Cerrar menú"}" data-close-friday-dinner-menu="true">×</button>
         <p class="menu-modal__subtitle">${labels.fridayDinnerMenuSubtitle || "VIERNES · 21:30"}</p>
         <h3 id="friday-dinner-menu-title" class="menu-modal__title">${labels.fridayDinnerMenuTitle || "Menú Pescaito"}</h3>
-        <div class="menu-modal__blocks">
+        <div class="menu-modal__content">
+          <div class="menu-modal__blocks">
           <article class="menu-modal__block">
             <h4 class="menu-modal__block-title"><span aria-hidden="true">🥣</span> <span class="menu-modal__block-title-text">${labels.fridayDinnerMenuStarter || "Entrante"}</span></h4>
             <ul class="menu-modal__list">
@@ -341,6 +342,7 @@ function ensureFridayDinnerMenuModal() {
               <li><span class="menu-modal__item-text">${labels.fridayDinnerMenuDrink6 || "Vermut"}</span></li>
             </ul>
           </article>
+          </div>
         </div>
       </div>
     </section>
@@ -358,7 +360,7 @@ function openFridayDinnerMenuModal() {
   coverEl?.classList.remove("menu-modal__cover--hidden");
   window.setTimeout(() => {
     coverEl?.classList.add("menu-modal__cover--hidden");
-  }, 1800);
+  }, 1200);
   document.body.classList.add("body--menu-modal-open");
   refs.bottomNav?.classList.add("bottom-nav--hidden");
 }
@@ -529,7 +531,8 @@ function ensureSaturdayMenuModal() {
         <button class="menu-modal__close-btn" type="button" aria-label="${labels.closeMenuBtn || "Cerrar menú"}" data-close-saturday-menu="true">×</button>
         <p class="menu-modal__subtitle">${labels.saturdayMenuSubtitle || "SÁBADO · 14:00"}</p>
         <h3 id="menu-modal-title" class="menu-modal__title">${labels.saturdayMenuTitle || "Menú Paella"}</h3>
-        <div class="menu-modal__blocks">
+        <div class="menu-modal__content">
+          <div class="menu-modal__blocks">
         <article class="menu-modal__block">
           <h4 class="menu-modal__block-title"><span aria-hidden="true">🥣</span> <span class="menu-modal__block-title-text">${labels.saturdayMenuStarters || "Entrantes al centro"}</span></h4>
           <ul class="menu-modal__list">
@@ -571,6 +574,7 @@ function ensureSaturdayMenuModal() {
             <li><span class="menu-modal__item-text">${labels.saturdayMenuDrink6 || "Vermut"}</span></li>
           </ul>
         </article>
+          </div>
         </div>
       </div>
     </section>
@@ -588,7 +592,7 @@ function openSaturdayMenuModal() {
   coverEl?.classList.remove("menu-modal__cover--hidden");
   window.setTimeout(() => {
     coverEl?.classList.add("menu-modal__cover--hidden");
-  }, 1800);
+  }, 1200);
   document.body.classList.add("body--menu-modal-open");
   refs.bottomNav?.classList.add("bottom-nav--hidden");
 }
