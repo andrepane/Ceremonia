@@ -461,23 +461,27 @@ function ensureSaturdayMenuModal() {
 
     if (closeButton) closeButton.setAttribute("aria-label", labels.closeMenuBtn || "Cerrar menú");
     if (subtitle) subtitle.textContent = labels.saturdayMenuSubtitle || "SÁBADO · 14:00";
-    if (title) title.textContent = labels.saturdayMenuTitle || "Almuerzo del sábado";
+    if (title) title.textContent = labels.saturdayMenuTitle || "Menú Paella";
     if (sectionTitles[0]) sectionTitles[0].textContent = labels.saturdayMenuStarters || "Entrantes al centro";
     if (sectionTitles[1]) sectionTitles[1].textContent = labels.saturdayMenuMain || "Principal";
     if (sectionTitles[2]) sectionTitles[2].textContent = labels.saturdayMenuDessert || "Postre";
     if (sectionTitles[3]) sectionTitles[3].textContent = labels.saturdayMenuCoffee || "Café";
     if (sectionTitles[4]) sectionTitles[4].textContent = labels.saturdayMenuDrinks || "Bebidas";
-    if (itemLabels[0]) itemLabels[0].textContent = labels.saturdayMenuStarter1 || "Salmorejo";
+    if (itemLabels[0]) itemLabels[0].textContent = labels.saturdayMenuStarter1 || "Ensalada de tomate Raf y melva";
     if (itemLabels[1]) itemLabels[1].textContent = labels.saturdayMenuStarter2 || "Ensaladilla rusa";
     if (itemLabels[2]) itemLabels[2].textContent = labels.saturdayMenuMain1 || "Paella de marisco";
     if (itemLabels[3]) itemLabels[3].textContent = labels.saturdayMenuDessert1 || "Postre de la casa";
-    if (itemLabels[4]) itemLabels[4].textContent = labels.saturdayMenuCoffee1 || "Café";
-    if (itemLabels[5]) itemLabels[5].textContent = labels.saturdayMenuDrink1 || "Vino";
-    if (itemLabels[6]) itemLabels[6].textContent = labels.saturdayMenuDrink2 || "Cerveza";
-    if (itemLabels[7]) itemLabels[7].textContent = labels.saturdayMenuDrink3 || "Agua";
-    if (itemLabels[8]) itemLabels[8].textContent = labels.saturdayMenuDrink4 || "Refrescos";
-    if (itemLabels[9]) itemLabels[9].textContent = labels.saturdayMenuDrink5 || "Tinto de verano";
-    if (itemLabels[10]) itemLabels[10].textContent = labels.saturdayMenuDrink6 || "Vermut";
+    if (itemLabels[4]) itemLabels[4].textContent = labels.saturdayMenuCoffee1 || "Café con leche";
+    if (itemLabels[5]) itemLabels[5].textContent = labels.saturdayMenuCoffee2 || "Cortado";
+    if (itemLabels[6]) itemLabels[6].textContent = labels.saturdayMenuCoffee3 || "Carajillo";
+    if (itemLabels[7]) itemLabels[7].textContent = labels.saturdayMenuCoffee4 || "Café con hielo";
+    if (itemLabels[8]) itemLabels[8].textContent = labels.saturdayMenuCoffee5 || "Bombón";
+    if (itemLabels[9]) itemLabels[9].textContent = labels.saturdayMenuDrink1 || "Vino";
+    if (itemLabels[10]) itemLabels[10].textContent = labels.saturdayMenuDrink2 || "Cerveza";
+    if (itemLabels[11]) itemLabels[11].textContent = labels.saturdayMenuDrink3 || "Agua";
+    if (itemLabels[12]) itemLabels[12].textContent = labels.saturdayMenuDrink4 || "Refrescos";
+    if (itemLabels[13]) itemLabels[13].textContent = labels.saturdayMenuDrink5 || "Tinto de verano";
+    if (itemLabels[14]) itemLabels[14].textContent = labels.saturdayMenuDrink6 || "Vermut";
     return existingModal;
   }
 
@@ -491,12 +495,12 @@ function ensureSaturdayMenuModal() {
     <section class="menu-modal__dialog" role="dialog" aria-modal="true" aria-labelledby="menu-modal-title">
       <button class="menu-modal__close-btn" type="button" aria-label="${labels.closeMenuBtn || "Cerrar menú"}" data-close-saturday-menu="true">×</button>
       <p class="menu-modal__subtitle">${labels.saturdayMenuSubtitle || "SÁBADO · 14:00"}</p>
-      <h3 id="menu-modal-title" class="menu-modal__title">${labels.saturdayMenuTitle || "Almuerzo del sábado"}</h3>
+      <h3 id="menu-modal-title" class="menu-modal__title">${labels.saturdayMenuTitle || "Menú Paella"}</h3>
       <div class="menu-modal__blocks">
         <article class="menu-modal__block">
           <h4 class="menu-modal__block-title"><span aria-hidden="true">🥣</span> <span class="menu-modal__block-title-text">${labels.saturdayMenuStarters || "Entrantes al centro"}</span></h4>
           <ul class="menu-modal__list">
-            <li><span class="menu-modal__item-text">${labels.saturdayMenuStarter1 || "Salmorejo"}</span></li>
+            <li><span class="menu-modal__item-text">${labels.saturdayMenuStarter1 || "Ensalada de tomate Raf y melva"}</span></li>
             <li><span class="menu-modal__item-text">${labels.saturdayMenuStarter2 || "Ensaladilla rusa"}</span></li>
           </ul>
         </article>
@@ -515,7 +519,11 @@ function ensureSaturdayMenuModal() {
         <article class="menu-modal__block">
           <h4 class="menu-modal__block-title"><span aria-hidden="true">☕</span> <span class="menu-modal__block-title-text">${labels.saturdayMenuCoffee || "Café"}</span></h4>
           <ul class="menu-modal__list">
-            <li><span class="menu-modal__item-text">${labels.saturdayMenuCoffee1 || "Café"}</span></li>
+            <li><span class="menu-modal__item-text">${labels.saturdayMenuCoffee1 || "Café con leche"}</span></li>
+            <li><span class="menu-modal__item-text">${labels.saturdayMenuCoffee2 || "Cortado"}</span></li>
+            <li><span class="menu-modal__item-text">${labels.saturdayMenuCoffee3 || "Carajillo"}</span></li>
+            <li><span class="menu-modal__item-text">${labels.saturdayMenuCoffee4 || "Café con hielo"}</span></li>
+            <li><span class="menu-modal__item-text">${labels.saturdayMenuCoffee5 || "Bombón"}</span></li>
           </ul>
         </article>
         <article class="menu-modal__block">
