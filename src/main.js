@@ -355,14 +355,21 @@ function openFridayDinnerMenuModal() {
   const coverEl = modal.querySelector("[data-menu-cover]");
   modal.removeAttribute("hidden");
   modal.setAttribute("aria-hidden", "false");
-  if (coverEl) {
-    coverEl.classList.remove("menu-modal__cover--hidden");
-    window.setTimeout(() => {
-      coverEl.classList.add("menu-modal__cover--hidden");
-    }, 2000);
-  }
+  showMenuCover(coverEl);
   document.body.classList.add("body--menu-modal-open");
   refs.bottomNav?.classList.add("bottom-nav--hidden");
+}
+
+function showMenuCover(coverEl) {
+  if (!coverEl) return;
+
+  coverEl.classList.remove("menu-modal__cover--hidden");
+
+  window.requestAnimationFrame(() => {
+    window.setTimeout(() => {
+      coverEl.classList.add("menu-modal__cover--hidden");
+    }, 50);
+  });
 }
 
 function closeFridayDinnerMenuModal() {
