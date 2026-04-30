@@ -2430,7 +2430,7 @@ input {
   position: relative;
   width: min(100%, 520px);
   max-height: min(86vh, 760px);
-  overflow: auto;
+  overflow: visible;
   border-radius: 30px;
   border: 1px solid rgba(255, 255, 255, 0.56);
   background: linear-gradient(152deg, rgba(255, 255, 255, 0.8) 0%, rgba(249, 240, 233, 0.74) 55%, rgba(244, 233, 223, 0.7) 100%);
@@ -2448,6 +2448,16 @@ input {
   position: relative;
   perspective: 1800px;
   transform-style: preserve-3d;
+  padding: 0;
+}
+
+.menu-modal__scroll {
+  position: relative;
+  max-height: min(86vh, 760px);
+  overflow: auto;
+  border-radius: inherit;
+  padding: 24px 20px 20px;
+  -webkit-overflow-scrolling: touch;
 }
 
 .menu-modal__cover {
