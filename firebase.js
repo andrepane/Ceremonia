@@ -214,6 +214,7 @@ async function upsertGuestbookEntry(guestId, payload = {}) {
     await deleteDoc(eventDoc("guestbookEntries", guestId));
     if (!isCoupleGuest(guestId)) {
       await deleteDoc(eventDoc("coupleGuestbook", guestId));
+      await deleteDoc(eventDoc("activity", `dedication_${guestId}`));
     }
     return;
   }
@@ -234,6 +235,18 @@ async function upsertGuestbookEntry(guestId, payload = {}) {
     await setDoc(
       eventDoc("coupleGuestbook", guestId),
       buildCoupleGuestbookPayload(guestId, { ...payload, author: sanitizedAuthor, content: sanitizedContent }, user.uid),
+      { merge: true }
+    );
+
+    await setDoc(
+      eventDoc("activity", `dedication_${guestId}`),
+      {
+        type: "write_dedication",
+        guestId,
+        metadata: { target: "guestbook" },
+        createdAt: serverTimestamp(),
+        updatedByUid: user.uid
+      },
       { merge: true }
     );
   }

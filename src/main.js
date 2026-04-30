@@ -1179,6 +1179,12 @@ function bindUIEvents() {
       return;
     }
 
+    const activityGuestbookButton = event.target.closest("[data-activity-open-guestbook]");
+    if (activityGuestbookButton) {
+      openGuestbookModal();
+      return;
+    }
+
     const detailToggle = event.target.closest("[data-home-toggle-details]");
     if (detailToggle) {
       setState({ isWeekendFormatExpanded: detailToggle.dataset.homeToggleDetails === "expand" });

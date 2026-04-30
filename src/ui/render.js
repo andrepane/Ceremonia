@@ -105,9 +105,15 @@ function renderActivityFeed() {
     const template = copy.activityTemplates[item.type] || "{name}";
     const photoId = item?.metadata?.photoId || "";
     const isPhotoActivity = Boolean(photoId);
+    const isGuestbookActivity = item.type === "write_dedication";
     const activityContent = `<span class="activity-item__text">${template.replace("{name}", name)}</span><span class="activity-item__time">${formatRelativeTimeFromDate(item.createdAt)}</span>`;
-    if (!isPhotoActivity) return `<li class="activity-item">${activityContent}</li>`;
-    return `<li class="activity-item activity-item--clickable"><button type="button" class="activity-item__button activity-item--interactive" data-activity-photo-id="${photoId}" data-activity-type="${item.type}" aria-label="${template.replace("{name}", name)}">${activityContent}<span class="activity-item__hint" aria-hidden="true"><i class="fa-solid fa-arrow-right" aria-hidden="true"></i></span></button></li>`;
+    if (isPhotoActivity) {
+      return `<li class="activity-item activity-item--clickable"><button type="button" class="activity-item__button activity-item--interactive" data-activity-photo-id="${photoId}" data-activity-type="${item.type}" aria-label="${template.replace("{name}", name)}">${activityContent}<span class="activity-item__hint" aria-hidden="true"><i class="fa-solid fa-arrow-right" aria-hidden="true"></i></span></button></li>`;
+    }
+    if (isGuestbookActivity) {
+      return `<li class="activity-item activity-item--clickable"><button type="button" class="activity-item__button activity-item--interactive" data-activity-open-guestbook="true" aria-label="${template.replace("{name}", name)}">${activityContent}<span class="activity-item__hint" aria-hidden="true"><i class="fa-solid fa-arrow-right" aria-hidden="true"></i></span></button></li>`;
+    }
+    return `<li class="activity-item">${activityContent}</li>`;
   }).join("");
 }
 
