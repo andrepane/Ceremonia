@@ -2530,6 +2530,10 @@ input {
   content: "MENÚ\A Paella";
 }
 
+.menu-modal__cover-art--breakfast::before {
+  content: "Desayuno";
+}
+
 .menu-modal__cover-art::after {
   content: none;
 }
