@@ -2536,24 +2536,6 @@ input {
   content: none;
 }
 
-
-@supports (-webkit-touch-callout: none) {
-  .menu-modal {
-    padding-top: max(28px, env(safe-area-inset-top, 0px) + 18px);
-    padding-bottom: max(26px, env(safe-area-inset-bottom, 0px) + 18px);
-  }
-
-  .menu-modal__dialog--with-cover {
-    width: min(100%, 500px);
-    max-height: min(80vh, 700px);
-    transform: translateY(12px);
-  }
-
-  .menu-modal__dialog--with-cover .menu-modal__cover {
-    inset: -10px -6px 0;
-  }
-}
-
 @keyframes coverPageTurn {
   0% {
     transform: rotateY(0deg);
