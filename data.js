@@ -576,7 +576,7 @@ window.WEDDING_APP_DATA = {
         viewMenuBtn: "Vedi menù",
         closeMenuBtn: "Chiudi menù",
         fridayDinnerMenuSubtitle: "VENERDÌ · 21:30",
-        fridayDinnerMenuTitle: "Menù Pescaito",
+        fridayDinnerMenuTitle: "Menù Pesce Fritto",
         fridayDinnerMenuStarter: "Antipasto",
         fridayDinnerMenuMain: "Piatto principale",
         fridayDinnerMenuDessert: "Dessert",

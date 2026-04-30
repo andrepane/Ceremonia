@@ -249,7 +249,7 @@ function getFridayDinnerMenuModal() {
 }
 
 function getMenuCoverTitle(label, fallback) {
-  return (label || fallback || "").replace(/\s+/g, " ").replace(" ", "\\A ");
+  return (label || fallback || "").replace(/\s+/g, " ").replace(" ", "\n");
 }
 
 function ensureFridayDinnerMenuModal() {
