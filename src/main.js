@@ -422,7 +422,7 @@ function ensureSaturdayBreakfastMenuModal() {
     <div class="menu-modal__backdrop" data-close-saturday-breakfast-menu="true"></div>
     <section class="menu-modal__dialog menu-modal__dialog--with-cover" role="dialog" aria-modal="true" aria-labelledby="saturday-breakfast-menu-title">
       <div class="menu-modal__cover" data-menu-cover aria-hidden="true">
-        <div class="menu-modal__cover-art menu-modal__cover-art--saturday" aria-hidden="true"></div>
+        <div class="menu-modal__cover-art menu-modal__cover-art--breakfast" aria-hidden="true"></div>
       </div>
       <div class="menu-modal__scroll">
         <button class="menu-modal__close-btn" type="button" aria-label="${labels.closeMenuBtn || "Cerrar menú"}" data-close-saturday-breakfast-menu="true">×</button>
@@ -538,7 +538,7 @@ function ensureSaturdayMenuModal() {
     <div class="menu-modal__backdrop" data-close-saturday-menu="true"></div>
     <section class="menu-modal__dialog menu-modal__dialog--with-cover" role="dialog" aria-modal="true" aria-labelledby="menu-modal-title">
       <div class="menu-modal__cover" data-menu-cover aria-hidden="true">
-        <div class="menu-modal__cover-art menu-modal__cover-art--saturday" aria-hidden="true"></div>
+        <div class="menu-modal__cover-art menu-modal__cover-art--paella" aria-hidden="true"></div>
       </div>
       <div class="menu-modal__scroll">
         <button class="menu-modal__close-btn" type="button" aria-label="${labels.closeMenuBtn || "Cerrar menú"}" data-close-saturday-menu="true">×</button>
@@ -664,7 +664,7 @@ function ensureSundayBreakfastMenuModal() {
     <div class="menu-modal__backdrop" data-close-sunday-breakfast-menu="true"></div>
     <section class="menu-modal__dialog menu-modal__dialog--with-cover" role="dialog" aria-modal="true" aria-labelledby="sunday-breakfast-menu-title">
       <div class="menu-modal__cover" data-menu-cover aria-hidden="true">
-        <div class="menu-modal__cover-art menu-modal__cover-art--saturday" aria-hidden="true"></div>
+        <div class="menu-modal__cover-art menu-modal__cover-art--breakfast" aria-hidden="true"></div>
       </div>
       <div class="menu-modal__scroll">
         <button class="menu-modal__close-btn" type="button" aria-label="${labels.closeMenuBtn || "Cerrar menú"}" data-close-sunday-breakfast-menu="true">×</button>

@@ -2526,8 +2526,12 @@ input {
   content: "MENÚ\A Pescaito";
 }
 
-.menu-modal__cover-art--saturday::before {
+.menu-modal__cover-art--paella::before {
   content: "MENÚ\A Paella";
+}
+
+.menu-modal__cover-art--breakfast::before {
+  content: "Desayuno";
 }
 
 .menu-modal__cover-art::after {
