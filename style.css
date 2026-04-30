@@ -2513,7 +2513,7 @@ input {
 }
 
 .menu-modal__cover-art::before {
-  content: "";
+  content: attr(data-cover-title);
   white-space: pre;
   position: relative;
   z-index: 2;
@@ -2521,18 +2521,6 @@ input {
   color: #74645b;
 }
 
-
-.menu-modal__cover-art--friday::before {
-  content: "MENÚ\A Pescaito";
-}
-
-.menu-modal__cover-art--paella::before {
-  content: "MENÚ\A Paella";
-}
-
-.menu-modal__cover-art--breakfast::before {
-  content: "Desayuno";
-}
 
 .menu-modal__cover-art::after {
   content: none;
