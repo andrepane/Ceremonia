@@ -2428,7 +2428,7 @@ input {
 
 .menu-modal__dialog {
   position: relative;
-  width: min(100%, 520px);
+  width: min(100%, 780px);
   max-height: min(86vh, 760px);
   overflow: visible;
   border-radius: 30px;
@@ -2454,7 +2454,7 @@ input {
 .menu-modal__scroll {
   position: relative;
   max-height: min(86vh, 760px);
-  overflow: auto;
+  overflow: visible;
   border-radius: inherit;
   padding: 24px 20px 20px;
   -webkit-overflow-scrolling: touch;
@@ -2500,7 +2500,7 @@ input {
 .menu-modal__cover--hidden {
   opacity: 0;
   transform: rotateY(-180deg);
-  animation: coverPageTurn 2.2s cubic-bezier(0.35, 0.02, 0.2, 1) forwards;
+  animation: coverPageTurn 2.5s cubic-bezier(0.35, 0.02, 0.2, 1) forwards;
   pointer-events: none;
 }
 
@@ -2584,6 +2584,13 @@ input {
   font-size: clamp(2rem, 7.4vw, 2.45rem);
   color: var(--accent-strong);
   line-height: 1.02;
+}
+
+.menu-modal__content {
+  max-height: min(64vh, 560px);
+  overflow: auto;
+  -webkit-overflow-scrolling: touch;
+  padding-right: 4px;
 }
 
 .menu-modal__blocks {
