@@ -357,9 +357,11 @@ function openFridayDinnerMenuModal() {
   modal.setAttribute("aria-hidden", "false");
   if (coverEl) {
     coverEl.classList.remove("menu-modal__cover--hidden");
-    window.setTimeout(() => {
-      coverEl.classList.add("menu-modal__cover--hidden");
-    }, 80);
+    window.requestAnimationFrame(() => {
+      window.requestAnimationFrame(() => {
+        coverEl.classList.add("menu-modal__cover--hidden");
+      });
+    });
   }
   document.body.classList.add("body--menu-modal-open");
   refs.bottomNav?.classList.add("bottom-nav--hidden");
