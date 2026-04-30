@@ -344,6 +344,9 @@ function ensureFridayDinnerMenuModal() {
           </article>
           </div>
         </div>
+        </div>
+      </div>
+      </div>
       </div>
     </section>
   `;
@@ -417,8 +420,12 @@ function ensureSaturdayBreakfastMenuModal() {
   modal.setAttribute("aria-hidden", "true");
   modal.innerHTML = `
     <div class="menu-modal__backdrop" data-close-saturday-breakfast-menu="true"></div>
-    <section class="menu-modal__dialog" role="dialog" aria-modal="true" aria-labelledby="saturday-breakfast-menu-title">
-      <button class="menu-modal__close-btn" type="button" aria-label="${labels.closeMenuBtn || "Cerrar menú"}" data-close-saturday-breakfast-menu="true">×</button>
+    <section class="menu-modal__dialog menu-modal__dialog--with-cover" role="dialog" aria-modal="true" aria-labelledby="saturday-breakfast-menu-title">
+      <div class="menu-modal__cover" data-menu-cover aria-hidden="true">
+        <div class="menu-modal__cover-art menu-modal__cover-art--saturday" aria-hidden="true"></div>
+      </div>
+      <div class="menu-modal__scroll">
+        <button class="menu-modal__close-btn" type="button" aria-label="${labels.closeMenuBtn || "Cerrar menú"}" data-close-saturday-breakfast-menu="true">×</button>
       <p class="menu-modal__subtitle">${labels.saturdayBreakfastMenuSubtitle || "SÁBADO · 09:00–11:00"}</p>
       <h3 id="saturday-breakfast-menu-title" class="menu-modal__title">${labels.breakfastMenuTitle || "Desayuno"}</h3>
       <div class="menu-modal__blocks">
@@ -450,6 +457,7 @@ function ensureSaturdayBreakfastMenuModal() {
           </ul>
         </article>
       </div>
+      </div>
     </section>
   `;
 
@@ -459,8 +467,13 @@ function ensureSaturdayBreakfastMenuModal() {
 
 function openSaturdayBreakfastMenuModal() {
   const modal = ensureSaturdayBreakfastMenuModal();
+  const coverEl = modal.querySelector("[data-menu-cover]");
   modal.removeAttribute("hidden");
   modal.setAttribute("aria-hidden", "false");
+  coverEl?.classList.remove("menu-modal__cover--hidden");
+  window.setTimeout(() => {
+    coverEl?.classList.add("menu-modal__cover--hidden");
+  }, 1900);
   document.body.classList.add("body--menu-modal-open");
   refs.bottomNav?.classList.add("bottom-nav--hidden");
 }
@@ -649,8 +662,12 @@ function ensureSundayBreakfastMenuModal() {
   modal.setAttribute("aria-hidden", "true");
   modal.innerHTML = `
     <div class="menu-modal__backdrop" data-close-sunday-breakfast-menu="true"></div>
-    <section class="menu-modal__dialog" role="dialog" aria-modal="true" aria-labelledby="sunday-breakfast-menu-title">
-      <button class="menu-modal__close-btn" type="button" aria-label="${labels.closeMenuBtn || "Cerrar menú"}" data-close-sunday-breakfast-menu="true">×</button>
+    <section class="menu-modal__dialog menu-modal__dialog--with-cover" role="dialog" aria-modal="true" aria-labelledby="sunday-breakfast-menu-title">
+      <div class="menu-modal__cover" data-menu-cover aria-hidden="true">
+        <div class="menu-modal__cover-art menu-modal__cover-art--saturday" aria-hidden="true"></div>
+      </div>
+      <div class="menu-modal__scroll">
+        <button class="menu-modal__close-btn" type="button" aria-label="${labels.closeMenuBtn || "Cerrar menú"}" data-close-sunday-breakfast-menu="true">×</button>
       <p class="menu-modal__subtitle">${labels.sundayBreakfastMenuSubtitle || "DOMINGO · 09:00–11:00"}</p>
       <h3 id="sunday-breakfast-menu-title" class="menu-modal__title">${labels.breakfastMenuTitle || "Desayuno"}</h3>
       <div class="menu-modal__blocks">
@@ -691,8 +708,13 @@ function ensureSundayBreakfastMenuModal() {
 
 function openSundayBreakfastMenuModal() {
   const modal = ensureSundayBreakfastMenuModal();
+  const coverEl = modal.querySelector("[data-menu-cover]");
   modal.removeAttribute("hidden");
   modal.setAttribute("aria-hidden", "false");
+  coverEl?.classList.remove("menu-modal__cover--hidden");
+  window.setTimeout(() => {
+    coverEl?.classList.add("menu-modal__cover--hidden");
+  }, 1900);
   document.body.classList.add("body--menu-modal-open");
   refs.bottomNav?.classList.add("bottom-nav--hidden");
 }
