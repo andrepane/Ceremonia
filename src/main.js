@@ -248,6 +248,10 @@ function getFridayDinnerMenuModal() {
   return document.getElementById(FRIDAY_DINNER_MENU_MODAL_ID);
 }
 
+function getMenuCoverTitle(label, fallback) {
+  return (label || fallback || "").replace(/\s+/g, " ").replace(" ", "\\A ");
+}
+
 function ensureFridayDinnerMenuModal() {
   const locale = getLocale();
   const labels = locale.labels || {};
@@ -258,6 +262,7 @@ function ensureFridayDinnerMenuModal() {
     const title = existingModal.querySelector(".menu-modal__title");
     const sectionTitles = existingModal.querySelectorAll(".menu-modal__block-title-text");
     const itemLabels = existingModal.querySelectorAll(".menu-modal__item-text");
+    const coverArt = existingModal.querySelector(".menu-modal__cover-art");
 
     if (closeButton) closeButton.setAttribute("aria-label", labels.closeMenuBtn || "Cerrar menú");
     if (subtitle) subtitle.textContent = labels.fridayDinnerMenuSubtitle || "VIERNES · 21:30";
@@ -282,6 +287,7 @@ function ensureFridayDinnerMenuModal() {
     if (itemLabels[12]) itemLabels[12].textContent = labels.fridayDinnerMenuDrink4 || "Refrescos";
     if (itemLabels[13]) itemLabels[13].textContent = labels.fridayDinnerMenuDrink5 || "Tinto de verano";
     if (itemLabels[14]) itemLabels[14].textContent = labels.fridayDinnerMenuDrink6 || "Vermut";
+    if (coverArt) coverArt.setAttribute("data-cover-title", getMenuCoverTitle(labels.fridayDinnerMenuTitle, "Menú Pescaito"));
     return existingModal;
   }
 
@@ -294,7 +300,7 @@ function ensureFridayDinnerMenuModal() {
     <div class="menu-modal__backdrop" data-close-friday-dinner-menu="true"></div>
     <section class="menu-modal__dialog menu-modal__dialog--with-cover" role="dialog" aria-modal="true" aria-labelledby="friday-dinner-menu-title">
       <div class="menu-modal__cover" data-menu-cover aria-hidden="true">
-        <div class="menu-modal__cover-art menu-modal__cover-art--friday" aria-hidden="true"></div>
+        <div class="menu-modal__cover-art menu-modal__cover-art--friday" data-cover-title="${getMenuCoverTitle(labels.fridayDinnerMenuTitle, "Menú Pescaito")}" aria-hidden="true"></div>
       </div>
       <div class="menu-modal__scroll">
         <button class="menu-modal__close-btn" type="button" aria-label="${labels.closeMenuBtn || "Cerrar menú"}" data-close-friday-dinner-menu="true">×</button>
@@ -391,6 +397,7 @@ function ensureSaturdayBreakfastMenuModal() {
     const title = existingModal.querySelector(".menu-modal__title");
     const sectionTitles = existingModal.querySelectorAll(".menu-modal__block-title-text");
     const itemLabels = existingModal.querySelectorAll(".menu-modal__item-text");
+    const coverArt = existingModal.querySelector(".menu-modal__cover-art");
 
     if (closeButton) closeButton.setAttribute("aria-label", labels.closeMenuBtn || "Cerrar menú");
     if (subtitle) subtitle.textContent = labels.saturdayBreakfastMenuSubtitle || "SÁBADO · 09:00–11:00";
@@ -410,6 +417,7 @@ function ensureSaturdayBreakfastMenuModal() {
     if (itemLabels[9]) itemLabels[9].textContent = labels.breakfastMenuDrink2 || "Leche";
     if (itemLabels[10]) itemLabels[10].textContent = labels.breakfastMenuDrink3 || "Zumo";
     if (itemLabels[11]) itemLabels[11].textContent = labels.breakfastMenuDrink4 || "Agua";
+    if (coverArt) coverArt.setAttribute("data-cover-title", getMenuCoverTitle(labels.breakfastMenuTitle, "Desayuno"));
     return existingModal;
   }
 
@@ -422,7 +430,7 @@ function ensureSaturdayBreakfastMenuModal() {
     <div class="menu-modal__backdrop" data-close-saturday-breakfast-menu="true"></div>
     <section class="menu-modal__dialog menu-modal__dialog--with-cover" role="dialog" aria-modal="true" aria-labelledby="saturday-breakfast-menu-title">
       <div class="menu-modal__cover" data-menu-cover aria-hidden="true">
-        <div class="menu-modal__cover-art menu-modal__cover-art--breakfast" aria-hidden="true"></div>
+        <div class="menu-modal__cover-art menu-modal__cover-art--breakfast" data-cover-title="${getMenuCoverTitle(labels.breakfastMenuTitle, "Desayuno")}" aria-hidden="true"></div>
       </div>
       <div class="menu-modal__scroll">
         <button class="menu-modal__close-btn" type="button" aria-label="${labels.closeMenuBtn || "Cerrar menú"}" data-close-saturday-breakfast-menu="true">×</button>
@@ -501,6 +509,7 @@ function ensureSaturdayMenuModal() {
     const title = existingModal.querySelector(".menu-modal__title");
     const sectionTitles = existingModal.querySelectorAll(".menu-modal__block-title-text");
     const itemLabels = existingModal.querySelectorAll(".menu-modal__item-text");
+    const coverArt = existingModal.querySelector(".menu-modal__cover-art");
 
     if (closeButton) closeButton.setAttribute("aria-label", labels.closeMenuBtn || "Cerrar menú");
     if (subtitle) subtitle.textContent = labels.saturdayMenuSubtitle || "SÁBADO · 14:00";
@@ -526,6 +535,7 @@ function ensureSaturdayMenuModal() {
     if (itemLabels[13]) itemLabels[13].textContent = labels.saturdayMenuDrink4 || "Refrescos";
     if (itemLabels[14]) itemLabels[14].textContent = labels.saturdayMenuDrink5 || "Tinto de verano";
     if (itemLabels[15]) itemLabels[15].textContent = labels.saturdayMenuDrink6 || "Vermut";
+    if (coverArt) coverArt.setAttribute("data-cover-title", getMenuCoverTitle(labels.saturdayMenuTitle, "Menú Paella"));
     return existingModal;
   }
 
@@ -538,7 +548,7 @@ function ensureSaturdayMenuModal() {
     <div class="menu-modal__backdrop" data-close-saturday-menu="true"></div>
     <section class="menu-modal__dialog menu-modal__dialog--with-cover" role="dialog" aria-modal="true" aria-labelledby="menu-modal-title">
       <div class="menu-modal__cover" data-menu-cover aria-hidden="true">
-        <div class="menu-modal__cover-art menu-modal__cover-art--paella" aria-hidden="true"></div>
+        <div class="menu-modal__cover-art menu-modal__cover-art--paella" data-cover-title="${getMenuCoverTitle(labels.saturdayMenuTitle, "Menú Paella")}" aria-hidden="true"></div>
       </div>
       <div class="menu-modal__scroll">
         <button class="menu-modal__close-btn" type="button" aria-label="${labels.closeMenuBtn || "Cerrar menú"}" data-close-saturday-menu="true">×</button>
@@ -633,6 +643,7 @@ function ensureSundayBreakfastMenuModal() {
     const title = existingModal.querySelector(".menu-modal__title");
     const sectionTitles = existingModal.querySelectorAll(".menu-modal__block-title-text");
     const itemLabels = existingModal.querySelectorAll(".menu-modal__item-text");
+    const coverArt = existingModal.querySelector(".menu-modal__cover-art");
 
     if (closeButton) closeButton.setAttribute("aria-label", labels.closeMenuBtn || "Cerrar menú");
     if (subtitle) subtitle.textContent = labels.sundayBreakfastMenuSubtitle || "DOMINGO · 09:00–11:00";
@@ -652,6 +663,7 @@ function ensureSundayBreakfastMenuModal() {
     if (itemLabels[9]) itemLabels[9].textContent = labels.breakfastMenuDrink2 || "Leche";
     if (itemLabels[10]) itemLabels[10].textContent = labels.breakfastMenuDrink3 || "Zumo";
     if (itemLabels[11]) itemLabels[11].textContent = labels.breakfastMenuDrink4 || "Agua";
+    if (coverArt) coverArt.setAttribute("data-cover-title", getMenuCoverTitle(labels.breakfastMenuTitle, "Desayuno"));
     return existingModal;
   }
 
@@ -664,7 +676,7 @@ function ensureSundayBreakfastMenuModal() {
     <div class="menu-modal__backdrop" data-close-sunday-breakfast-menu="true"></div>
     <section class="menu-modal__dialog menu-modal__dialog--with-cover" role="dialog" aria-modal="true" aria-labelledby="sunday-breakfast-menu-title">
       <div class="menu-modal__cover" data-menu-cover aria-hidden="true">
-        <div class="menu-modal__cover-art menu-modal__cover-art--breakfast" aria-hidden="true"></div>
+        <div class="menu-modal__cover-art menu-modal__cover-art--breakfast" data-cover-title="${getMenuCoverTitle(labels.breakfastMenuTitle, "Desayuno")}" aria-hidden="true"></div>
       </div>
       <div class="menu-modal__scroll">
         <button class="menu-modal__close-btn" type="button" aria-label="${labels.closeMenuBtn || "Cerrar menú"}" data-close-sunday-breakfast-menu="true">×</button>
