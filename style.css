@@ -2524,7 +2524,7 @@ input {
 }
 
 .menu-modal__cover-art::before {
-  content: "MENÚ\A Pescaito";
+  content: "MENÚ\A Paella";
   white-space: pre;
   position: relative;
   z-index: 2;
