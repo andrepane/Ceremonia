@@ -2531,7 +2531,7 @@ input {
 }
 
 .menu-modal__cover-art::before {
-  content: "C&A";
+  content: "Menú Pescaito";
   position: relative;
   z-index: 2;
   background: linear-gradient(158deg, #f3dfbd 0%, #d6a668 38%, #ad7b3f 58%, #f4e0c0 100%);
