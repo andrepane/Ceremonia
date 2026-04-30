@@ -170,7 +170,7 @@
 .book-modal__cover--hidden {
   opacity: 0;
   transform: rotateY(-180deg);
-  animation: coverPageTurn 2.5s cubic-bezier(0.35, 0.02, 0.2, 1) forwards;
+  animation: coverPageTurn 1.3s cubic-bezier(0.35, 0.02, 0.2, 1) forwards;
   pointer-events: none;
 }
 
