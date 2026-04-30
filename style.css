@@ -2524,12 +2524,21 @@ input {
 }
 
 .menu-modal__cover-art::before {
-  content: "MENÚ\A Pescaito";
+  content: "";
   white-space: pre;
   position: relative;
   z-index: 2;
   line-height: 1.2;
   color: #74645b;
+}
+
+
+.menu-modal__cover-art--friday::before {
+  content: "MENÚ\A Pescaito";
+}
+
+.menu-modal__cover-art--saturday::before {
+  content: "MENÚ\A Paella";
 }
 
 .menu-modal__cover-art::after {
