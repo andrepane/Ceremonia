@@ -472,11 +472,11 @@ function ensureSaturdayMenuModal() {
     if (itemLabels[2]) itemLabels[2].textContent = labels.saturdayMenuMain1 || "Paella de marisco";
     if (itemLabels[3]) itemLabels[3].textContent = labels.saturdayMenuDessert1 || "Postre de la casa";
     if (itemLabels[4]) itemLabels[4].textContent = labels.saturdayMenuCoffee1 || "Café solo";
-    if (itemLabels[5]) itemLabels[5].textContent = labels.saturdayMenuCoffee1 || "Café con leche";
-    if (itemLabels[6]) itemLabels[6].textContent = labels.saturdayMenuCoffee2 || "Cortado";
-    if (itemLabels[7]) itemLabels[7].textContent = labels.saturdayMenuCoffee3 || "Carajillo";
-    if (itemLabels[8]) itemLabels[8].textContent = labels.saturdayMenuCoffee4 || "Café con hielo";
-    if (itemLabels[9]) itemLabels[9].textContent = labels.saturdayMenuCoffee5 || "Bombón";
+    if (itemLabels[5]) itemLabels[5].textContent = labels.saturdayMenuCoffee2 || "Café con leche";
+    if (itemLabels[6]) itemLabels[6].textContent = labels.saturdayMenuCoffee3 || "Cortado";
+    if (itemLabels[7]) itemLabels[7].textContent = labels.saturdayMenuCoffee4 || "Carajillo";
+    if (itemLabels[8]) itemLabels[8].textContent = labels.saturdayMenuCoffee5 || "Café con hielo";
+    if (itemLabels[9]) itemLabels[9].textContent = labels.saturdayMenuCoffee6 || "Bombón";
     if (itemLabels[10]) itemLabels[10].textContent = labels.saturdayMenuDrink1 || "Vino";
     if (itemLabels[11]) itemLabels[11].textContent = labels.saturdayMenuDrink2 || "Cerveza";
     if (itemLabels[12]) itemLabels[12].textContent = labels.saturdayMenuDrink3 || "Agua";
