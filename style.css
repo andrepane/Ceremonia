@@ -2470,7 +2470,6 @@ input {
   transform-origin: left center;
   transform-style: preserve-3d;
   backface-visibility: hidden;
-  transition: opacity 110ms linear 490ms;
 }
 
 .menu-modal__cover--hidden {
