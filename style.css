@@ -2470,13 +2470,10 @@ input {
   transform-origin: left center;
   transform-style: preserve-3d;
   backface-visibility: hidden;
-  transition: opacity 110ms linear 490ms;
 }
 
 .menu-modal__cover--hidden {
-  opacity: 0;
-  transform: rotateY(-180deg);
-  animation: coverPageTurn 1.3s cubic-bezier(0.35, 0.02, 0.2, 1) forwards;
+  animation: coverPageTurn 1.3s cubic-bezier(0.22, 0.61, 0.36, 1) forwards;
   pointer-events: none;
 }
 
@@ -2511,7 +2508,8 @@ input {
 
 @keyframes coverPageTurn {
   0% { transform: rotateY(0deg); opacity: 1; }
-  82% { transform: rotateY(-176deg); opacity: 1; }
+  72% { transform: rotateY(-154deg); opacity: 1; }
+  90% { transform: rotateY(-176deg); opacity: 0.9; }
   100% { transform: rotateY(-180deg); opacity: 0; }
 }
 
