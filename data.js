@@ -176,7 +176,7 @@ window.WEDDING_APP_DATA = {
         breakfastMenuDrink3: "Zumo",
         breakfastMenuDrink4: "Agua",
         privateDinnerSurpriseSubtitle: "SÁBADO · 22:00",
-        privateDinnerSurpriseTitle: "Cena con chef privado",
+        privateDinnerSurpriseTitle: "Menú Chef Privado",
         privateDinnerSurpriseBlockTitle: "Sorpresa",
         privateDinnerSurpriseText: "Esto va a ser una sorpresa: !Cotilla!"
       },
@@ -640,7 +640,7 @@ window.WEDDING_APP_DATA = {
         breakfastMenuDrink3: "Succo",
         breakfastMenuDrink4: "Acqua",
         privateDinnerSurpriseSubtitle: "SABATO · 22:00",
-        privateDinnerSurpriseTitle: "Cena con chef privato",
+        privateDinnerSurpriseTitle: "Menù Chef Privato",
         privateDinnerSurpriseBlockTitle: "Sorpresa",
         privateDinnerSurpriseTextMale: "Questa è una sorpresa: ¡Pettegolo!",
         privateDinnerSurpriseTextFemale: "Questa è una sorpresa: ¡Pettegola!"
