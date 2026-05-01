@@ -237,7 +237,7 @@ window.WEDDING_APP_DATA = {
           tone: "warn"
         },
         {
-          day: "SÁBADO · 9:00–10:00",
+          day: "SÁBADO · 9:00–11:00",
           title: "Desayuno",
           text: "Café, tostadas y arrancamos poco a poco.",
           status: "Para empezar",
@@ -702,7 +702,7 @@ window.WEDDING_APP_DATA = {
           tone: "warn"
         },
         {
-          day: "SABATO · 9:00–10:00",
+          day: "SABATO · 9:00–11:00",
           title: "Colazione",
           text: "Caffè, croissant e si parte piano piano.",
           status: "Per iniziare",
