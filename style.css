@@ -2449,6 +2449,14 @@ input {
   -webkit-overflow-scrolling: touch;
 }
 
+.menu-modal__dialog--private-dinner {
+  width: min(100%, 780px);
+}
+
+.menu-modal__scroll--private-dinner {
+  min-height: min(72vh, 620px);
+}
+
 .menu-modal__cover {
   position: absolute;
   inset: 0;

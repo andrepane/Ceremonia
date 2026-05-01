@@ -774,8 +774,8 @@ function ensurePrivateDinnerSurpriseModal() {
   modal.setAttribute("aria-hidden", "true");
   modal.innerHTML = `
     <div class="menu-modal__backdrop" data-close-private-dinner-surprise="true"></div>
-    <section class="menu-modal__dialog menu-modal__dialog--with-cover" role="dialog" aria-modal="true" aria-labelledby="private-dinner-surprise-title">
-      <div class="menu-modal__scroll">
+    <section class="menu-modal__dialog menu-modal__dialog--with-cover menu-modal__dialog--private-dinner" role="dialog" aria-modal="true" aria-labelledby="private-dinner-surprise-title">
+      <div class="menu-modal__scroll menu-modal__scroll--private-dinner">
       <button class="menu-modal__close-btn" type="button" aria-label="${labels.closeMenuBtn || "Cerrar menú"}" data-close-private-dinner-surprise="true">×</button>
       <p class="menu-modal__subtitle">${labels.privateDinnerSurpriseSubtitle || "SÁBADO · 22:00"}</p>
       <h3 id="private-dinner-surprise-title" class="menu-modal__title">${labels.privateDinnerSurpriseTitle || "Menú Chef Privado"}</h3>
