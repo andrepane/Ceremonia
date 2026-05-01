@@ -760,10 +760,12 @@ function ensurePrivateDinnerSurpriseModal() {
     const subtitle = existingModal.querySelector(".menu-modal__subtitle");
     const title = existingModal.querySelector(".menu-modal__title");
     const message = existingModal.querySelector(".menu-modal__item-text");
+    const coverArt = existingModal.querySelector(".menu-modal__cover-art");
     if (closeButton) closeButton.setAttribute("aria-label", labels.closeMenuBtn || "Cerrar menú");
     if (subtitle) subtitle.textContent = labels.privateDinnerSurpriseSubtitle || "SÁBADO · 22:00";
     if (title) title.textContent = labels.privateDinnerSurpriseTitle || "Menú Chef Privado";
     if (message) message.textContent = surpriseText;
+    if (coverArt) coverArt.setAttribute("data-cover-title", getMenuCoverTitle(labels.privateDinnerSurpriseTitle, "Menú Chef Privado"));
     return existingModal;
   }
 
@@ -775,6 +777,9 @@ function ensurePrivateDinnerSurpriseModal() {
   modal.innerHTML = `
     <div class="menu-modal__backdrop" data-close-private-dinner-surprise="true"></div>
     <section class="menu-modal__dialog menu-modal__dialog--with-cover menu-modal__dialog--private-dinner" role="dialog" aria-modal="true" aria-labelledby="private-dinner-surprise-title">
+      <div class="menu-modal__cover" data-menu-cover-private-dinner aria-hidden="true">
+        <div class="menu-modal__cover-art menu-modal__cover-art--private-dinner" data-cover-title="${getMenuCoverTitle(labels.privateDinnerSurpriseTitle, "Menú Chef Privado")}" aria-hidden="true"></div>
+      </div>
       <div class="menu-modal__scroll menu-modal__scroll--private-dinner">
       <button class="menu-modal__close-btn" type="button" aria-label="${labels.closeMenuBtn || "Cerrar menú"}" data-close-private-dinner-surprise="true">×</button>
       <p class="menu-modal__subtitle">${labels.privateDinnerSurpriseSubtitle || "SÁBADO · 22:00"}</p>
@@ -799,8 +804,13 @@ function ensurePrivateDinnerSurpriseModal() {
 
 function openPrivateDinnerSurpriseModal() {
   const modal = ensurePrivateDinnerSurpriseModal();
+  const coverEl = modal.querySelector("[data-menu-cover-private-dinner]");
   modal.removeAttribute("hidden");
   modal.setAttribute("aria-hidden", "false");
+  coverEl?.classList.remove("menu-modal__cover--hidden");
+  window.setTimeout(() => {
+    coverEl?.classList.add("menu-modal__cover--hidden");
+  }, 1200);
   document.body.classList.add("body--menu-modal-open");
   refs.bottomNav?.classList.add("bottom-nav--hidden");
 }
