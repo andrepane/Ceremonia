@@ -2526,6 +2526,98 @@ input {
   content: none;
 }
 
+.menu-modal__dialog--with-private-cover {
+  position: relative;
+  perspective: 1800px;
+  transform-style: preserve-3d;
+  padding: 0;
+}
+
+.menu-modal__private-scroll {
+  position: relative;
+  max-height: min(86vh, 760px);
+  overflow: visible;
+  border-radius: inherit;
+  padding: 24px 20px 20px;
+  -webkit-overflow-scrolling: touch;
+}
+
+.menu-modal__private-cover {
+  position: absolute;
+  inset: 0;
+  border-radius: 16px;
+  z-index: 8;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  gap: 12px;
+  text-align: center;
+  color: #6e5f57;
+  background:
+    radial-gradient(120% 90% at 22% 14%, rgba(255, 255, 255, 0.5) 0%, rgba(255, 255, 255, 0) 52%),
+    linear-gradient(155deg, #f7f1eb 0%, #efe8e1 46%, #e6ddd5 100%);
+  box-shadow:
+    0 24px 48px rgba(90, 76, 67, 0.22),
+    inset 0 1px 0 rgba(255, 255, 255, 0.58);
+  transform-origin: left center;
+  transform-style: preserve-3d;
+  backface-visibility: hidden;
+  transition: opacity 110ms linear 490ms;
+}
+
+.menu-modal__private-cover::before {
+  content: "";
+  position: absolute;
+  inset: 12px;
+  border-radius: 20px;
+  border: 1px solid rgba(122, 105, 94, 0.2);
+  pointer-events: none;
+}
+
+.menu-modal__private-cover::after {
+  content: none;
+}
+
+.menu-modal__private-cover--hidden {
+  opacity: 0;
+  transform: rotateY(-180deg);
+  animation: coverPageTurn 2.5s cubic-bezier(0.35, 0.02, 0.2, 1) forwards;
+  pointer-events: none;
+}
+
+.menu-modal__private-cover-art {
+  width: clamp(170px, 29vw, 270px);
+  aspect-ratio: 1.15;
+  margin: 0 auto;
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  gap: 12px;
+  font-family: "Playfair Display", "Cormorant Garamond", serif;
+  font-size: clamp(2.4rem, 6.4vw, 4.6rem);
+  font-weight: 500;
+  letter-spacing: 0.08em;
+  color: #74645b;
+  text-transform: uppercase;
+  text-shadow: none;
+}
+
+.menu-modal__private-cover-art::before {
+  content: attr(data-private-cover-title);
+  white-space: pre;
+  position: relative;
+  z-index: 2;
+  line-height: 1.2;
+  color: #74645b;
+}
+
+.menu-modal__private-cover-art::after {
+  content: none;
+}
+
 @keyframes coverPageTurn {
   0% {
     transform: rotateY(0deg);
