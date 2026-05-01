@@ -350,9 +350,6 @@ function ensureFridayDinnerMenuModal() {
           </article>
           </div>
         </div>
-        </div>
-      </div>
-      </div>
       </div>
     </section>
   `;
@@ -765,7 +762,7 @@ function ensurePrivateDinnerSurpriseModal() {
     const message = existingModal.querySelector(".menu-modal__item-text");
     if (closeButton) closeButton.setAttribute("aria-label", labels.closeMenuBtn || "Cerrar menú");
     if (subtitle) subtitle.textContent = labels.privateDinnerSurpriseSubtitle || "SÁBADO · 22:00";
-    if (title) title.textContent = labels.privateDinnerSurpriseTitle || "Cena con chef privado";
+    if (title) title.textContent = labels.privateDinnerSurpriseTitle || "Menú Chef Privado";
     if (message) message.textContent = surpriseText;
     return existingModal;
   }
@@ -777,17 +774,21 @@ function ensurePrivateDinnerSurpriseModal() {
   modal.setAttribute("aria-hidden", "true");
   modal.innerHTML = `
     <div class="menu-modal__backdrop" data-close-private-dinner-surprise="true"></div>
-    <section class="menu-modal__dialog" role="dialog" aria-modal="true" aria-labelledby="private-dinner-surprise-title">
+    <section class="menu-modal__dialog menu-modal__dialog--with-cover" role="dialog" aria-modal="true" aria-labelledby="private-dinner-surprise-title">
+      <div class="menu-modal__scroll">
       <button class="menu-modal__close-btn" type="button" aria-label="${labels.closeMenuBtn || "Cerrar menú"}" data-close-private-dinner-surprise="true">×</button>
       <p class="menu-modal__subtitle">${labels.privateDinnerSurpriseSubtitle || "SÁBADO · 22:00"}</p>
-      <h3 id="private-dinner-surprise-title" class="menu-modal__title">${labels.privateDinnerSurpriseTitle || "Cena con chef privado"}</h3>
-      <div class="menu-modal__blocks">
+      <h3 id="private-dinner-surprise-title" class="menu-modal__title">${labels.privateDinnerSurpriseTitle || "Menú Chef Privado"}</h3>
+      <div class="menu-modal__content">
+        <div class="menu-modal__blocks">
         <article class="menu-modal__block">
           <h4 class="menu-modal__block-title"><span aria-hidden="true">🤫</span> <span class="menu-modal__block-title-text">${labels.privateDinnerSurpriseBlockTitle || "Sorpresa"}</span></h4>
           <ul class="menu-modal__list">
             <li><span class="menu-modal__item-text">${surpriseText}</span></li>
           </ul>
         </article>
+        </div>
+      </div>
       </div>
     </section>
   `;
