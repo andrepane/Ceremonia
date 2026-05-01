@@ -377,8 +377,7 @@
 
 .book-modal__author:empty::before,
 .book-modal__content:empty::before {
-  content: attr(data-placeholder);
-  opacity: 0.42;
+  content: "";
 }
 
 .book-modal__author--readonly:empty::before,
