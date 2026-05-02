@@ -118,7 +118,7 @@ window.WEDDING_APP_DATA = {
         fridayDinnerMenuDessert: "Postre",
         fridayDinnerMenuDrinks: "Bebidas",
         fridayDinnerMenuStarter1: "Ensalada caprese con mozzarella y albahaca fresca.",
-        fridayDinnerMenuMain1: "Pescaito frito",
+        fridayDinnerMenuMain1: "Pescaito Frito",
         fridayDinnerMenuMain2: "",
         fridayDinnerMenuDessert1: "Postre de la casa",
         fridayDinnerMenuDrink1: "Vino",
@@ -575,7 +575,7 @@ window.WEDDING_APP_DATA = {
         fridayDinnerMenuDessert: "Dessert",
         fridayDinnerMenuDrinks: "Bevande",
         fridayDinnerMenuStarter1: "Insalata caprese con mozzarella e basilico fresco",
-        fridayDinnerMenuMain1: "Serata di frittura di pesce con limone ed erbe aromatiche",
+        fridayDinnerMenuMain1: "Pescino Fritto",
         fridayDinnerMenuMain2: "",
         fridayDinnerMenuDessert1: "Dessert della casa",
         fridayDinnerMenuDrink1: "Vino",
@@ -674,21 +674,21 @@ window.WEDDING_APP_DATA = {
       ],
       timeline: [
         {
-          day: "VENERDÌ · 15:00-16:00",
-          title: "Arrivo",
+          day: "VENERDÌ · POMERIGGIO",
+          title: "Arrivo e tempo libero",
           text: "Primo passo: arrivare, lasciare le valigie e iniziare a godersela.",
-          status: "Benvenuto",
+          status: "Check-in",
           tone: "soft"
         },
         {
-          day: "VENERDÌ · 21:30",
+          day: "VENERDÌ · SERA",
           title: "Cena",
-          text: "Prima cena insieme: informale, buona e con un bel clima.",
+          text: "Cena informale, buona e con un bel clima.",
           status: "Pescino fritto",
           tone: "warn"
         },
         {
-          day: "SABATO · 9:00–11:00",
+          day: "SABATO · MATTINA",
           title: "Colazione",
           text: "Caffè, croissant e si parte piano piano.",
           status: "Per iniziare",
@@ -697,7 +697,7 @@ window.WEDDING_APP_DATA = {
         {
           day: "SABATO · MATTINA",
           title: "Momento libero",
-          text: "Tempo libero per godersela senza orari.",
+          text: "Tempo libero per rilassarsi.",
           status: "Riposo",
           tone: "soft"
         },
@@ -711,36 +711,36 @@ window.WEDDING_APP_DATA = {
         {
           day: "SABATO · POMERIGGIO",
           title: "Preparativi",
-          text: "Prepariamo insieme il momento.",
+          text: "P.S.: c'è anche da lavorare",
           status: "Ultimi dettagli",
           tone: "warn"
         },
         {
           day: "SABATO · 20:30",
           title: "Cerimonia",
-          text: "Adesso sì: inizia il momento importante.",
+          text: "Adesso sì: iniziamo.",
           status: "Il momento",
           tone: "strong"
         },
         {
-          day: "SABATO · 22:00",
+          day: "SABATO · SERA",
           title: "Cena",
-          text: "Dopo la cerimonia, cena speciale tutti insieme.",
+          text: "Dopo la cerimonia, cena speciale.",
           status: "Chef privato",
           tone: "warn"
         },
         {
-          day: "SABATO · 23:30-07:00",
+          day: "SABATO · NOTTE",
           title: "Ballo",
           text: "Da qui in poi… vediamo chi resiste di più.",
           status: "festa",
           tone: "strong"
         },
         {
-          day: "DOMENICA · 9:00-11:00",
+          day: "DOMENICA · MATTINA",
           title: "Colazione",
-          text: "Colazione, saluti e fine del weekend.",
-          status: "Saluti",
+          text: "Colazione e saluti.",
+          status: "Check-out",
           tone: "soft"
         }
       ],
