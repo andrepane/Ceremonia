@@ -76,7 +76,7 @@ export const constants = {
 
 export const HOME_DASHBOARD_COPY = {
   es: {
-    /* weekendFormatLabel: "QUÉ TIPO DE BODA SERÁ", */
+    weekendFormatLabel: "PEQUEÑA ACLARACIÓN", 
     weekendFormatTitle: "Nuestra 'Boda'",
     weekendFormatParagraphs: [
       "Una boda diferente, sin prisas ni protocolos innecesarios.",
@@ -166,7 +166,7 @@ export const HOME_DASHBOARD_COPY = {
     authError: "No se pudo autenticar."
   },
   it: {
-    /* weekendFormatLabel: "CHE TIPO DI MATRIMONIO SARÀ", */
+    weekendFormatLabel: "PICCOLO CHIARIMENTO",
     weekendFormatTitle: "Il nostro 'Matrimonio'",
     weekendFormatParagraphs: [
       "Un matrimonio diverso, senza fretta né protocolli inutili.",
