@@ -222,13 +222,13 @@ window.WEDDING_APP_DATA = {
           status: "Check-in",
           tone: "soft"
         },
-     /*   {
+       {
           day: "VIERNES · TARDE",
           title: "Plan libre",
           text: "Tarde libre: relax, piscina, mini golf y pádel.",
           status: "Descanso",
           tone: "soft"
-        }, */
+        }, 
         {
           day: "VIERNES · NOCHE",
           title: "Cena",
