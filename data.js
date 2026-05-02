@@ -216,37 +216,37 @@ window.WEDDING_APP_DATA = {
       ],
       timeline: [
         {
-          day: "VIERNES · 15:00-16:00",
-          title: "Llegada",
+          day: "VIERNES · TARDE",
+          title: "Llegada y plan libre",
           text: "Primer paso: llegar, soltar maletas y empezar a disfrutar.",
-          status: "Bienvenida",
+          status: "Check-in",
           tone: "soft"
         },
-        {
+     /*   {
           day: "VIERNES · TARDE",
           title: "Plan libre",
           text: "Tarde libre: relax, piscina, mini golf y pádel.",
           status: "Descanso",
           tone: "soft"
-        },
+        }, */
         {
-          day: "VIERNES · 21:30",
+          day: "VIERNES · NOCHE",
           title: "Cena",
-          text: "Primera cena juntos: informal, rica y con buen ambiente.",
+          text: "Cena informal, rica y con buen ambiente.",
           status: "Pescaito",
           tone: "warn"
         },
         {
-          day: "SÁBADO · 9:00–11:00",
+          day: "SÁBADO · MAÑANA",
           title: "Desayuno",
-          text: "Café, tostadas y arrancamos poco a poco.",
+          text: "Sin horario y autoservicio",
           status: "Para empezar",
           tone: "soft"
         },
         {
           day: "SÁBADO · MAÑANA",
           title: "Plan libre",
-          text: "Plan libre para disfrutar sin horarios.",
+          text: "Plan libre para disfrutar.",
           status: "Descanso",
           tone: "soft"
         },
@@ -260,36 +260,36 @@ window.WEDDING_APP_DATA = {
         {
           day: "SÁBADO · TARDE",
           title: "Preparativos",
-          text: "Preparamos juntos el momento.",
+          text: "Letra pequeña de la invitación: también toca trabajar",
           status: "Últimos detalles",
           tone: "warn"
         },
         {
           day: "SÁBADO · 20:30",
           title: "Ceremonia",
-          text: "Ahora sí: empieza lo importante.",
-          status: "El momento",
+          text: "Ahora sí: empezamos.",
+          status: "A casarse",
           tone: "strong"
         },
         {
-          day: "SÁBADO · 22:00",
+          day: "SÁBADO · NOCHE",
           title: "Cena",
-          text: "Después de la ceremonia, cena especial todos juntos.",
+          text: "Después de la ceremonia, cena especial.",
           status: "Chef privado",
           tone: "warn"
         },
         {
-          day: "SÁBADO · 23:30-07:00",
+          day: "SÁBADO · MADRUGADA",
           title: "Baile",
           text: "A partir de aquí… que cada uno aguante lo que pueda.",
           status: "Fiesta",
           tone: "strong"
         },
         {
-          day: "DOMINGO · 9:00-11:00",
+          day: "DOMINGO · MAÑANA",
           title: "Desayuno",
-          text: "Desayuno, despedidas y fin del plan.",
-          status: "Despedida",
+          text: "Desayuno y despedida.",
+          status: "Check-out",
           tone: "soft"
         }
       ],
