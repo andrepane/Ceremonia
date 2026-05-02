@@ -79,10 +79,10 @@ export const HOME_DASHBOARD_COPY = {
     weekendFormatLabel: "QUÉ TIPO DE BODA SERÁ",
     weekendFormatTitle: "Entre nosotros",
     weekendFormatParagraphs: [
-      "Es un fin de semana en familia para estar a gusto, sin estrés y pasarlo bien.",
-      "La idea es sencilla: buen ambiente, música, piscina y todo preparado para que no tengamos que preocuparnos por nada. Vamos a disfrutar.",
-      "El sábado por la tarde, como estamos en familia, iremos montando todo poco a poco entre todos, sin líos.",
-      "Y el resto… pues eso: comer, reírnos, escuchar buena música y alargar el plan todo lo que se pueda."
+      "Una boda diferente, sin prisas ni protocolos innecesarios.",
+      "Más que un evento, es un fin de semana en familia para estar a gusto, compartir tiempo de verdad y disfrutar sin presión.",
+      "La idea es sencilla: buen ambiente, música, piscina y todo preparado para que solo tengáis que venir a pasarlo bien.",
+      "Iremos construyendo cada momento entre todos, de forma natural, sin guion cerrado. Porque no se trata de una boda al uso, sino de celebrar juntos, a nuestro ritmo."
     ],
     weekendFormatShowMore: "Ver más",
     weekendFormatShowLess: "Ver menos",
@@ -169,10 +169,10 @@ export const HOME_DASHBOARD_COPY = {
     weekendFormatLabel: "CHE TIPO DI MATRIMONIO SARÀ",
     weekendFormatTitle: "Tra di noi",
     weekendFormatParagraphs: [
-      "È un fine settimana in famiglia per stare bene, senza stress e divertirsi.",
-      "L’idea è semplice: buon ambiente, musica, piscina e tutto pronto per non doverci preoccupare di nulla. Andiamo a godercela.",
-      "Il sabato pomeriggio, essendo tra di noi, prepareremo tutto insieme poco a poco, senza complicazioni.",
-      "E il resto… beh: mangiare, ridere, ascoltare buona musica e tirarla lunga il più possibile."
+      "Un matrimonio diverso, senza fretta né protocolli inutili.",
+      "Più che un evento, è un fine settimana in famiglia per stare bene, condividere tempo insieme e godersi tutto senza pressioni.",
+      "L’idea è semplice: buon ambiente, musica, piscina e tutto organizzato affinchè dobbiate solo venire a divertirvi.",
+      "Costruiremo ogni momento insieme, in modo naturale, senza un copione rigido. Perché non si tratta di un matrimonio tradizionale, ma di festeggiare insieme, con i nostri ritmi."
     ],
     weekendFormatShowMore: "Mostra di più",
     weekendFormatShowLess: "Mostra meno",
