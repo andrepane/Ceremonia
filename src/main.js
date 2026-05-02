@@ -270,23 +270,16 @@ function ensureFridayDinnerMenuModal() {
     if (sectionTitles[0]) sectionTitles[0].textContent = labels.fridayDinnerMenuStarter || "Entrante";
     if (sectionTitles[1]) sectionTitles[1].textContent = labels.fridayDinnerMenuMain || "Plato principal";
     if (sectionTitles[2]) sectionTitles[2].textContent = labels.fridayDinnerMenuDessert || "Postre";
-    if (sectionTitles[3]) sectionTitles[3].textContent = labels.fridayDinnerMenuCoffee || "Cafés";
-    if (sectionTitles[4]) sectionTitles[4].textContent = labels.fridayDinnerMenuDrinks || "Bebidas";
+    if (sectionTitles[3]) sectionTitles[3].textContent = labels.fridayDinnerMenuDrinks || "Bebidas";
     if (itemLabels[0]) itemLabels[0].textContent = labels.fridayDinnerMenuStarter1 || "Ensalada caprese con mozzarella y albahaca fresca.";
     if (itemLabels[1]) itemLabels[1].textContent = labels.fridayDinnerMenuMain1 || "Noche de pescadito frito con limón y hierbas aromáticas.";
     if (itemLabels[2]) itemLabels[2].textContent = labels.fridayDinnerMenuDessert1 || "Postre de la casa";
-    if (itemLabels[3]) itemLabels[3].textContent = labels.fridayDinnerMenuCoffee1 || "Café solo";
-    if (itemLabels[4]) itemLabels[4].textContent = labels.fridayDinnerMenuCoffee2 || "Café con leche";
-    if (itemLabels[5]) itemLabels[5].textContent = labels.fridayDinnerMenuCoffee3 || "Cortado";
-    if (itemLabels[6]) itemLabels[6].textContent = labels.fridayDinnerMenuCoffee4 || "Carajillo";
-    if (itemLabels[7]) itemLabels[7].textContent = labels.fridayDinnerMenuCoffee5 || "Café con hielo";
-    if (itemLabels[8]) itemLabels[8].textContent = labels.fridayDinnerMenuCoffee6 || "Bombón";
-    if (itemLabels[9]) itemLabels[9].textContent = labels.fridayDinnerMenuDrink1 || "Vino";
-    if (itemLabels[10]) itemLabels[10].textContent = labels.fridayDinnerMenuDrink2 || "Cerveza";
-    if (itemLabels[11]) itemLabels[11].textContent = labels.fridayDinnerMenuDrink3 || "Agua";
-    if (itemLabels[12]) itemLabels[12].textContent = labels.fridayDinnerMenuDrink4 || "Refrescos";
-    if (itemLabels[13]) itemLabels[13].textContent = labels.fridayDinnerMenuDrink5 || "Tinto de verano";
-    if (itemLabels[14]) itemLabels[14].textContent = labels.fridayDinnerMenuDrink6 || "Vermut";
+    if (itemLabels[3]) itemLabels[3].textContent = labels.fridayDinnerMenuDrink1 || "Vino";
+    if (itemLabels[4]) itemLabels[4].textContent = labels.fridayDinnerMenuDrink2 || "Cerveza";
+    if (itemLabels[5]) itemLabels[5].textContent = labels.fridayDinnerMenuDrink3 || "Agua";
+    if (itemLabels[6]) itemLabels[6].textContent = labels.fridayDinnerMenuDrink4 || "Refrescos";
+    if (itemLabels[7]) itemLabels[7].textContent = labels.fridayDinnerMenuDrink5 || "Tinto de verano";
+    if (itemLabels[8]) itemLabels[8].textContent = labels.fridayDinnerMenuDrink6 || "Vermut";
     if (coverArt) coverArt.setAttribute("data-cover-title", getMenuCoverTitle(labels.fridayDinnerMenuTitle, "Menú Pescaito"));
     return existingModal;
   }
@@ -324,17 +317,6 @@ function ensureFridayDinnerMenuModal() {
             <h4 class="menu-modal__block-title"><span aria-hidden="true">🍰</span> <span class="menu-modal__block-title-text">${labels.fridayDinnerMenuDessert || "Postre"}</span></h4>
             <ul class="menu-modal__list">
               <li><span class="menu-modal__item-text">${labels.fridayDinnerMenuDessert1 || "Postre de la casa"}</span></li>
-            </ul>
-          </article>
-          <article class="menu-modal__block">
-            <h4 class="menu-modal__block-title"><span aria-hidden="true">☕</span> <span class="menu-modal__block-title-text">${labels.fridayDinnerMenuCoffee || "Cafés"}</span></h4>
-            <ul class="menu-modal__list">
-              <li><span class="menu-modal__item-text">${labels.fridayDinnerMenuCoffee1 || "Café solo"}</span></li>
-              <li><span class="menu-modal__item-text">${labels.fridayDinnerMenuCoffee2 || "Café con leche"}</span></li>
-              <li><span class="menu-modal__item-text">${labels.fridayDinnerMenuCoffee3 || "Cortado"}</span></li>
-              <li><span class="menu-modal__item-text">${labels.fridayDinnerMenuCoffee4 || "Carajillo"}</span></li>
-              <li><span class="menu-modal__item-text">${labels.fridayDinnerMenuCoffee5 || "Café con hielo"}</span></li>
-              <li><span class="menu-modal__item-text">${labels.fridayDinnerMenuCoffee6 || "Bombón"}</span></li>
             </ul>
           </article>
           <article class="menu-modal__block">
