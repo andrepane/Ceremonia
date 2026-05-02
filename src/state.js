@@ -59,7 +59,6 @@ export const constants = {
   },
   WEEKEND_TIMELINE_STARTS: [
     { dayOffset: -1, hour: 15, minute: 0 },
-    { dayOffset: -1, hour: 17, minute: 0 },
     { dayOffset: -1, hour: 21, minute: 0 },
     { dayOffset: 0, hour: 9, minute: 0 },
     { dayOffset: 0, hour: 10, minute: 30 },
@@ -71,7 +70,7 @@ export const constants = {
     { dayOffset: 1, hour: 9, minute: 0 }
   ],
   SATURDAY_ONLY_GUEST_IDS: new Set(["tito", "ana_amiga_novia", "gabri"]),
-  FRIDAY_TIMELINE_ITEMS_TO_HIDE: 3
+  FRIDAY_TIMELINE_ITEMS_TO_HIDE: 2
 };
 
 export const HOME_DASHBOARD_COPY = {
