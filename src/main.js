@@ -32,8 +32,8 @@ const SATURDAY_MENU_MODAL_ID = "saturday-menu-modal";
 const SUNDAY_BREAKFAST_MENU_MODAL_ID = "sunday-breakfast-menu-modal";
 const PRIVATE_DINNER_SURPRISE_MODAL_ID = "private-dinner-surprise-modal";
 const INSTALL_ONBOARDING_COMPLETED_KEY = "install_onboarding_completed";
-const GUESTBOOK_AVATAR_VISIBLE_MS = 3000;
-const GUESTBOOK_BOOK_VISIBLE_MS = 4000;
+const GUESTBOOK_AVATAR_VISIBLE_MS = 2500;
+const GUESTBOOK_BOOK_VISIBLE_MS = 3500;
 
 let guestbookIconSwapTimeoutId = null;
 
