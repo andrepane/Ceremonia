@@ -1,51 +1,48 @@
-const CACHE_NAME = "boda-cintia-andrea-v5";
+const CACHE_VERSION = "v6";
+const STATIC_CACHE = `boda-static-${CACHE_VERSION}`;
+const RUNTIME_CACHE = `boda-runtime-${CACHE_VERSION}`;
 
 const STATIC_ASSETS = [
-  "./manifest.webmanifest",
+  "./manifest.webmanifest?v=4",
   "./icon-192.png?v=4",
-  "./icon-512.png?v=4",
+  "./icon-512.png?v=4"
 ];
 
 self.addEventListener("install", (event) => {
-  event.waitUntil(caches.open(CACHE_NAME).then((cache) => cache.addAll(STATIC_ASSETS)));
+  event.waitUntil(
+    caches.open(STATIC_CACHE).then((cache) => cache.addAll(STATIC_ASSETS))
+  );
   self.skipWaiting();
 });
 
 self.addEventListener("activate", (event) => {
-  event.waitUntil(
-    caches.keys().then((keys) => Promise.all(keys.filter((key) => key !== CACHE_NAME).map((key) => caches.delete(key))))
-  );
-  self.clients.claim();
+  event.waitUntil((async () => {
+    const validCaches = new Set([STATIC_CACHE, RUNTIME_CACHE]);
+    const cacheKeys = await caches.keys();
+    await Promise.all(cacheKeys.map((key) => (validCaches.has(key) ? null : caches.delete(key))));
+    await self.clients.claim();
+  })());
 });
 
 self.addEventListener("fetch", (event) => {
-  const request = event.request;
+  const { request } = event;
 
   if (request.method !== "GET") return;
-
-  const url = new URL(request.url);
-
-  if (url.protocol !== "http:" && url.protocol !== "https:") return;
   if (request.headers.has("range")) return;
 
-  // Evita interceptar llamadas de terceros (p. ej., DeepL) para no provocar
-  // errores adicionales de CORS desde el Service Worker.
+  const url = new URL(request.url);
+  if (url.protocol !== "http:" && url.protocol !== "https:") return;
   if (url.origin !== self.location.origin) return;
 
-  if (request.destination === "document") {
+  if (request.mode === "navigate" || request.destination === "document") {
     event.respondWith(networkFirst(request));
     return;
   }
 
-  if (request.destination === "script" || request.destination === "style") {
-    event.respondWith(staleWhileRevalidate(request, event));
+  if (["script", "style", "image", "font"].includes(request.destination)) {
+    event.respondWith(cacheFirst(request));
     return;
   }
-
-if (request.destination === "image") {
-  event.respondWith(networkFirst(request));
-  return;
-}
 
   event.respondWith(networkFirst(request));
 });
@@ -53,7 +50,7 @@ if (request.destination === "image") {
 async function networkFirst(request) {
   try {
     const response = await fetch(request);
-    await cacheResponse(request, response);
+    await cacheResponse(RUNTIME_CACHE, request, response);
     return response;
   } catch (error) {
     const cached = await caches.match(request);
@@ -62,53 +59,25 @@ async function networkFirst(request) {
   }
 }
 
-async function staleWhileRevalidate(request, event) {
-  const cached = await caches.match(request);
-
-  const networkPromise = fetch(request)
-    .then(async (response) => {
-      await cacheResponse(request, response);
-      return response;
-    })
-    .catch(() => null);
-
-  if (event) {
-    event.waitUntil(networkPromise.then(() => undefined).catch(() => undefined));
-  }
-
-  if (cached) return cached;
-
-  const networkResponse = await networkPromise;
-  if (networkResponse) return networkResponse;
-
-  return fetch(request);
-}
-
 async function cacheFirst(request) {
   const cached = await caches.match(request);
   if (cached) return cached;
 
   const response = await fetch(request);
-  await cacheResponse(request, response);
+  await cacheResponse(RUNTIME_CACHE, request, response);
   return response;
 }
 
-async function cacheResponse(request, response) {
+async function cacheResponse(cacheName, request, response) {
   if (!shouldCache(request, response)) return;
 
-  try {
-    const clone = response.clone();
-    const cache = await caches.open(CACHE_NAME);
-    await cache.put(request, clone);
-  } catch {
-    // Ignorar errores de cacheo para no romper la respuesta de red.
-  }
+  const responseClone = response.clone();
+  const cache = await caches.open(cacheName);
+  await cache.put(request, responseClone);
 }
 
 function shouldCache(request, response) {
-  if (!response) return false;
-  if (response.status !== 200) return false;
+  if (!response || response.status !== 200) return false;
   if (request.method !== "GET") return false;
-  if (response.bodyUsed) return false;
   return true;
 }
