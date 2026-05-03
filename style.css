@@ -1658,7 +1658,7 @@ input {
 .activity-item {
   display: flex;
   justify-content: space-between;
-  align-items: baseline;
+  align-items: center;
   gap: 10px;
   padding-bottom: 10px;
   border-bottom: 1px dashed var(--line);
@@ -1673,6 +1673,30 @@ input {
   font-size: 0.95rem;
 }
 
+.activity-item__avatar-wrap {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.activity-item__avatar {
+  width: 20px;
+  height: 20px;
+  border-radius: 999px;
+  object-fit: cover;
+  border: 1px solid rgba(127, 95, 77, 0.2);
+  box-shadow: 0 2px 8px rgba(90, 66, 50, 0.12);
+}
+
+.activity-item__avatar--fallback {
+  font-size: 0.72rem;
+  background: rgba(127, 95, 77, 0.12);
+  color: var(--accent-strong);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
 .activity-item__button {
   width: 100%;
   border: 1px solid transparent;
@@ -1683,7 +1707,7 @@ input {
   font: inherit;
   border-radius: 12px;
   display: grid;
-  grid-template-columns: 1fr auto auto;
+  grid-template-columns: auto 1fr auto auto;
   align-items: center;
   gap: 10px;
   box-shadow: 0 4px 14px rgba(90, 66, 50, 0.06);
