@@ -57,6 +57,17 @@ function renderGuestAvatar(guest) {
   return guest.avatar;
 }
 
+function renderActivityAvatar(guest, name) {
+  if (!guest) {
+    return `<span class="activity-item__avatar activity-item__avatar--fallback" aria-hidden="true">👤</span>`;
+  }
+  const avatarImage = getGuestAvatarImage(guest);
+  if (avatarImage) {
+    return `<img class="activity-item__avatar" src="${avatarImage}" alt="Foto de perfil de ${name}" loading="lazy" decoding="async" onerror="this.outerHTML='<span class=&quot;activity-item__avatar activity-item__avatar--fallback&quot; aria-hidden=&quot;true&quot;>👤</span>';">`;
+  }
+  return `<span class="activity-item__avatar activity-item__avatar--fallback" aria-hidden="true">${guest.avatar || "👤"}</span>`;
+}
+
 export function updateProfileAvatar() {
   if (!refs.profileAvatarElement) return;
   const guest = findGuestById(state.currentGuestId);
@@ -106,7 +117,8 @@ function renderActivityFeed() {
     const photoId = item?.metadata?.photoId || "";
     const isPhotoActivity = Boolean(photoId);
     const isGuestbookActivity = item.type === "write_dedication";
-    const activityContent = `<span class="activity-item__text">${template.replace("{name}", name)}</span><span class="activity-item__time">${formatRelativeTimeFromDate(item.createdAt)}</span>`;
+    const avatar = renderActivityAvatar(guest, name);
+    const activityContent = `<span class="activity-item__avatar-wrap">${avatar}</span><span class="activity-item__text">${template.replace("{name}", name)}</span><span class="activity-item__time">${formatRelativeTimeFromDate(item.createdAt)}</span>`;
     if (isPhotoActivity) {
       return `<li class="activity-item activity-item--clickable"><button type="button" class="activity-item__button activity-item--interactive" data-activity-photo-id="${photoId}" data-activity-type="${item.type}" aria-label="${template.replace("{name}", name)}">${activityContent}<span class="activity-item__hint" aria-hidden="true"><i class="fa-solid fa-arrow-right" aria-hidden="true"></i></span></button></li>`;
     }
