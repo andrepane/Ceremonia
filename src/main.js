@@ -32,9 +32,10 @@ const SATURDAY_MENU_MODAL_ID = "saturday-menu-modal";
 const SUNDAY_BREAKFAST_MENU_MODAL_ID = "sunday-breakfast-menu-modal";
 const PRIVATE_DINNER_SURPRISE_MODAL_ID = "private-dinner-surprise-modal";
 const INSTALL_ONBOARDING_COMPLETED_KEY = "install_onboarding_completed";
-const GUESTBOOK_ICON_SWAP_MS = 2800;
+const GUESTBOOK_AVATAR_VISIBLE_MS = 3000;
+const GUESTBOOK_BOOK_VISIBLE_MS = 4000;
 
-let guestbookIconSwapIntervalId = null;
+let guestbookIconSwapTimeoutId = null;
 
 const INSTALL_ONBOARDING_COPY = {
   es: {
@@ -1202,10 +1203,22 @@ function closeGuestbookModal() {
 }
 
 function stopGuestbookIconAlternation() {
-  if (guestbookIconSwapIntervalId) {
-    window.clearInterval(guestbookIconSwapIntervalId);
-    guestbookIconSwapIntervalId = null;
+  if (guestbookIconSwapTimeoutId) {
+    window.clearTimeout(guestbookIconSwapTimeoutId);
+    guestbookIconSwapTimeoutId = null;
   }
+}
+
+function scheduleGuestbookIconSwap(showBookNext) {
+  const waitMs = showBookNext ? GUESTBOOK_AVATAR_VISIBLE_MS : GUESTBOOK_BOOK_VISIBLE_MS;
+  guestbookIconSwapTimeoutId = window.setTimeout(() => {
+    if (!refs.guestbookTrigger || refs.guestbookTrigger.hidden) {
+      stopGuestbookIconAlternation();
+      return;
+    }
+    refs.guestbookTrigger.classList.toggle("guestbook-trigger--show-book", showBookNext);
+    scheduleGuestbookIconSwap(!showBookNext);
+  }, waitMs);
 }
 
 function startGuestbookIconAlternation() {
@@ -1215,9 +1228,7 @@ function startGuestbookIconAlternation() {
   }
   stopGuestbookIconAlternation();
   refs.guestbookTrigger.classList.remove("guestbook-trigger--show-book");
-  guestbookIconSwapIntervalId = window.setInterval(() => {
-    refs.guestbookTrigger?.classList.toggle("guestbook-trigger--show-book");
-  }, GUESTBOOK_ICON_SWAP_MS);
+  scheduleGuestbookIconSwap(true);
 }
 
 function bindUIEvents() {
