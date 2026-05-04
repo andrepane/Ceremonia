@@ -51,9 +51,46 @@ function getGuestAvatarImage(guest) {
   return imageName ? `images/${imageName}.png` : "";
 }
 
+function getGuestAvatarSources(guest) {
+  const imagePath = getGuestAvatarImage(guest);
+  if (!imagePath) return null;
+
+  if (imagePath === "images/alicia.png") {
+    return {
+      primary: "images/alicia.webp",
+      fallback: "images/alicia.png"
+    };
+  }
+
+  return {
+    primary: imagePath,
+    fallback: ""
+  };
+}
+
+function buildAvatarImageMarkup({ className, src, fallbackSrc, alt, fallbackHtml, removeParentClassName = "" }) {
+  const fallbackCommand = fallbackSrc
+    ? `if(this.dataset.fallbackTried!=='1'){this.dataset.fallbackTried='1';this.src='${fallbackSrc}';console.info('Avatar: usando fallback PNG (${fallbackSrc})');return;}`
+    : "";
+  const removeClassCommand = removeParentClassName ? `this.parentElement.classList.remove('${removeParentClassName}');` : "";
+  const onError = `${fallbackCommand}${removeClassCommand}this.outerHTML='${fallbackHtml}';`;
+  const onLoad = `if(this.dataset.fallbackTried==='1'){console.info('Avatar: usando PNG (${fallbackSrc})');}else{console.info('Avatar: usando WEBP (${src})');}`;
+
+  return `<img class="${className}" src="${src}" alt="${alt}" loading="lazy" decoding="async" onload="${onLoad}" onerror="${onError}">`;
+}
+
 function renderGuestAvatar(guest) {
-  const avatarImage = getGuestAvatarImage(guest);
-  if (avatarImage) return `<img class="guest-avatar__image" src="${avatarImage}" alt="Avatar de ${guest.name}" loading="lazy" decoding="async" onerror="this.parentElement.classList.remove('guest-avatar--image');this.outerHTML='${guest.avatar}';">`;
+  const avatarSources = getGuestAvatarSources(guest);
+  if (avatarSources) {
+    return buildAvatarImageMarkup({
+      className: "guest-avatar__image",
+      src: avatarSources.primary,
+      fallbackSrc: avatarSources.fallback,
+      alt: `Avatar de ${guest.name}`,
+      fallbackHtml: guest.avatar,
+      removeParentClassName: "guest-avatar--image"
+    });
+  }
   return guest.avatar;
 }
 
@@ -61,9 +98,15 @@ function renderActivityAvatar(guest, name) {
   if (!guest) {
     return `<span class="activity-item__avatar activity-item__avatar--fallback" aria-hidden="true">👤</span>`;
   }
-  const avatarImage = getGuestAvatarImage(guest);
-  if (avatarImage) {
-    return `<img class="activity-item__avatar" src="${avatarImage}" alt="Foto de perfil de ${name}" loading="lazy" decoding="async" onerror="this.outerHTML='<span class=&quot;activity-item__avatar activity-item__avatar--fallback&quot; aria-hidden=&quot;true&quot;>👤</span>';">`;
+  const avatarSources = getGuestAvatarSources(guest);
+  if (avatarSources) {
+    return buildAvatarImageMarkup({
+      className: "activity-item__avatar",
+      src: avatarSources.primary,
+      fallbackSrc: avatarSources.fallback,
+      alt: `Foto de perfil de ${name}`,
+      fallbackHtml: '<span class=&quot;activity-item__avatar activity-item__avatar--fallback&quot; aria-hidden=&quot;true&quot;>👤</span>'
+    });
   }
   return `<span class="activity-item__avatar activity-item__avatar--fallback" aria-hidden="true">${guest.avatar || "👤"}</span>`;
 }
@@ -79,9 +122,16 @@ export function updateProfileAvatar() {
     return;
   }
 
-  const avatarImage = getGuestAvatarImage(guest);
-  if (avatarImage) {
-    refs.profileAvatarElement.innerHTML = `<img class="header-profile-avatar__image" src="${avatarImage}" alt="Avatar de ${guest.name}" loading="lazy" decoding="async" onerror="this.parentElement.classList.remove('header-profile-avatar--image');this.outerHTML='${guest.avatar}';">`;
+  const avatarSources = getGuestAvatarSources(guest);
+  if (avatarSources) {
+    refs.profileAvatarElement.innerHTML = buildAvatarImageMarkup({
+      className: "header-profile-avatar__image",
+      src: avatarSources.primary,
+      fallbackSrc: avatarSources.fallback,
+      alt: `Avatar de ${guest.name}`,
+      fallbackHtml: guest.avatar,
+      removeParentClassName: "header-profile-avatar--image"
+    });
     refs.profileAvatarElement.classList.add("header-profile-avatar--image");
   } else {
     refs.profileAvatarElement.innerHTML = guest.avatar;
