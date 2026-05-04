@@ -5,6 +5,9 @@ import { refs, state, getHomeCopy } from "../state.js";
 let photoViewerEl = null;
 let highlightCleanupTimeoutId = null;
 let isSelectingFile = false;
+let isUploadingPhoto = false;
+let lastSelectedPhotoFingerprint = "";
+let lastSelectedPhotoAt = 0;
 
 function getPhotoViewer() {
   if (photoViewerEl) return photoViewerEl;
@@ -99,16 +102,34 @@ export function handleUploadPhoto() {
 export async function handlePhotoInputChange(event) {
   const file = event.target?.files?.[0];
   if (!file) return;
+
+  const fingerprint = `${file.name}_${file.size}_${file.lastModified}`;
+  const now = Date.now();
+  const isDuplicatedSelection =
+    fingerprint === lastSelectedPhotoFingerprint &&
+    now - lastSelectedPhotoAt < 2500;
+
+  if (isDuplicatedSelection || isUploadingPhoto) {
+    if (event.target) event.target.value = "";
+    return;
+  }
+
+  lastSelectedPhotoFingerprint = fingerprint;
+  lastSelectedPhotoAt = now;
+
   console.log("[UPLOAD] file selected", file.name);
   if (file.size > 10 * 1024 * 1024) {
     alert("Máximo 10MB");
+    if (event.target) event.target.value = "";
     return;
   }
   if (!state.firebaseOnline) {
     alert(getHomeCopy().uploadError);
+    if (event.target) event.target.value = "";
     return;
   }
 
+  isUploadingPhoto = true;
   try {
     await enqueuePhotoUpload({
       file,
@@ -117,6 +138,9 @@ export async function handlePhotoInputChange(event) {
   } catch (error) {
     console.error("[UPLOAD ERROR]", error);
     alert("Error al subir la foto");
+  } finally {
+    isUploadingPhoto = false;
+    if (event.target) event.target.value = "";
   }
 }
 
