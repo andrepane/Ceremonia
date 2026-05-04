@@ -12,6 +12,13 @@ import { renderGuestCards, renderHomeDashboard, renderPhotos, updateGuestHeaderM
 import { stopGuestDictionarySync } from "../features/dictionary-store.js";
 
 export async function initFirebaseListeners(showScreenGuest) {
+  const activityCacheKey = window.OFFLINE_CACHE_KEYS?.activity;
+  const photosCacheKey = window.OFFLINE_CACHE_KEYS?.photos;
+  const cachedActivity = activityCacheKey ? window.readOfflineSnapshot?.(activityCacheKey) : null;
+  const cachedPhotos = photosCacheKey ? window.readOfflineSnapshot?.(photosCacheKey) : null;
+  if (Array.isArray(cachedActivity)) setState({ realtimeActivity: cachedActivity, homeActivityLoading: false });
+  if (Array.isArray(cachedPhotos)) setState({ realtimePhotos: cachedPhotos, homePhotosLoading: false });
+
   if (!isFirebaseConfigured()) {
     setState({ firebaseOnline: false, homeActivityLoading: false, homePhotosLoading: false });
     renderHomeDashboard();
@@ -34,9 +41,11 @@ export async function initFirebaseListeners(showScreenGuest) {
     setState({
       unsubscribeActivity: subscribeActivity((data) => {
         setState({ realtimeActivity: data, homeActivityLoading: false });
+        if (activityCacheKey) window.saveOfflineSnapshot?.(activityCacheKey, data);
         renderHomeDashboard();
       }, () => {
         setState({ firebaseOnline: false, homeActivityLoading: false });
+        window.setOfflineUiState?.();
         renderHomeDashboard();
       })
     });
@@ -51,6 +60,7 @@ export async function initFirebaseListeners(showScreenGuest) {
         renderGuestCards();
       }, () => {
         setState({ firebaseOnline: false });
+        window.setOfflineUiState?.();
         renderGuestCards();
       })
     });
@@ -58,9 +68,11 @@ export async function initFirebaseListeners(showScreenGuest) {
     setState({
       unsubscribePhotos: subscribePhotos((data) => {
         setState({ realtimePhotos: data, homePhotosLoading: false });
+        if (photosCacheKey) window.saveOfflineSnapshot?.(photosCacheKey, data);
         renderPhotos();
       }, () => {
         setState({ firebaseOnline: false, homePhotosLoading: false });
+        window.setOfflineUiState?.();
         renderPhotos();
       })
     });
@@ -81,6 +93,7 @@ export async function initFirebaseListeners(showScreenGuest) {
     }
   } catch {
     setState({ firebaseOnline: false, homeActivityLoading: false, homePhotosLoading: false });
+    window.setOfflineUiState?.();
     renderHomeDashboard();
     renderPhotos();
   }

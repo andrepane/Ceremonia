@@ -15,8 +15,17 @@ export async function handleTranslatorRequest() {
   const targetLanguage = state.currentLanguage === "es" ? "it" : "es";
   refs.translatorButton.disabled = true;
   refs.translatorButton.textContent = uiCopy.loading;
+  const translationCacheKey = `ceremonia_cache_translation_${state.currentLanguage}_${targetLanguage}_${sourceText.toLowerCase()}`;
 
   try {
+    if (!navigator.onLine) {
+      const cachedTranslation = window.readOfflineSnapshot?.(translationCacheKey);
+      if (!cachedTranslation) throw new Error("Offline without cached translation");
+      refs.translatorText.textContent = cachedTranslation;
+      refs.translatorText.classList.add("translator-result--highlight");
+      return;
+    }
+
     const response = await fetch(constants.TRANSLATOR_API_ENDPOINT, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
@@ -35,6 +44,7 @@ export async function handleTranslatorRequest() {
     }
 
     if (!translatedText) throw new Error("Missing translation text");
+    window.saveOfflineSnapshot?.(translationCacheKey, translatedText);
 
     const guestId = state.currentGuestId || "guest-anonymous";
     const guestHistory = state.translationHistoryByGuest[guestId] || [];
@@ -56,8 +66,15 @@ export async function handleTranslatorRequest() {
     refs.translatorText.classList.add("translator-result--highlight");
     renderDictionary();
   } catch {
-    refs.translatorText.textContent = uiCopy.error;
-    refs.translatorText.classList.remove("translator-result--highlight");
+    const cachedTranslation = window.readOfflineSnapshot?.(translationCacheKey);
+    if (cachedTranslation) {
+      refs.translatorText.textContent = cachedTranslation;
+      refs.translatorText.classList.add("translator-result--highlight");
+      window.setOfflineUiState?.();
+    } else {
+      refs.translatorText.textContent = uiCopy.error;
+      refs.translatorText.classList.remove("translator-result--highlight");
+    }
   } finally {
     refs.translatorInput.value = "";
     refs.translatorButton.disabled = false;
