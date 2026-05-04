@@ -4,6 +4,7 @@ import { refs, state, getHomeCopy } from "../state.js";
 
 let photoViewerEl = null;
 let highlightCleanupTimeoutId = null;
+let isSelectingFile = false;
 
 function getPhotoViewer() {
   if (photoViewerEl) return photoViewerEl;
@@ -80,46 +81,38 @@ export function highlightPhotoFromActivity(photoId, activityType) {
   tick();
 }
 
-export async function handleUploadPhoto() {
+export function handleUploadPhoto() {
   if (!state.currentGuestId) return;
-  const input = document.createElement("input");
-  input.type = "file";
-  input.accept = "image/*";
-  input.onchange = async () => {
-    const file = input.files?.[0];
-    if (!file) return;
-    if (file.size > 10 * 1024 * 1024) {
-      alert("Máximo 10MB");
-      return;
-    }
-    if (!state.firebaseOnline) {
-      alert(getHomeCopy().uploadError);
-      return;
-    }
+  if (isSelectingFile) return;
+  const input = refs.photoInput;
+  if (!input) return;
 
-    const labelEl = refs.uploadPhotoBtnLabel || refs.uploadPhotoBtn;
-    const original = labelEl.textContent;
-    refs.uploadPhotoBtn.disabled = true;
-    labelEl.textContent = getHomeCopy().uploadLoading;
-    window.setTimeout(() => {
-      refs.uploadPhotoBtn.disabled = false;
-    }, 1000);
-    try {
-      await enqueuePhotoUpload({
-        file,
-        guestId: state.currentGuestId
-      });
-    } catch {
-      if (refs.uploadPhotoBtnProgressText) {
-        refs.uploadPhotoBtnProgressText.textContent = getHomeCopy().uploadFailed;
-      }
-      alert(getHomeCopy().uploadError);
-    } finally {
-      refs.uploadPhotoBtn.disabled = false;
-      labelEl.textContent = original;
-    }
-  };
+  isSelectingFile = true;
+  input.value = "";
   input.click();
+
+  window.setTimeout(() => {
+    isSelectingFile = false;
+  }, 1500);
+}
+
+export async function handlePhotoInputChange(event) {
+  const file = event.target?.files?.[0];
+  if (!file) return;
+  console.log("[UPLOAD] file selected", file.name);
+  if (file.size > 10 * 1024 * 1024) {
+    alert("Máximo 10MB");
+    return;
+  }
+  if (!state.firebaseOnline) {
+    alert(getHomeCopy().uploadError);
+    return;
+  }
+
+  enqueuePhotoUpload({
+    file,
+    guestId: state.currentGuestId
+  });
 }
 
 export async function handlePhotoGridClick(event) {

@@ -10,7 +10,7 @@ import { APP_DATA, refs, state, setState, findGuestById, getHomeCopy } from "./s
 import { applyTranslations } from "./ui/translations.js";
 import { handleUsefulPhraseSpeakClick, renderAllDynamicSections, renderDictionary, renderGuestCards, renderHomeDashboard, updateAppHeaderForView, updateGuestHeaderMessage, updateProfileAvatar, updateWelcomeLabel } from "./ui/render.js";
 import { handleSpeakTranslation, handleTranslatorRequest } from "./features/translator.js";
-import { handlePhotoGridClick, handleUploadPhoto, highlightPhotoFromActivity } from "./features/photos.js";
+import { handlePhotoGridClick, handlePhotoInputChange, handleUploadPhoto, highlightPhotoFromActivity } from "./features/photos.js";
 import { startPhotoUploadQueue } from "./features/photo-upload-queue.js";
 import { renderTimeline, updateCountdown } from "./features/timeline.js";
 import { initInstallOnboardingGate } from "./features/onboarding.js";
@@ -579,6 +579,7 @@ function bindUIEvents() {
 
   document.getElementById("photo-grid").addEventListener("click", handlePhotoGridClick);
   refs.uploadPhotoBtn.addEventListener("click", handleUploadPhoto);
+  refs.photoInput?.addEventListener("change", handlePhotoInputChange);
   refs.translatorButton.addEventListener("click", handleTranslatorRequest);
   refs.translatorSpeakButton.addEventListener("click", handleSpeakTranslation);
   refs.translatorInput.addEventListener("keydown", (event) => {
