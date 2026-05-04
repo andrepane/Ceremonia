@@ -45,26 +45,27 @@ function normalizeGuestNameForImage(name = "") {
   return name.normalize("NFD").replace(/[̀-ͯ]/g, "").toLowerCase().trim().replace(/\s+/g, "_").replace(/[^a-z0-9_]/g, "");
 }
 
-function getGuestAvatarImage(guest) {
-  if (guest.avatarImage) return guest.avatarImage;
+function getGuestAvatarBasePath(guest) {
+  if (guest.avatarImage) {
+    return guest.avatarImage.replace(/\.(webp|png)$/i, "");
+  }
+
   const imageName = normalizeGuestNameForImage(guest.name);
-  return imageName ? `images/${imageName}.png` : "";
+  return imageName ? `images/${imageName}` : "";
+}
+
+function getGuestAvatarImage(guest) {
+  const basePath = getGuestAvatarBasePath(guest);
+  return basePath ? `${basePath}.png` : "";
 }
 
 function getGuestAvatarSources(guest) {
-  const imagePath = getGuestAvatarImage(guest);
-  if (!imagePath) return null;
-
-  if (imagePath === "images/alicia.png") {
-    return {
-      primary: "images/alicia.webp",
-      fallback: "images/alicia.png"
-    };
-  }
+  const basePath = getGuestAvatarBasePath(guest);
+  if (!basePath) return null;
 
   return {
-    primary: imagePath,
-    fallback: ""
+    primary: `${basePath}.webp`,
+    fallback: `${basePath}.png`
   };
 }
 
