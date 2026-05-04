@@ -305,14 +305,24 @@ async function renderResizedBlob(file, { maxEdge, quality }) {
 }
 
 export async function buildPhotoVariants(file) {
-  const [largeVersion, thumbVersion] = await Promise.all([
-    renderResizedBlob(file, MOBILE_UPLOAD_PRESETS.large),
-    renderResizedBlob(file, MOBILE_UPLOAD_PRESETS.thumb)
-  ]);
-  return {
-    largeFile: new File([largeVersion.blob], buildProcessedFileName(file.name), { type: "image/jpeg" }),
-    thumbFile: new File([thumbVersion.blob], buildProcessedFileName(file.name, "_thumb"), { type: "image/jpeg" }),
-    width: largeVersion.width,
-    height: largeVersion.height
-  };
+  try {
+    const [largeVersion, thumbVersion] = await Promise.all([
+      renderResizedBlob(file, MOBILE_UPLOAD_PRESETS.large),
+      renderResizedBlob(file, MOBILE_UPLOAD_PRESETS.thumb)
+    ]);
+    return {
+      largeFile: new File([largeVersion.blob], buildProcessedFileName(file.name), { type: "image/jpeg" }),
+      thumbFile: new File([thumbVersion.blob], buildProcessedFileName(file.name, "_thumb"), { type: "image/jpeg" }),
+      width: largeVersion.width,
+      height: largeVersion.height
+    };
+  } catch (error) {
+    console.warn("[UPLOAD] image transform failed, uploading original file", error);
+    return {
+      largeFile: file,
+      thumbFile: file,
+      width: 0,
+      height: 0
+    };
+  }
 }
