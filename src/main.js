@@ -14,7 +14,7 @@ import { handlePhotoGridClick, handleUploadPhoto, highlightPhotoFromActivity } f
 import { startPhotoUploadQueue } from "./features/photo-upload-queue.js";
 import { renderTimeline, updateCountdown } from "./features/timeline.js";
 import { initFirebaseListeners } from "./integrations/firebase-sync.js";
-import { getBookModal } from "./ui/BookModal.js";
+import { getBookModal, loadGuestFont } from "./ui/BookModal.js";
 import {
   renderCurrentTranslationForGuest,
   restoreDictionaryCache,
@@ -1142,6 +1142,7 @@ async function setGuest(guestId) {
   }
 
   setState({ currentGuestId: guestId });
+  loadGuestFont(guestId);
   localStorage.setItem("wedding_guest", guestId);
   startGuestDictionarySync(guestId);
   const guest = findGuestById(guestId);
@@ -1179,6 +1180,7 @@ function restoreSession() {
 
   if (savedGuestId && findGuestById(savedGuestId)) {
     setState({ currentGuestId: savedGuestId });
+    loadGuestFont(savedGuestId);
     startGuestDictionarySync(savedGuestId);
     refs.selectedGuestName.textContent = findGuestById(savedGuestId).name;
     updateWelcomeLabel();

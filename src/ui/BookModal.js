@@ -4,30 +4,48 @@ import { refs, state, setState, findGuestById } from "../state.js";
 const AUTOSAVE_DEBOUNCE_MS = 500;
 
 
-const GUEST_DEDICATION_FONTS = {
-  manolo: '"Allura", "Cormorant Garamond", serif',
-  ana_madre_novia: '"Alex Brush", "Cormorant Garamond", serif',
-  simona: '"Sacramento", "Cormorant Garamond", serif',
-  gigi: '"Parisienne", "Cormorant Garamond", serif',
-  jesus: '"Dancing Script", "Cormorant Garamond", serif',
-  irene: '"Marck Script", "Cormorant Garamond", serif',
-  rachele: '"Satisfy", "Cormorant Garamond", serif',
-  lisa: '"Yellowtail", "Cormorant Garamond", serif',
-  rosa: '"Kaushan Script", "Cormorant Garamond", serif',
-  josefina: '"Tangerine", "Cormorant Garamond", serif',
-  marina: '"Mr Dafoe", "Cormorant Garamond", serif',
-  alicia: '"Pinyon Script", "Cormorant Garamond", serif',
-  gabri: '"Bad Script", "Cormorant Garamond", serif',
-  ana_amiga_novia: '"Courgette", "Cormorant Garamond", serif',
-  tito: '"Caveat", "Cormorant Garamond", serif'
+const loadedFonts = new Set();
+
+export const GUEST_FONTS = {
+  manolo: { name: "Allura", url: "https://fonts.googleapis.com/css2?family=Allura&display=swap" },
+  ana_madre_novia: { name: "Alex Brush", url: "https://fonts.googleapis.com/css2?family=Alex+Brush&display=swap" },
+  simona: { name: "Sacramento", url: "https://fonts.googleapis.com/css2?family=Sacramento&display=swap" },
+  gigi: { name: "Parisienne", url: "https://fonts.googleapis.com/css2?family=Parisienne&display=swap" },
+  jesus: { name: "Dancing Script", url: "https://fonts.googleapis.com/css2?family=Dancing+Script:wght@400;500;600&display=swap" },
+  irene: { name: "Marck Script", url: "https://fonts.googleapis.com/css2?family=Marck+Script&display=swap" },
+  rachele: { name: "Satisfy", url: "https://fonts.googleapis.com/css2?family=Satisfy&display=swap" },
+  lisa: { name: "Yellowtail", url: "https://fonts.googleapis.com/css2?family=Yellowtail&display=swap" },
+  rosa: { name: "Kaushan Script", url: "https://fonts.googleapis.com/css2?family=Kaushan+Script&display=swap" },
+  josefina: { name: "Tangerine", url: "https://fonts.googleapis.com/css2?family=Tangerine:wght@400;700&display=swap" },
+  marina: { name: "Mr Dafoe", url: "https://fonts.googleapis.com/css2?family=Mr+Dafoe&display=swap" },
+  alicia: { name: "Pinyon Script", url: "https://fonts.googleapis.com/css2?family=Pinyon+Script&display=swap" },
+  gabri: { name: "Bad Script", url: "https://fonts.googleapis.com/css2?family=Bad+Script&display=swap" },
+  ana_amiga_novia: { name: "Courgette", url: "https://fonts.googleapis.com/css2?family=Courgette&display=swap" },
+  tito: { name: "Caveat", url: "https://fonts.googleapis.com/css2?family=Caveat:wght@400;600&display=swap" }
 };
+
+function loadFont(fontName, fontUrl) {
+  if (!fontName || !fontUrl || loadedFonts.has(fontName)) return;
+  const link = document.createElement("link");
+  link.rel = "stylesheet";
+  link.href = fontUrl;
+  document.head.appendChild(link);
+  loadedFonts.add(fontName);
+}
+
+export function loadGuestFont(guestId) {
+  const guestFont = GUEST_FONTS[guestId];
+  if (!guestFont) return;
+  loadFont(guestFont.name, guestFont.url);
+}
 
 function isCoupleGuest(guestId) {
   return guestId === "cintia_novia" || guestId === "andrea_novio";
 }
 
 function getGuestDedicationFont(guestId) {
-  return GUEST_DEDICATION_FONTS[guestId] || '"Cormorant Garamond", "Playfair Display", serif';
+  const guestFont = GUEST_FONTS[guestId];
+  return guestFont ? `"${guestFont.name}", "Cormorant Garamond", serif` : '"Cormorant Garamond", "Playfair Display", serif';
 }
 
 function renderCoupleGuestbookContent(entries = []) {
