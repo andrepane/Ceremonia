@@ -35,6 +35,10 @@ const GUESTBOOK_AVATAR_VISIBLE_MS = 2500;
 const GUESTBOOK_BOOK_VISIBLE_MS = 3500;
 
 let guestbookIconSwapTimeoutId = null;
+const OFFLINE_CACHE_KEYS = {
+  activity: "ceremonia_cache_activity_v1",
+  photos: "ceremonia_cache_photos_v1"
+};
 
 const INSTALL_ONBOARDING_COPY = {
   es: {
@@ -1230,6 +1234,8 @@ function startGuestbookIconAlternation() {
 }
 
 function bindUIEvents() {
+  refs.uploadPhotoBtn?.setAttribute("data-requires-network", "true");
+  refs.translatorButton?.setAttribute("data-requires-network", "true");
   refs.btnEs.addEventListener("click", () => setLanguage("es"));
   refs.btnIt.addEventListener("click", () => setLanguage("it"));
   refs.backToLanguage.addEventListener("click", () => showScreen(refs.screenLanguage));
@@ -1401,6 +1407,53 @@ function bindUIEvents() {
   });
 }
 
+function ensureOfflineBanner() {
+  let banner = document.querySelector("[data-offline-banner]");
+  if (banner) return banner;
+  banner = document.createElement("div");
+  banner.className = "offline-banner";
+  banner.setAttribute("data-offline-banner", "true");
+  banner.setAttribute("role", "status");
+  banner.setAttribute("aria-live", "polite");
+  banner.textContent = "Sin conexión. Mostrando última versión disponible";
+  document.body.append(banner);
+  return banner;
+}
+
+function updateConnectionDependentControls(isOffline) {
+  document.querySelectorAll("[data-requires-network], [data-guest-enter]").forEach((element) => {
+    if (!(element instanceof HTMLButtonElement)) return;
+    element.disabled = isOffline;
+    element.classList.toggle("network-disabled", isOffline);
+  });
+}
+
+function applyConnectionState({ online, forceOfflineUi = false } = {}) {
+  const isOnline = typeof online === "boolean" ? online : navigator.onLine;
+  const isOffline = forceOfflineUi || !isOnline;
+  document.body.classList.toggle("offline", isOffline);
+  document.body.classList.toggle("online", !isOffline);
+  ensureOfflineBanner();
+  updateConnectionDependentControls(isOffline);
+}
+
+window.setOfflineUiState = () => applyConnectionState({ forceOfflineUi: true });
+window.saveOfflineSnapshot = (key, value) => {
+  try {
+    localStorage.setItem(key, JSON.stringify({ value, updatedAt: Date.now() }));
+  } catch {}
+};
+window.readOfflineSnapshot = (key) => {
+  try {
+    const raw = localStorage.getItem(key);
+    if (!raw) return null;
+    return JSON.parse(raw)?.value ?? null;
+  } catch {
+    return null;
+  }
+};
+window.OFFLINE_CACHE_KEYS = OFFLINE_CACHE_KEYS;
+
 window.addEventListener("beforeunload", () => {
   stopGuestbookIconAlternation();
   if (!isFirebaseConfigured() || !state.currentGuestId || !state.hasActiveGuestLock) return;
@@ -1408,6 +1461,9 @@ window.addEventListener("beforeunload", () => {
 });
 
 const isInstallGateBlocking = initInstallOnboardingGate();
+applyConnectionState({ online: navigator.onLine });
+window.addEventListener("online", () => applyConnectionState({ online: true }));
+window.addEventListener("offline", () => applyConnectionState({ online: false }));
 
 bindUIEvents();
 startPhotoUploadQueue();
