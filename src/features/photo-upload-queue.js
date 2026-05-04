@@ -4,8 +4,9 @@ import { getHomeCopy, refs, state } from "../state.js";
 const DB_NAME = "ceremonia-photo-uploads";
 const DB_VERSION = 1;
 const STORE_NAME = "uploadJobs";
-const MAX_RETRIES = 5;
-const BASE_RETRY_DELAY_MS = 2500;
+const MAX_RETRIES = 3;
+const RETRY_DELAYS_MS = [2000, 5000, 10000];
+const UPLOAD_TIMEOUT_MS = 20_000;
 
 let isProcessing = false;
 let queueStarted = false;
@@ -80,22 +81,24 @@ async function listJobs() {
 }
 
 function buildRetryDelay(attempts) {
-  const step = Math.max(0, Math.min(attempts, MAX_RETRIES));
-  return BASE_RETRY_DELAY_MS * (2 ** step);
+  const index = Math.max(0, Math.min((Number(attempts) || 1) - 1, RETRY_DELAYS_MS.length - 1));
+  return RETRY_DELAYS_MS[index];
 }
 
-function updateUploadButtonStatus(label, progress = null) {
+function updateUploadButtonStatus(status = "", progress = null) {
   if (!refs.uploadPhotoBtn) return;
   const labelEl = refs.uploadPhotoBtnLabel || refs.uploadPhotoBtn;
-  if (!label) {
+  if (!status) {
     refs.uploadPhotoBtn.dataset.uploadProgress = "";
+    refs.uploadPhotoBtn.dataset.uploadStatus = "";
     if (refs.uploadPhotoBtnProgressText) refs.uploadPhotoBtnProgressText.textContent = "";
     return;
   }
 
   refs.uploadPhotoBtn.dataset.uploadProgress = String(progress ?? "");
-  if (labelEl) labelEl.textContent = getHomeCopy().uploadLoading;
-  if (refs.uploadPhotoBtnProgressText) refs.uploadPhotoBtnProgressText.textContent = label;
+  refs.uploadPhotoBtn.dataset.uploadStatus = status;
+  if (labelEl) labelEl.textContent = status;
+  if (refs.uploadPhotoBtnProgressText) refs.uploadPhotoBtnProgressText.textContent = progress === null ? status : `${status} ${Math.round((Number(progress) || 0) * 100)}%`;
 }
 
 function uuid() {
@@ -103,9 +106,14 @@ function uuid() {
   return `${Date.now()}_${Math.random().toString(16).slice(2)}`;
 }
 
-function humanProgressLabel(overallProgress = 0) {
-  const safe = Math.max(0, Math.min(1, Number(overallProgress) || 0));
-  return `${getHomeCopy().uploadLoading} ${Math.round(safe * 100)}%`;
+function withUploadTimeout(taskPromise, timeoutMs) {
+  let timeoutId = null;
+  const timeoutPromise = new Promise((_, reject) => {
+    timeoutId = window.setTimeout(() => reject(new Error("upload_timeout")), timeoutMs);
+  });
+  return Promise.race([taskPromise, timeoutPromise]).finally(() => {
+    if (timeoutId) window.clearTimeout(timeoutId);
+  });
 }
 
 async function uploadQueueJob(job) {
@@ -119,23 +127,28 @@ async function uploadQueueJob(job) {
   };
   await putJob(nextJob);
 
-  updateUploadButtonStatus(humanProgressLabel(0), 0);
+  console.log("[UPLOAD] start", job.id);
+  updateUploadButtonStatus(getHomeCopy().uploadLoading, 0);
 
   const optimizedPhotos = await buildPhotoVariants(job.file);
 
-  await uploadPhoto({
-    file: optimizedPhotos.largeFile,
-    thumbnailFile: optimizedPhotos.thumbFile,
-    width: optimizedPhotos.width,
-    height: optimizedPhotos.height,
-    guestId: job.guestId,
-    uploadId: job.id,
-    onProgress: ({ overallProgress = 0 }) => {
-      updateUploadButtonStatus(humanProgressLabel(overallProgress), overallProgress);
-    }
-  });
+  await withUploadTimeout(
+    uploadPhoto({
+      file: optimizedPhotos.largeFile,
+      thumbnailFile: optimizedPhotos.thumbFile,
+      width: optimizedPhotos.width,
+      height: optimizedPhotos.height,
+      guestId: job.guestId,
+      uploadId: job.id,
+      onProgress: ({ overallProgress = 0 }) => {
+        updateUploadButtonStatus(getHomeCopy().uploadLoading, overallProgress);
+      }
+    }),
+    UPLOAD_TIMEOUT_MS
+  );
 
   await deleteJob(job.id);
+  console.log("[UPLOAD] success", job.id);
 }
 
 export async function processUploadQueue() {
@@ -156,6 +169,13 @@ export async function processUploadQueue() {
       } catch (error) {
         const attempts = (Number(job.attempts) || 0) + 1;
         const isTerminal = attempts >= MAX_RETRIES;
+        if (!isTerminal) {
+          updateUploadButtonStatus(getHomeCopy().uploadRetrying);
+          console.log("[UPLOAD] retry", attempts);
+        } else {
+          updateUploadButtonStatus(getHomeCopy().uploadFailed);
+        }
+        console.error("[UPLOAD] fail", error);
         await putJob({
           ...job,
           status: isTerminal ? "failed" : "pending",
@@ -187,17 +207,20 @@ export async function enqueuePhotoUpload({ file, guestId }) {
 
   if (!supportsIndexedDb()) {
     const optimizedPhotos = await buildPhotoVariants(file);
-    await uploadPhoto({
-      file: optimizedPhotos.largeFile,
-      thumbnailFile: optimizedPhotos.thumbFile,
-      width: optimizedPhotos.width,
-      height: optimizedPhotos.height,
-      guestId,
-      uploadId: job.id,
-      onProgress: ({ overallProgress = 0 }) => {
-        updateUploadButtonStatus(humanProgressLabel(overallProgress), overallProgress);
-      }
-    });
+    await withUploadTimeout(
+      uploadPhoto({
+        file: optimizedPhotos.largeFile,
+        thumbnailFile: optimizedPhotos.thumbFile,
+        width: optimizedPhotos.width,
+        height: optimizedPhotos.height,
+        guestId,
+        uploadId: job.id,
+        onProgress: ({ overallProgress = 0 }) => {
+          updateUploadButtonStatus(getHomeCopy().uploadLoading, overallProgress);
+        }
+      }),
+      UPLOAD_TIMEOUT_MS
+    );
     updateUploadButtonStatus("");
     return;
   }
@@ -222,8 +245,8 @@ export function startPhotoUploadQueue() {
 }
 
 const MOBILE_UPLOAD_PRESETS = {
-  large: { maxEdge: 1920, quality: 0.84 },
-  thumb: { maxEdge: 320, quality: 0.58 }
+  large: { maxEdge: 1600, quality: 0.78 },
+  thumb: { maxEdge: 300, quality: 0.55 }
 };
 
 function buildProcessedFileName(fileName = "", suffix = "") {

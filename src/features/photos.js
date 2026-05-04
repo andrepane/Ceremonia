@@ -101,12 +101,18 @@ export async function handleUploadPhoto() {
     const original = labelEl.textContent;
     refs.uploadPhotoBtn.disabled = true;
     labelEl.textContent = getHomeCopy().uploadLoading;
+    window.setTimeout(() => {
+      refs.uploadPhotoBtn.disabled = false;
+    }, 1000);
     try {
       await enqueuePhotoUpload({
         file,
         guestId: state.currentGuestId
       });
     } catch {
+      if (refs.uploadPhotoBtnProgressText) {
+        refs.uploadPhotoBtnProgressText.textContent = getHomeCopy().uploadFailed;
+      }
       alert(getHomeCopy().uploadError);
     } finally {
       refs.uploadPhotoBtn.disabled = false;
