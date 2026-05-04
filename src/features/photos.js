@@ -4,6 +4,55 @@ import { refs, state, getHomeCopy } from "../state.js";
 
 let photoViewerEl = null;
 let highlightCleanupTimeoutId = null;
+let isPhotoPickerBusy = false;
+let photoPickerResetTimeoutId = null;
+let photoPickerLockUntil = 0;
+
+function resetPhotoPickerUi() {
+  if (photoPickerResetTimeoutId) {
+    window.clearTimeout(photoPickerResetTimeoutId);
+    photoPickerResetTimeoutId = null;
+  }
+  isPhotoPickerBusy = false;
+  refs.uploadPhotoBtn.disabled = false;
+}
+
+function getPhotoInput() {
+  return document.getElementById("photo-input");
+}
+
+const photoInput = getPhotoInput();
+
+if (photoInput) {
+  photoInput.addEventListener("change", async (event) => {
+    const input = event.target;
+    const file = input.files?.[0];
+
+    try {
+      if (!file) return;
+      if (file.size > 10 * 1024 * 1024) {
+        alert("Máximo 10MB");
+        return;
+      }
+      if (!state.firebaseOnline) {
+        alert(getHomeCopy().uploadError);
+        return;
+      }
+
+      enqueuePhotoUpload({
+        file,
+        guestId: state.currentGuestId
+      }).catch(() => {
+        if (refs.uploadPhotoBtnProgressText) {
+          refs.uploadPhotoBtnProgressText.textContent = getHomeCopy().uploadFailed;
+        }
+        alert(getHomeCopy().uploadError);
+      });
+    } finally {
+      resetPhotoPickerUi();
+    }
+  });
+}
 
 function getPhotoViewer() {
   if (photoViewerEl) return photoViewerEl;
@@ -81,45 +130,21 @@ export function highlightPhotoFromActivity(photoId, activityType) {
 }
 
 export async function handleUploadPhoto() {
-  if (!state.currentGuestId) return;
-  const input = document.createElement("input");
-  input.type = "file";
-  input.accept = "image/*";
-  input.onchange = async () => {
-    const file = input.files?.[0];
-    if (!file) return;
-    if (file.size > 10 * 1024 * 1024) {
-      alert("Máximo 10MB");
-      return;
-    }
-    if (!state.firebaseOnline) {
-      alert(getHomeCopy().uploadError);
-      return;
-    }
+  if (!state.currentGuestId || !photoInput) return;
 
-    const labelEl = refs.uploadPhotoBtnLabel || refs.uploadPhotoBtn;
-    const original = labelEl.textContent;
-    refs.uploadPhotoBtn.disabled = true;
-    labelEl.textContent = getHomeCopy().uploadLoading;
-    window.setTimeout(() => {
-      refs.uploadPhotoBtn.disabled = false;
-    }, 1000);
-    try {
-      await enqueuePhotoUpload({
-        file,
-        guestId: state.currentGuestId
-      });
-    } catch {
-      if (refs.uploadPhotoBtnProgressText) {
-        refs.uploadPhotoBtnProgressText.textContent = getHomeCopy().uploadFailed;
-      }
-      alert(getHomeCopy().uploadError);
-    } finally {
-      refs.uploadPhotoBtn.disabled = false;
-      labelEl.textContent = original;
-    }
-  };
-  input.click();
+  const now = Date.now();
+  if (isPhotoPickerBusy || now < photoPickerLockUntil) return;
+
+  isPhotoPickerBusy = true;
+  photoPickerLockUntil = now + 900;
+  refs.uploadPhotoBtn.disabled = true;
+
+  photoInput.value = "";
+  photoInput.click();
+
+  photoPickerResetTimeoutId = window.setTimeout(() => {
+    resetPhotoPickerUi();
+  }, 2500);
 }
 
 export async function handlePhotoGridClick(event) {
