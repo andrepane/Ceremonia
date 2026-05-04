@@ -109,10 +109,15 @@ export async function handlePhotoInputChange(event) {
     return;
   }
 
-  enqueuePhotoUpload({
-    file,
-    guestId: state.currentGuestId
-  });
+  try {
+    await enqueuePhotoUpload({
+      file,
+      guestId: state.currentGuestId
+    });
+  } catch (error) {
+    console.error("[UPLOAD ERROR]", error);
+    alert("Error al subir la foto");
+  }
 }
 
 export async function handlePhotoGridClick(event) {

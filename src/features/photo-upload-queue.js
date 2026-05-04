@@ -16,6 +16,11 @@ function supportsIndexedDb() {
   return typeof indexedDB !== "undefined";
 }
 
+function isIOS() {
+  return /iPad|iPhone|iPod/.test(navigator.userAgent)
+    || (navigator.platform === "MacIntel" && navigator.maxTouchPoints > 1);
+}
+
 function openQueueDb() {
   if (!supportsIndexedDb()) return Promise.resolve(null);
   if (dbPromise) return dbPromise;
@@ -187,7 +192,8 @@ export async function processUploadQueue() {
       }
     }
   } finally {
-    updateUploadButtonStatus("");
+    const shouldClearStatus = !refs.uploadPhotoBtn?.dataset.uploadStatus || refs.uploadPhotoBtn.dataset.uploadStatus !== getHomeCopy().uploadFailed;
+    if (shouldClearStatus) updateUploadButtonStatus("");
     isProcessing = false;
   }
 }
@@ -205,7 +211,7 @@ export async function enqueuePhotoUpload({ file, guestId }) {
     source: "manual"
   };
 
-  if (!supportsIndexedDb()) {
+  if (!supportsIndexedDb() || isIOS()) {
     const optimizedPhotos = await buildPhotoVariants(file);
     await withUploadTimeout(
       uploadPhoto({
@@ -306,10 +312,8 @@ async function renderResizedBlob(file, { maxEdge, quality }) {
 
 export async function buildPhotoVariants(file) {
   try {
-    const [largeVersion, thumbVersion] = await Promise.all([
-      renderResizedBlob(file, MOBILE_UPLOAD_PRESETS.large),
-      renderResizedBlob(file, MOBILE_UPLOAD_PRESETS.thumb)
-    ]);
+    const largeVersion = await renderResizedBlob(file, MOBILE_UPLOAD_PRESETS.large);
+    const thumbVersion = await renderResizedBlob(file, MOBILE_UPLOAD_PRESETS.thumb);
     return {
       largeFile: new File([largeVersion.blob], buildProcessedFileName(file.name), { type: "image/jpeg" }),
       thumbFile: new File([thumbVersion.blob], buildProcessedFileName(file.name, "_thumb"), { type: "image/jpeg" }),
