@@ -12,6 +12,7 @@ export const refs = {
   guestbookModal: document.getElementById("guestbook-modal"),
   guestbookClose: document.getElementById("guestbook-close"),
   uploadPhotoBtn: document.getElementById("upload-photo-btn"),
+  photoInput: document.getElementById("photo-input"),
   uploadPhotoBtnLabel: document.getElementById("upload-photo-btn-label"),
   uploadPhotoBtnProgressText: document.getElementById("upload-photo-progress-text"),
   guestGrid: document.getElementById("guest-grid"),

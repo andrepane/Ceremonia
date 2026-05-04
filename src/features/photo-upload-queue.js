@@ -226,7 +226,8 @@ export async function enqueuePhotoUpload({ file, guestId }) {
   }
 
   await putJob(job);
-  await processUploadQueue();
+  console.log("[UPLOAD] enqueued", job.id);
+  void processUploadQueue();
 }
 
 export function startPhotoUploadQueue() {
