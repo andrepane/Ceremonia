@@ -8,7 +8,7 @@ import {
 } from "../firebase.js";
 import { APP_DATA, refs, state, setState, findGuestById, getHomeCopy, getLocale } from "./state.js";
 import { applyTranslations } from "./ui/translations.js";
-import { handleUsefulPhraseSpeakClick, renderAllDynamicSections, renderDictionary, renderGuestCards, renderHomeDashboard, updateAppHeaderForView, updateGuestHeaderMessage, updateProfileAvatar, updateWelcomeLabel } from "./ui/render.js";
+import { handleTranslationHistorySpeakClick, handleUsefulPhraseSpeakClick, renderAllDynamicSections, renderDictionary, renderGuestCards, renderHomeDashboard, updateAppHeaderForView, updateGuestHeaderMessage, updateProfileAvatar, updateWelcomeLabel } from "./ui/render.js";
 import { handleSpeakTranslation, handleTranslatorRequest } from "./features/translator.js";
 import { handlePhotoGridClick, handleUploadPhoto, highlightPhotoFromActivity } from "./features/photos.js";
 import { startPhotoUploadQueue } from "./features/photo-upload-queue.js";
@@ -1357,6 +1357,7 @@ function bindUIEvents() {
     });
   });
   document.getElementById("useful-phrases-list").addEventListener("click", handleUsefulPhraseSpeakClick);
+  refs.translatorHistoryList.addEventListener("click", handleTranslationHistorySpeakClick);
 
   document.getElementById("photo-grid").addEventListener("click", handlePhotoGridClick);
   refs.uploadPhotoBtn.addEventListener("click", handleUploadPhoto);

@@ -260,7 +260,11 @@ export function renderDictionary() {
   document.getElementById("false-friends-list").innerHTML = falseFriendItems;
 
   const history = state.translationHistoryByGuest[state.currentGuestId] || [];
-  const historyItems = history.map((item) => `<article class="dictionary-row"><p class="translator-history-row__source">${item.sourceText}</p><p class="card-text translator-history-row__target">${item.translatedText}</p></article>`).join("");
+  const historyItems = history.map((item) => {
+    const translatedText = item.translatedText || "";
+    const translatedLanguage = item.language || (state.currentLanguage === "es" ? "it" : "es");
+    return `<article class="dictionary-row"><p class="translator-history-row__source">${item.sourceText}</p><p class="card-text translator-history-row__target"><span class="translator-result--highlight useful-phrase-row__target-text">${translatedText}</span><button type="button" class="useful-phrase-speak-btn" data-history-speak="${translatedLanguage}" data-history-text="${encodeURIComponent(translatedText)}" aria-label="${state.currentLanguage === "es" ? "Escuchar traducción" : "Ascolta traduzione"}" title="${state.currentLanguage === "es" ? "Escuchar traducción" : "Ascolta traduzione"}">🔊</button></p></article>`;
+  }).join("");
   refs.translatorHistoryList.innerHTML = historyItems || `<p class="card-text translator-history-empty">${locale.labels.translatorHistoryEmpty}</p>`;
 
   const currentTranslation = state.currentTranslationByGuest[state.currentGuestId] || null;
@@ -278,6 +282,16 @@ export function handleUsefulPhraseSpeakClick(event) {
   if (!button) return;
   const text = decodeURIComponent(button.dataset.usefulPhraseText || "");
   const language = button.dataset.usefulPhraseSpeak || "it";
+  if (!text) return;
+  if (!("speechSynthesis" in window) || typeof window.SpeechSynthesisUtterance !== "function") return;
+  speakText(text, language);
+}
+
+export function handleTranslationHistorySpeakClick(event) {
+  const button = event.target.closest("[data-history-speak]");
+  if (!button) return;
+  const text = decodeURIComponent(button.dataset.historyText || "");
+  const language = button.dataset.historySpeak || "it";
   if (!text) return;
   if (!("speechSynthesis" in window) || typeof window.SpeechSynthesisUtterance !== "function") return;
   speakText(text, language);
