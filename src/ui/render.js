@@ -296,12 +296,18 @@ export function renderPhotos() {
     container.innerHTML = `<article class="card"><p class="card-text">${copy.photosLoading}</p></article>`;
     return;
   }
-  if (!state.realtimePhotos.length) {
+  const visiblePhotos = state.realtimePhotos.filter((photo) => {
+    const hasPreview = Boolean(photo.processedThumbnailURL || photo.thumbnailURL || photo.processedDownloadURL || photo.downloadURL);
+    const isReady = photo.uploadState === "ready" || (!photo.uploadState && Boolean(photo.downloadURL || photo.processedDownloadURL));
+    return hasPreview && isReady;
+  });
+
+  if (!visiblePhotos.length) {
     container.innerHTML = `<article class="card"><p class="card-text">${copy.photosEmpty}</p></article>`;
     return;
   }
 
-  container.innerHTML = state.realtimePhotos.map((photo) => {
+  container.innerHTML = visiblePhotos.map((photo) => {
     const previewUrl = photo.processedThumbnailURL || photo.thumbnailURL || photo.processedDownloadURL || photo.downloadURL;
     const fullUrl = photo.processedDownloadURL || photo.downloadURL || previewUrl || "";
     const imageMarkup = previewUrl
