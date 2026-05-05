@@ -85,6 +85,11 @@ async function listJobs() {
     : [];
 }
 
+async function hasFailedJobs() {
+  const jobs = await listJobs();
+  return jobs.some((job) => job.status === "failed");
+}
+
 function buildRetryDelay(attempts) {
   const index = Math.max(0, Math.min((Number(attempts) || 1) - 1, RETRY_DELAYS_MS.length - 1));
   return RETRY_DELAYS_MS[index];
@@ -192,8 +197,8 @@ export async function processUploadQueue() {
       }
     }
   } finally {
-    const shouldClearStatus = !refs.uploadPhotoBtn?.dataset.uploadStatus || refs.uploadPhotoBtn.dataset.uploadStatus !== getHomeCopy().uploadFailed;
-    if (shouldClearStatus) updateUploadButtonStatus("");
+    const failedJobsExist = await hasFailedJobs().catch(() => false);
+    if (!failedJobsExist) updateUploadButtonStatus("");
     isProcessing = false;
   }
 }
@@ -212,22 +217,25 @@ export async function enqueuePhotoUpload({ file, guestId }) {
   };
 
   if (!supportsIndexedDb() || isIOS()) {
-    const optimizedPhotos = await buildPhotoVariants(file);
-    await withUploadTimeout(
-      uploadPhoto({
-        file: optimizedPhotos.largeFile,
-        thumbnailFile: optimizedPhotos.thumbFile,
-        width: optimizedPhotos.width,
-        height: optimizedPhotos.height,
-        guestId,
-        uploadId: job.id,
-        onProgress: ({ overallProgress = 0 }) => {
-          updateUploadButtonStatus(getHomeCopy().uploadLoading, overallProgress);
-        }
-      }),
-      UPLOAD_TIMEOUT_MS
-    );
-    updateUploadButtonStatus("");
+    try {
+      const optimizedPhotos = await buildPhotoVariants(file);
+      await withUploadTimeout(
+        uploadPhoto({
+          file: optimizedPhotos.largeFile,
+          thumbnailFile: optimizedPhotos.thumbFile,
+          width: optimizedPhotos.width,
+          height: optimizedPhotos.height,
+          guestId,
+          uploadId: job.id,
+          onProgress: ({ overallProgress = 0 }) => {
+            updateUploadButtonStatus(getHomeCopy().uploadLoading, overallProgress);
+          }
+        }),
+        UPLOAD_TIMEOUT_MS
+      );
+    } finally {
+      updateUploadButtonStatus("");
+    }
     return;
   }
 
@@ -248,6 +256,7 @@ export function startPhotoUploadQueue() {
     processUploadQueue().catch(() => {});
   }, 4000);
 
+  updateUploadButtonStatus("");
   processUploadQueue().catch(() => {});
 }
 
