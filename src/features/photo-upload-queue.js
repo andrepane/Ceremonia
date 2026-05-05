@@ -1,99 +1,7 @@
 import { uploadPhoto } from "../../firebase.js";
 import { getHomeCopy, refs, state } from "../state.js";
 
-const DB_NAME = "ceremonia-photo-uploads";
-const DB_VERSION = 1;
-const STORE_NAME = "uploadJobs";
-const MAX_RETRIES = 3;
-const RETRY_DELAYS_MS = [2000, 5000, 10000];
-const UPLOAD_TIMEOUT_MS = 20_000;
-
-let isProcessing = false;
-let queueStarted = false;
-let dbPromise = null;
-
-function supportsIndexedDb() {
-  return typeof indexedDB !== "undefined";
-}
-
-function isIOS() {
-  return /iPad|iPhone|iPod/.test(navigator.userAgent)
-    || (navigator.platform === "MacIntel" && navigator.maxTouchPoints > 1);
-}
-
-function openQueueDb() {
-  if (!supportsIndexedDb()) return Promise.resolve(null);
-  if (dbPromise) return dbPromise;
-
-  dbPromise = new Promise((resolve, reject) => {
-    const request = indexedDB.open(DB_NAME, DB_VERSION);
-    request.onerror = () => reject(request.error || new Error("idb_open_failed"));
-    request.onupgradeneeded = () => {
-      const db = request.result;
-      if (!db.objectStoreNames.contains(STORE_NAME)) {
-        const store = db.createObjectStore(STORE_NAME, { keyPath: "id" });
-        store.createIndex("by_status", "status", { unique: false });
-        store.createIndex("by_createdAt", "createdAt", { unique: false });
-        store.createIndex("by_nextAttemptAt", "nextAttemptAt", { unique: false });
-      }
-    };
-    request.onsuccess = () => resolve(request.result);
-  });
-
-  return dbPromise;
-}
-
-function idbRequestToPromise(request) {
-  return new Promise((resolve, reject) => {
-    request.onerror = () => reject(request.error || new Error("idb_request_failed"));
-    request.onsuccess = () => resolve(request.result);
-  });
-}
-
-function idbTransactionToPromise(tx) {
-  return new Promise((resolve, reject) => {
-    tx.onerror = () => reject(tx.error || new Error("idb_tx_failed"));
-    tx.onabort = () => reject(tx.error || new Error("idb_tx_aborted"));
-    tx.oncomplete = () => resolve();
-  });
-}
-
-async function putJob(job) {
-  const db = await openQueueDb();
-  if (!db) return;
-  const tx = db.transaction(STORE_NAME, "readwrite");
-  tx.objectStore(STORE_NAME).put(job);
-  await idbTransactionToPromise(tx);
-}
-
-async function deleteJob(jobId) {
-  const db = await openQueueDb();
-  if (!db) return;
-  const tx = db.transaction(STORE_NAME, "readwrite");
-  tx.objectStore(STORE_NAME).delete(jobId);
-  await idbTransactionToPromise(tx);
-}
-
-async function listJobs() {
-  const db = await openQueueDb();
-  if (!db) return [];
-  const tx = db.transaction(STORE_NAME, "readonly");
-  const store = tx.objectStore(STORE_NAME);
-  const jobs = await idbRequestToPromise(store.getAll());
-  return Array.isArray(jobs)
-    ? jobs.sort((a, b) => Number(a.createdAt || 0) - Number(b.createdAt || 0))
-    : [];
-}
-
-async function hasFailedJobs() {
-  const jobs = await listJobs();
-  return jobs.some((job) => job.status === "failed");
-}
-
-function buildRetryDelay(attempts) {
-  const index = Math.max(0, Math.min((Number(attempts) || 1) - 1, RETRY_DELAYS_MS.length - 1));
-  return RETRY_DELAYS_MS[index];
-}
+const UPLOAD_TIMEOUT_MS = 90_000;
 
 function updateUploadButtonStatus(status = "", progress = null) {
   if (!refs.uploadPhotoBtn) return;
@@ -126,138 +34,37 @@ function withUploadTimeout(taskPromise, timeoutMs) {
   });
 }
 
-async function uploadQueueJob(job) {
-  const currentAttempts = Number(job.attempts) || 0;
-  const nextJob = {
-    ...job,
-    status: "uploading",
-    attempts: currentAttempts,
-    updatedAt: Date.now(),
-    nextAttemptAt: Date.now()
-  };
-  await putJob(nextJob);
-
-  console.log("[UPLOAD] start", job.id);
-  updateUploadButtonStatus(getHomeCopy().uploadLoading, 0);
-
-  const optimizedPhotos = await buildPhotoVariants(job.file);
-
-  await withUploadTimeout(
-    uploadPhoto({
-      file: optimizedPhotos.largeFile,
-      thumbnailFile: optimizedPhotos.thumbFile,
-      width: optimizedPhotos.width,
-      height: optimizedPhotos.height,
-      guestId: job.guestId,
-      uploadId: job.id,
-      onProgress: ({ overallProgress = 0 }) => {
-        updateUploadButtonStatus(getHomeCopy().uploadLoading, overallProgress);
-      }
-    }),
-    UPLOAD_TIMEOUT_MS
-  );
-
-  await deleteJob(job.id);
-  console.log("[UPLOAD] success", job.id);
-}
-
-export async function processUploadQueue() {
-  if (isProcessing) return;
-  if (!state.firebaseOnline || !navigator.onLine) return;
-  isProcessing = true;
-
-  try {
-    const now = Date.now();
-    const jobs = await listJobs();
-    for (const job of jobs) {
-      if (!state.currentGuestId && !job.guestId) continue;
-      if (!state.firebaseOnline || !navigator.onLine) break;
-      if (Number(job.nextAttemptAt || 0) > now) continue;
-
-      try {
-        await uploadQueueJob(job);
-      } catch (error) {
-        const attempts = (Number(job.attempts) || 0) + 1;
-        const isTerminal = attempts >= MAX_RETRIES;
-        if (!isTerminal) {
-          updateUploadButtonStatus(getHomeCopy().uploadRetrying);
-          console.log("[UPLOAD] retry", attempts);
-        } else {
-          updateUploadButtonStatus(getHomeCopy().uploadFailed);
-        }
-        console.error("[UPLOAD] fail", error);
-        await putJob({
-          ...job,
-          status: isTerminal ? "failed" : "pending",
-          attempts,
-          lastError: error?.message || "upload_failed",
-          updatedAt: Date.now(),
-          nextAttemptAt: Date.now() + buildRetryDelay(attempts)
-        });
-      }
-    }
-  } finally {
-    const failedJobsExist = await hasFailedJobs().catch(() => false);
-    if (!failedJobsExist) updateUploadButtonStatus("");
-    isProcessing = false;
-  }
-}
-
 export async function enqueuePhotoUpload({ file, guestId }) {
-  const job = {
-    id: uuid(),
-    guestId,
-    file,
-    status: "pending",
-    attempts: 0,
-    createdAt: Date.now(),
-    updatedAt: Date.now(),
-    nextAttemptAt: Date.now(),
-    source: "manual"
-  };
-
-  if (!supportsIndexedDb() || isIOS()) {
-    try {
-      const optimizedPhotos = await buildPhotoVariants(file);
-      await withUploadTimeout(
-        uploadPhoto({
-          file: optimizedPhotos.largeFile,
-          thumbnailFile: optimizedPhotos.thumbFile,
-          width: optimizedPhotos.width,
-          height: optimizedPhotos.height,
-          guestId,
-          uploadId: job.id,
-          onProgress: ({ overallProgress = 0 }) => {
-            updateUploadButtonStatus(getHomeCopy().uploadLoading, overallProgress);
-          }
-        }),
-        UPLOAD_TIMEOUT_MS
-      );
-    } finally {
-      updateUploadButtonStatus("");
-    }
-    return;
+  const uploadId = uuid();
+  updateUploadButtonStatus(getHomeCopy().uploadLoading, 0);
+  try {
+    const optimizedPhotos = await buildPhotoVariants(file);
+    await withUploadTimeout(
+      uploadPhoto({
+        file: optimizedPhotos.largeFile,
+        thumbnailFile: optimizedPhotos.thumbFile,
+        width: optimizedPhotos.width,
+        height: optimizedPhotos.height,
+        guestId,
+        uploadId,
+        onProgress: ({ overallProgress = 0 }) => {
+          updateUploadButtonStatus(getHomeCopy().uploadLoading, overallProgress);
+        }
+      }),
+      UPLOAD_TIMEOUT_MS
+    );
+    updateUploadButtonStatus("");
+  } catch (error) {
+    updateUploadButtonStatus(getHomeCopy().uploadFailed);
+    throw error;
+  } finally {
+    updateUploadButtonStatus("");
   }
-
-  await putJob(job);
-  console.log("[UPLOAD] enqueued", job.id);
-  void processUploadQueue();
 }
 
 export function startPhotoUploadQueue() {
-  if (queueStarted) return;
-  queueStarted = true;
-
-  window.addEventListener("online", () => {
-    processUploadQueue().catch(() => {});
-  });
-
-  window.setInterval(() => {
-    processUploadQueue().catch(() => {});
-  }, 4000);
-
   updateUploadButtonStatus("");
-  processUploadQueue().catch(() => {});
+  state.firebaseOnline = navigator.onLine;
 }
 
 const MOBILE_UPLOAD_PRESETS = {
