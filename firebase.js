@@ -487,8 +487,12 @@ async function uploadPhoto({ file, thumbnailFile, width, height, guestId, upload
   }, { merge: true });
 
   if (!existingPhoto?.activityEmitted) {
-    await emitActivity("upload_photo", guestId, { photoId: safeUploadId });
-    await setDoc(photoRef, { activityEmitted: true, updatedAt: serverTimestamp() }, { merge: true });
+    try {
+      await emitActivity("upload_photo", guestId, { photoId: safeUploadId });
+      await setDoc(photoRef, { activityEmitted: true, updatedAt: serverTimestamp() }, { merge: true });
+    } catch (error) {
+      console.warn("[UPLOAD] activity emit skipped", error);
+    }
   }
 
   return safeUploadId;
