@@ -35,7 +35,9 @@ export const refs = {
   translatorSpeakButton: document.getElementById("translator-speak-btn"),
   translatorText: document.getElementById("txt-translator-text"),
   translatorHistoryTitle: document.getElementById("txt-translator-history-title"),
-  translatorHistoryList: document.getElementById("translator-history-list")
+  translatorHistoryList: document.getElementById("translator-history-list"),
+  mayaAssistant: document.getElementById("maya-assistant"),
+  mayaAssistantBubble: document.getElementById("maya-assistant-bubble")
 };
 
 export const constants = {
