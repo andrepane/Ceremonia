@@ -1,4 +1,4 @@
-import { refs } from "../state.js";
+import { refs, state } from "../state.js";
 
 const SHOW_MIN_MS = 4000;
 const SHOW_MAX_MS = 6000;
@@ -10,19 +10,34 @@ const STORAGE_KEYS = {
   profileEntryCount: "maya_profile_entry_count"
 };
 
-const WELCOME_MESSAGE = "Hola, soy Maya, tu asistente perruno";
-
-const ENTRY_RULES = [
-  { every: 3, message: "Si cae algo al suelo… es mío." },
-  { every: 5, message: "Yo ya lo sabía desde el principio." },
-  { every: 8, message: "Estoy vigilando. Todo en orden." }
-];
-
-const SESSION_MESSAGES = [
-  "Creo que esto va en serio.",
-  "Se quieren. Se nota hasta aquí.",
-  "Estoy supervisando todo. De momento… aprobado."
-];
+const MAYA_MESSAGES = {
+  es: {
+    welcome: "Hola, soy Maya, tu asistente perruno",
+    entryRules: [
+      { every: 3, message: "Si cae algo al suelo… es mío." },
+      { every: 5, message: "Yo ya lo sabía desde el principio." },
+      { every: 8, message: "Estoy vigilando. Todo en orden." }
+    ],
+    sessionMessages: [
+      "Creo que esto va en serio.",
+      "Se quieren. Se nota hasta aquí.",
+      "Estoy supervisando todo. De momento… aprobado."
+    ]
+  },
+  it: {
+    welcome: "Ciao, sono Maya, la tua assistente a quattro zampe.",
+    entryRules: [
+      { every: 3, message: "Se qualcosa cade a terra… è mio." },
+      { every: 5, message: "Io lo sapevo fin dall’inizio." },
+      { every: 8, message: "Sto controllando. Tutto in ordine." }
+    ],
+    sessionMessages: [
+      "Credo che questa sia una cosa seria.",
+      "Si vogliono bene. Si vede anche da qui.",
+      "Sto supervisionando tutto. Per ora… approvato."
+    ]
+  }
+};
 
 let hideTimeoutId = null;
 let nextSessionMessageTimeoutId = null;
@@ -63,7 +78,8 @@ function canDisplayAssistantNow() {
 function scheduleNextSessionMessage() {
   if (!canDisplayAssistantNow()) return;
   nextSessionMessageTimeoutId = window.setTimeout(() => {
-    const message = SESSION_MESSAGES[sessionMessageIndex % SESSION_MESSAGES.length];
+    const localeMessages = MAYA_MESSAGES[state.currentLanguage] || MAYA_MESSAGES.es;
+    const message = localeMessages.sessionMessages[sessionMessageIndex % localeMessages.sessionMessages.length];
     sessionMessageIndex += 1;
     showAssistantMessage(message);
   }, SESSION_INTERVAL_MS);
@@ -99,24 +115,25 @@ function getStoredNumber(key) {
   return Number.isFinite(parsed) && parsed >= 0 ? parsed : 0;
 }
 
-function getEntryMessage(entryCount) {
-  for (const rule of ENTRY_RULES) {
+function getEntryMessage(entryCount, entryRules) {
+  for (const rule of entryRules) {
     if (entryCount % rule.every === 0) return rule.message;
   }
   return null;
 }
 
 function getStartMessage() {
+  const localeMessages = MAYA_MESSAGES[state.currentLanguage] || MAYA_MESSAGES.es;
   const nextEntryCount = getStoredNumber(STORAGE_KEYS.profileEntryCount) + 1;
   localStorage.setItem(STORAGE_KEYS.profileEntryCount, String(nextEntryCount));
 
   const hasSeenWelcome = localStorage.getItem(STORAGE_KEYS.hasSeenWelcome) === "true";
   if (!hasSeenWelcome) {
     localStorage.setItem(STORAGE_KEYS.hasSeenWelcome, "true");
-    return WELCOME_MESSAGE;
+    return localeMessages.welcome;
   }
 
-  return getEntryMessage(nextEntryCount);
+  return getEntryMessage(nextEntryCount, localeMessages.entryRules);
 }
 
 export function startMayaAssistantCycle() {
