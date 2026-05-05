@@ -546,16 +546,17 @@ async function togglePhotoLike(photoId, guestId) {
   return changed;
 }
 
-async function deletePhoto(photoId) {
+async function deletePhoto(photoId, guestId) {
   const user = await ensureAuth();
   if (!db || !storage || !user) throw new Error("auth_required");
+  if (!guestId) throw new Error("guest_required");
 
   const photoRef = eventDoc("photos", photoId);
   const photoSnap = await getDoc(photoRef);
   if (!photoSnap.exists()) throw new Error("photo_not_found");
 
   const photoData = photoSnap.data();
-  if (photoData.authorUid !== user.uid) throw new Error("not_allowed");
+  if (photoData.authorUid !== user.uid || photoData.authorGuestId !== guestId) throw new Error("not_allowed");
 
   if (photoData.storagePath) {
     const storageRef = ref(storage, photoData.storagePath);
