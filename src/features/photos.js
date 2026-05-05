@@ -169,7 +169,8 @@ export async function handlePhotoGridClick(event) {
   if (deleteBtn && state.firebaseOnline) {
     if (!window.confirm(getHomeCopy().deletePhotoConfirm)) return;
     try {
-      await deletePhoto(deleteBtn.dataset.photoDelete);
+      if (!state.currentGuestId) throw new Error("guest_required");
+      await deletePhoto(deleteBtn.dataset.photoDelete, state.currentGuestId);
     } catch {
       alert(getHomeCopy().deleteError);
     }
