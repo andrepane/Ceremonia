@@ -14,6 +14,7 @@ import { handlePhotoGridClick, handlePhotoInputChange, handleUploadPhoto, highli
 import { startPhotoUploadQueue } from "./features/photo-upload-queue.js";
 import { renderTimeline, updateCountdown } from "./features/timeline.js";
 import { initInstallOnboardingGate } from "./features/onboarding.js";
+import { startMayaAssistantCycle, stopMayaAssistantCycle } from "./features/maya-assistant.js";
 import { initFirebaseListeners } from "./integrations/firebase-sync.js";
 import { getBookModal, loadGuestFont } from "./ui/BookModal.js";
 import {
@@ -41,15 +42,7 @@ const VIEW_TRANSITION_MS = 420;
 const ENTER_BUTTON_FEEDBACK_MS = 220;
 const GUESTBOOK_AVATAR_VISIBLE_MS = 2500;
 const GUESTBOOK_BOOK_VISIBLE_MS = 3500;
-const MAYA_SHOW_MIN_MS = 4000;
-const MAYA_SHOW_MAX_MS = 6000;
-const MAYA_INTERVAL_MIN_MS = 6 * 60 * 1000;
-const MAYA_INTERVAL_MAX_MS = 10 * 60 * 1000;
-const MAYA_MESSAGES = ["¡Guau! Ya estás dentro, te acompaño un ratito 🐾"];
-
 let guestbookIconSwapTimeoutId = null;
-let mayaHideTimeoutId = null;
-let mayaNextAppearanceTimeoutId = null;
 const OFFLINE_CACHE_KEYS = {
   activity: "ceremonia_cache_activity_v1",
   photos: "ceremonia_cache_photos_v1"
@@ -124,68 +117,6 @@ function showScreen(screenToShow) {
 
 function delay(ms) {
   return new Promise((resolve) => setTimeout(resolve, ms));
-}
-
-function getRandomInt(min, max) {
-  return Math.floor(Math.random() * (max - min + 1)) + min;
-}
-
-function isUserTyping() {
-  const activeElement = document.activeElement;
-  if (!activeElement) return false;
-  if (activeElement instanceof HTMLTextAreaElement) return !activeElement.readOnly && !activeElement.disabled;
-  if (activeElement instanceof HTMLInputElement) {
-    const inputType = (activeElement.type || "text").toLowerCase();
-    const nonTypingTypes = new Set(["button", "submit", "reset", "checkbox", "radio", "file", "color", "range"]);
-    return !activeElement.readOnly && !activeElement.disabled && !nonTypingTypes.has(inputType);
-  }
-  return activeElement.isContentEditable;
-}
-
-function clearMayaTimers() {
-  if (mayaHideTimeoutId) window.clearTimeout(mayaHideTimeoutId);
-  if (mayaNextAppearanceTimeoutId) window.clearTimeout(mayaNextAppearanceTimeoutId);
-  mayaHideTimeoutId = null;
-  mayaNextAppearanceTimeoutId = null;
-}
-
-function hideMayaAssistant() {
-  refs.mayaAssistant?.classList.remove("maya-assistant--visible");
-  refs.mayaAssistant?.setAttribute("aria-hidden", "true");
-}
-
-function scheduleMayaAppearance() {
-  if (!refs.mayaAssistant || !refs.screenApp?.classList.contains("screen--active")) return;
-  const waitMs = getRandomInt(MAYA_INTERVAL_MIN_MS, MAYA_INTERVAL_MAX_MS);
-  mayaNextAppearanceTimeoutId = window.setTimeout(() => showMayaAssistant(), waitMs);
-}
-
-function showMayaAssistant({ immediate = false } = {}) {
-  if (!refs.mayaAssistant || !refs.mayaAssistantBubble) return;
-  if (!refs.screenApp?.classList.contains("screen--active")) return;
-  if (isUserTyping()) {
-    mayaNextAppearanceTimeoutId = window.setTimeout(() => showMayaAssistant(), 12000);
-    return;
-  }
-  clearMayaTimers();
-  refs.mayaAssistantBubble.textContent = MAYA_MESSAGES[getRandomInt(0, MAYA_MESSAGES.length - 1)];
-  refs.mayaAssistant.classList.add("maya-assistant--visible");
-  refs.mayaAssistant.setAttribute("aria-hidden", "false");
-  const visibleMs = immediate ? MAYA_SHOW_MIN_MS : getRandomInt(MAYA_SHOW_MIN_MS, MAYA_SHOW_MAX_MS);
-  mayaHideTimeoutId = window.setTimeout(() => {
-    hideMayaAssistant();
-    scheduleMayaAppearance();
-  }, visibleMs);
-}
-
-function startMayaAssistantCycle() {
-  clearMayaTimers();
-  showMayaAssistant({ immediate: true });
-}
-
-function stopMayaAssistantCycle() {
-  clearMayaTimers();
-  hideMayaAssistant();
 }
 
 function initVerticalLoopRotator({
