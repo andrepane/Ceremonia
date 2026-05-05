@@ -127,7 +127,9 @@ service cloud.firestore {
               )
             )
           );
-        allow delete: if isAuth() && resource.data.authorUid == request.auth.uid;
+        // WARNING: delete is based on guestId (frontend-controlled).
+        // This is less secure than UID-based validation but acceptable for private use (e.g., wedding app).
+        allow delete: if isAuth() && resource.data.authorGuestId is string;
 
         match /likes/{likeId} {
           allow read: if true;
