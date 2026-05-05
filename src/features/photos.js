@@ -167,6 +167,10 @@ export async function handlePhotoGridClick(event) {
 
   const deleteBtn = event.target.closest("[data-photo-delete]");
   if (deleteBtn && state.firebaseOnline) {
+    console.log("[DELETE][ui click]", {
+      currentGuestId: state.currentGuestId,
+      photoId: deleteBtn?.dataset?.photoDelete
+    });
     if (!window.confirm(getHomeCopy().deletePhotoConfirm)) return;
     try {
       if (!state.currentGuestId) throw new Error("guest_required");
