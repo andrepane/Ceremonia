@@ -37,7 +37,8 @@ export const refs = {
   translatorHistoryTitle: document.getElementById("txt-translator-history-title"),
   translatorHistoryList: document.getElementById("translator-history-list"),
   mayaAssistant: document.getElementById("maya-assistant"),
-  mayaAssistantBubble: document.getElementById("maya-assistant-bubble")
+  mayaAssistantBubble: document.getElementById("maya-assistant-bubble"),
+  mayaAssistantImage: document.getElementById("maya-assistant-image")
 };
 
 export const constants = {

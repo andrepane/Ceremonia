@@ -46,6 +46,7 @@ const MAYA_SHOW_MAX_MS = 6000;
 const MAYA_INTERVAL_MIN_MS = 6 * 60 * 1000;
 const MAYA_INTERVAL_MAX_MS = 10 * 60 * 1000;
 const MAYA_MESSAGES = ["¡Guau! Ya estás dentro, te acompaño un ratito 🐾"];
+const MAYA_IMAGE_SOURCES = ["images/maya.webp", "images/maya.png", "images/ana-amiga.webp", "images/ana-amiga.png"];
 
 let guestbookIconSwapTimeoutId = null;
 let mayaHideTimeoutId = null;
@@ -186,6 +187,25 @@ function startMayaAssistantCycle() {
 function stopMayaAssistantCycle() {
   clearMayaTimers();
   hideMayaAssistant();
+}
+
+function resolveMayaAssistantImage() {
+  if (!refs.mayaAssistantImage) return;
+  const tryLoadSource = (index) => {
+    if (index >= MAYA_IMAGE_SOURCES.length) {
+      refs.mayaAssistantImage.hidden = true;
+      return;
+    }
+    const candidate = MAYA_IMAGE_SOURCES[index];
+    const probe = new Image();
+    probe.onload = () => {
+      refs.mayaAssistantImage.src = candidate;
+      refs.mayaAssistantImage.hidden = false;
+    };
+    probe.onerror = () => tryLoadSource(index + 1);
+    probe.src = candidate;
+  };
+  tryLoadSource(0);
 }
 
 function initVerticalLoopRotator({
@@ -763,6 +783,7 @@ window.addEventListener("beforeunload", () => {
 });
 
 function initApp() {
+  resolveMayaAssistantImage();
   bindUIEvents();
   startPhotoUploadQueue();
   restoreSession();
