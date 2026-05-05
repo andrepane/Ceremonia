@@ -556,6 +556,12 @@ async function deletePhoto(photoId, guestId) {
   if (!photoSnap.exists()) throw new Error("photo_not_found");
 
   const photoData = photoSnap.data();
+  console.log("[DELETE][server-call]", {
+    photoId,
+    guestIdPassed: guestId,
+    authorGuestId: photoData?.authorGuestId,
+    authUid: user?.uid
+  });
   if (photoData.authorGuestId !== guestId) throw new Error("not_allowed");
 
   if (photoData.storagePath) {

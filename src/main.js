@@ -356,6 +356,10 @@ async function setLanguage(lang) {
 }
 
 async function setGuest(guestId) {
+  console.log("[GUEST][before switch]", {
+    from: state.currentGuestId,
+    to: guestId
+  });
   if (state.currentGuestId === guestId) {
     showScreen(refs.screenApp);
     return;
@@ -381,6 +385,10 @@ async function setGuest(guestId) {
   }
 
   setState({ currentGuestId: guestId });
+  console.log("[GUEST][after switch]", {
+    currentGuestId: state.currentGuestId,
+    localStorageGuest: localStorage.getItem("wedding_guest")
+  });
   loadGuestFont(guestId);
   localStorage.setItem("wedding_guest", guestId);
   startGuestDictionarySync(guestId);
