@@ -26,7 +26,8 @@ window.WEDDING_APP_DATA = {
     { id: "alicia", name: "Alicia", avatar: "A", roleKey: "aunt_bride", sex: "f" },
     { id: "gabri", name: "Gabri", avatar: "G", roleKey: "friend_bride_m", sex: "m" },
     { id: "ana_amiga_novia", name: "Ana", avatar: "A", avatarImage: "images/ana-amiga.png", roleKey: "friend_bride_f", sex: "f" },
-    { id: "tito", name: "Tito", avatar: "T", roleKey: "friend_bride_m", sex: "m" }
+    { id: "tito", name: "Tito", avatar: "T", roleKey: "friend_bride_m", sex: "m" },
+    { id: "maya", name: "Maya", avatar: "M", roleKey: "pet", sex: "f" }
   ],
   guestHeaders: {
     cintia_novia: "Va a ser nuestro día, hecho a medida para nosotros. Te quiero, meloncita.",
@@ -45,7 +46,8 @@ window.WEDDING_APP_DATA = {
     alicia: "Esto va a ser muy de tu rollo: calma, buen ambiente y sin prisas.",
     gabri: "No será una boda religiosa, pero el Jesucristo lo tenemos cubierto.",
     ana_amiga_novia: "No sería lo mismo sin ti.",
-    tito: "¡Vas a acabar hecho un trapico!"
+    tito: "¡Vas a acabar hecho un trapico!",
+    maya: "No podía faltar nuestra compañera más fiel."
   },
   translations: {
     es: {
@@ -195,7 +197,8 @@ window.WEDDING_APP_DATA = {
         grandmother_groom: "Abuela del novio",
         aunt_bride: "Tía de la novia",
         friend_bride_m: "Amigo",
-        friend_bride_f: "Amiga"
+        friend_bride_f: "Amiga",
+        pet: "Perrita de la familia"
       },
       homeCards: [
         {
@@ -653,7 +656,8 @@ window.WEDDING_APP_DATA = {
         grandmother_groom: "Nonna dello sposo",
         aunt_bride: "Zia della sposa",
         friend_bride_m: "Amico",
-        friend_bride_f: "Amica"
+        friend_bride_f: "Amica",
+        pet: "Cagnolina di famiglia"
       },
       homeCards: [
         {
