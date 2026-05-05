@@ -3,7 +3,7 @@ import { refs, state } from "../state.js";
 const SHOW_MIN_MS = 4000;
 const SHOW_MAX_MS = 6000;
 const RETRY_WHILE_TYPING_MS = 12000;
-const SESSION_INTERVAL_MS = 2 * 60 * 1000;
+const SESSION_INTERVAL_MS = 60 * 1000;
 
 const STORAGE_KEYS = {
   hasSeenWelcome: "maya_has_seen_welcome",
@@ -41,7 +41,7 @@ const MAYA_MESSAGES = {
 
 let hideTimeoutId = null;
 let nextSessionMessageTimeoutId = null;
-let sessionMessageIndex = 0;
+let lastSessionMessageIndex = null;
 
 function getRandomInt(min, max) {
   return Math.floor(Math.random() * (max - min + 1)) + min;
@@ -75,12 +75,30 @@ function canDisplayAssistantNow() {
   return Boolean(refs.mayaAssistant && refs.mayaAssistantBubble && refs.screenApp?.classList.contains("screen--active"));
 }
 
+function getRandomSessionMessage(localeMessages) {
+  const { sessionMessages } = localeMessages;
+  if (!Array.isArray(sessionMessages) || sessionMessages.length === 0) return null;
+
+  if (sessionMessages.length === 1) {
+    lastSessionMessageIndex = 0;
+    return sessionMessages[0];
+  }
+
+  let randomIndex = getRandomInt(0, sessionMessages.length - 1);
+  while (randomIndex === lastSessionMessageIndex) {
+    randomIndex = getRandomInt(0, sessionMessages.length - 1);
+  }
+
+  lastSessionMessageIndex = randomIndex;
+  return sessionMessages[randomIndex];
+}
+
 function scheduleNextSessionMessage() {
   if (!canDisplayAssistantNow()) return;
   nextSessionMessageTimeoutId = window.setTimeout(() => {
     const localeMessages = MAYA_MESSAGES[state.currentLanguage] || MAYA_MESSAGES.es;
-    const message = localeMessages.sessionMessages[sessionMessageIndex % localeMessages.sessionMessages.length];
-    sessionMessageIndex += 1;
+    const message = getRandomSessionMessage(localeMessages);
+    if (!message) return;
     showAssistantMessage(message);
   }, SESSION_INTERVAL_MS);
 }
@@ -138,6 +156,7 @@ function getStartMessage() {
 
 export function startMayaAssistantCycle() {
   clearTimers();
+  lastSessionMessageIndex = null;
   const startMessage = getStartMessage();
   if (startMessage) {
     showAssistantMessage(startMessage, { immediate: true });
